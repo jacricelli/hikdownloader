@@ -62,6 +62,30 @@
         }
 
         /// <summary>
+        /// Inicializa el entorno de HCNetSDK.
+        /// </summary>
+        /// <param name="sender">Origen del evento</param>
+        /// <param name="e">Datos del evento.</param>
+        private void MainWindow_Shown(object sender, EventArgs e)
+        {
+            if (HCNetSDK.Initialize())
+            {
+                if (HCNetSDK.EnableLogging(Util.GetDirectory("logs")))
+                {
+                    return;
+                }
+                else
+                {
+                    MessageBox.Show(string.Format("Error #{0} al habilitar el registro de mensajes.", HCNetSDK.GetLastError()), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            else
+            {
+                MessageBox.Show(string.Format("Error #{0} al inicializar el entorno de programación.", HCNetSDK.GetLastError()), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
         /// Evita que se modifique el ancho de las columnas.
         /// </summary>
         /// <param name="sender">Origen del evento</param>
