@@ -1,6 +1,6 @@
 ﻿namespace HikDownloader
 {
-    partial class Form1
+    partial class MainWindow
     {
         /// <summary>
         /// Variable del diseñador necesaria.
