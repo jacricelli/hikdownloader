@@ -4,6 +4,9 @@
     using System.Windows.Forms;
     using FluentDateTime;
 
+    /// <summary>
+    /// Ventana principal.
+    /// </summary>
     public partial class MainWindow : Form
     {
         /// <summary>
