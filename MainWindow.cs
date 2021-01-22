@@ -1,6 +1,7 @@
 ﻿namespace HikDownloader
 {
     using System;
+    using System.Threading.Tasks;
     using System.Windows.Forms;
     using FluentDateTime;
 
@@ -66,23 +67,38 @@
         /// </summary>
         /// <param name="sender">Origen del evento</param>
         /// <param name="e">Datos del evento.</param>
-        private void MainWindow_Shown(object sender, EventArgs e)
+        private async void MainWindow_Shown(object sender, EventArgs e)
         {
-            if (HCNetSDK.Initialize())
+            await Task.Run(() =>
             {
-                if (HCNetSDK.EnableLogging(Util.GetDirectory("logs")))
+                if (HCNetSDK.Initialize())
                 {
-                    return;
+                    if (HCNetSDK.EnableLogging(Util.GetDirectory("logs")))
+                    {
+                        if (HCNetSDK.Login(Properties.Settings.Default.Address, Properties.Settings.Default.Port, Properties.Settings.Default.UserName, Properties.Settings.Default.Password))
+                        {
+                            Invoke(new MethodInvoker(delegate
+                            {
+                                Enabled = true;
+                            }));
+
+                            return;
+                        }
+                        else
+                        {
+                            MessageBox.Show(string.Format("Error #{0} al iniciar sesión.", HCNetSDK.GetLastError()), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show(string.Format("Error #{0} al habilitar el registro de mensajes.", HCNetSDK.GetLastError()), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
                 else
                 {
-                    MessageBox.Show(string.Format("Error #{0} al habilitar el registro de mensajes.", HCNetSDK.GetLastError()), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(string.Format("Error #{0} al inicializar el entorno de programación.", HCNetSDK.GetLastError()), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-            }
-            else
-            {
-                MessageBox.Show(string.Format("Error #{0} al inicializar el entorno de programación.", HCNetSDK.GetLastError()), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            });
         }
 
         /// <summary>

@@ -34,10 +34,10 @@ namespace HikDownloader.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Port {
+        [global::System.Configuration.DefaultSettingValueAttribute("8000")]
+        public int Port {
             get {
-                return ((string)(this["Port"]));
+                return ((int)(this["Port"]));
             }
         }
         
