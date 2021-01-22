@@ -38,6 +38,12 @@
                 Channel1, Channel2, Channel3, Channel4, Channel5, Channel6, Channel6, Channel7, Channel8,
                 Channel9, Channel10, Channel11, Channel12, Channel13, Channel14, Channel15, Channel16,
             };
+
+            if (Properties.Settings.Default.Downloads == string.Empty)
+            {
+                Properties.Settings.Default.Downloads = Util.GetDirectory("downloads");
+                Properties.Settings.Default.Save();
+            }
         }
 
         /// <summary>
@@ -48,6 +54,8 @@
         private void MainWindow_Load(object sender, EventArgs e)
         {
             Period.SelectedIndex = (int)searchType.lastWeek;
+
+            DownloadDir.Text = Properties.Settings.Default.Downloads;
         }
 
         /// <summary>
