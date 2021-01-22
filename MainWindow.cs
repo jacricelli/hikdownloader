@@ -16,21 +16,6 @@
         private CheckBox[] channels;
 
         /// <summary>
-        /// Tipos de búsqueda.
-        /// </summary>
-        private enum searchType : int
-        {
-            today = 0,
-            yesterday = 1,
-            thisWeek = 2,
-            lastWeek = 3,
-            last2Weeks = 4,
-            thisMonth = 5,
-            lastMonth = 6,
-            customDate = 7,
-        }
-
-        /// <summary>
         /// Constructor.
         /// </summary>
         public MainWindow()
@@ -57,7 +42,7 @@
         /// <param name="e">Datos del evento.</param>
         private void MainWindow_Load(object sender, EventArgs e)
         {
-            Period.SelectedIndex = (int)searchType.lastWeek;
+            Period.SelectedIndex = 3; // Semana anterior
 
             DownloadDir.Text = Properties.Settings.Default.Downloads;
         }
@@ -191,47 +176,46 @@
         /// <param name="e">Datos del evento.</param>
         private void Period_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var selectedIndex = (searchType)Period.SelectedIndex;
-            switch (selectedIndex)
+            switch (Period.SelectedIndex)
             {
-                case searchType.today:
+                case 0:
                     Start.Value = DateTime.Today.Midnight();
                     End.Value = DateTime.Today.EndOfDay();
                     break;
 
-                case searchType.yesterday:
+                case 1:
                     Start.Value = DateTime.Today.PreviousDay().Midnight();
                     End.Value = DateTime.Today.PreviousDay().EndOfDay();
                     break;
 
-                case searchType.thisWeek:
+                case 2:
                     Start.Value = DateTime.Today.FirstDayOfWeek().AddDays(1);
                     End.Value = Start.Value.LastDayOfWeek().AddDays(1).EndOfDay();
                     break;
 
-                case searchType.lastWeek:
+                case 3:
                     Start.Value = DateTime.Today.FirstDayOfWeek().AddDays(1).WeekEarlier();
                     End.Value = Start.Value.LastDayOfWeek().AddDays(1).EndOfDay();
                     break;
 
-                case searchType.last2Weeks:
+                case 4:
                     Start.Value = DateTime.Today.FirstDayOfWeek().AddDays(-13);
                     End.Value = DateTime.Today.WeekEarlier().LastDayOfWeek().AddDays(1).EndOfDay();
                     break;
 
-                case searchType.thisMonth:
+                case 5:
                     Start.Value = DateTime.Today.BeginningOfMonth();
                     End.Value = DateTime.Today.EndOfMonth();
                     break;
 
-                case searchType.lastMonth:
+                case 6:
                     Start.Value = DateTime.Today.PreviousMonth().BeginningOfMonth();
                     End.Value = DateTime.Today.PreviousMonth().EndOfMonth();
                     break;
             }
 
-            Start.Enabled = selectedIndex == searchType.customDate;
-            End.Enabled = selectedIndex == searchType.customDate;
+            Start.Enabled = Period.SelectedIndex == 7;
+            End.Enabled = Period.SelectedIndex == 7;
 
             Start.Tag = Start.Value;
             End.Tag = End.Value;
