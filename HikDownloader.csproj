@@ -70,7 +70,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HCNetSDK.cs" />
+    <Compile Include="HCNetSDK\SDK.cs" />
+    <Compile Include="HCNetSDK\Session.cs" />
+    <Compile Include="HCNetSDK\User.cs" />
     <Compile Include="MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>
