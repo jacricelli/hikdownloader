@@ -15,7 +15,7 @@
         /// <param name="disposing">true si los recursos administrados se deben desechar; false en caso contrario.</param>
         protected override void Dispose(bool disposing)
         {
-            session.Logout();
+            Session.Logout();
 
             SDK.Cleanup();
 

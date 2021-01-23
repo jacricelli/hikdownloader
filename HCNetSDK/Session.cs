@@ -5,38 +5,27 @@
     /// <summary>
     /// Sesión.
     /// </summary>
-    public class Session
+    public static class Session
     {
         /// <summary>
         /// Dirección IP.
         /// </summary>
-        public string Address { get; private set; }
+        public static string Address { get; set; }
 
         /// <summary>
         /// Puerto.
         /// </summary>
-        public int Port { get; private set; }
+        public static int Port { get; set; }
 
         /// <summary>
         /// Usuario.
         /// </summary>
-        public User User { get; private set; } = null;
+        public static User User { get; private set; } = null;
 
         /// <summary>
         /// Obtiene un valor que indica si se ha iniciado una sesión.
         /// </summary>
-        public bool IsLoggedIn => User?.Identifier > -1;
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="address">Dirección.</param>
-        /// <param name="port">Puerto.</param>
-        public Session(string address, int port)
-        {
-            Address = address;
-            Port = port;
-        }
+        public static bool IsLoggedIn => User?.Identifier > -1;
 
         /// <summary>
         /// Inicia una sesión.
@@ -44,7 +33,7 @@
         /// <param name="userName">Nombre de usuario.</param>
         /// <param name="password">Contraseña.</param>
         /// <returns>Devuelve TRUE si la operación se ha completado exitosamente, FALSE de lo contrario.</returns>
-        public bool Login(string userName, string password)
+        public static bool Login(string userName, string password)
         {
             if (!IsLoggedIn)
             {
@@ -65,7 +54,7 @@
         /// Cierra una sesión.
         /// </summary>
         /// <returns>Devuelve TRUE si la operación se ha completado exitosamente, FALSE de lo contrario.</returns>
-        public bool Logout()
+        public static bool Logout()
         {
             if (IsLoggedIn && NET_DVR_Logout(User.Identifier))
             {

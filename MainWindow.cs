@@ -17,11 +17,6 @@
         private CheckBox[] channels;
 
         /// <summary>
-        /// Sesión.
-        /// </summary>
-        private Session session;
-
-        /// <summary>
         /// Manejador de la búsqueda.
         /// </summary>
         private int findHandle = -1;
@@ -76,8 +71,10 @@
                 {
                     if (SDK.EnableLogging(Util.GetDirectory("logs")))
                     {
-                        session = new Session(Properties.Settings.Default.Address, Properties.Settings.Default.Port);
-                        if (session.Login(Properties.Settings.Default.UserName, Properties.Settings.Default.Password))
+                        Session.Address = Properties.Settings.Default.Address;
+                        Session.Port = Properties.Settings.Default.Port;
+
+                        if (Session.Login(Properties.Settings.Default.UserName, Properties.Settings.Default.Password))
                         {
                             Invoke(new MethodInvoker(delegate
                             {
