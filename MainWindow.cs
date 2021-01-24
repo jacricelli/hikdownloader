@@ -129,17 +129,6 @@
         }
 
         /// <summary>
-        /// Evita que se modifique el ancho de las columnas.
-        /// </summary>
-        /// <param name="sender">Origen del evento</param>
-        /// <param name="e">Datos del evento.</param>
-        private void Recordings_ColumnWidthChanging(object sender, ColumnWidthChangingEventArgs e)
-        {
-            e.Cancel = true;
-            e.NewWidth = Recordings.Columns[e.ColumnIndex].Width;
-        }
-
-        /// <summary>
         /// Guarda el valor validado en las propiedades del control.
         /// </summary>
         /// <param name="sender">Origen del evento</param>

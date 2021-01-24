@@ -54,11 +54,11 @@
             this.Start = new System.Windows.Forms.DateTimePicker();
             this.Events = new System.Windows.Forms.ListView();
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.label4 = new System.Windows.Forms.Label();
             this.Channels = new System.Windows.Forms.ListView();
             this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.SuspendLayout();
@@ -132,7 +132,6 @@
             this.Recordings.TabIndex = 0;
             this.Recordings.UseCompatibleStateImageBehavior = false;
             this.Recordings.View = System.Windows.Forms.View.Details;
-            this.Recordings.ColumnWidthChanging += new System.Windows.Forms.ColumnWidthChangingEventHandler(this.Recordings_ColumnWidthChanging);
             // 
             // columnHeader1
             // 
@@ -256,6 +255,11 @@
             // 
             this.columnHeader6.Text = "Código";
             // 
+            // columnHeader8
+            // 
+            this.columnHeader8.Text = "Mensaje";
+            this.columnHeader8.Width = 800;
+            // 
             // groupBox4
             // 
             this.groupBox4.Controls.Add(this.Search);
@@ -301,11 +305,6 @@
             // columnHeader7
             // 
             this.columnHeader7.Width = 140;
-            // 
-            // columnHeader8
-            // 
-            this.columnHeader8.Text = "Mensaje";
-            this.columnHeader8.Width = 800;
             // 
             // MainWindow
             // 
