@@ -1,6 +1,7 @@
 ﻿namespace HikDownloader
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using System.Windows.Forms;
     using FluentDateTime;
@@ -250,10 +251,27 @@
         /// <summary>
         /// Ejecuta o cancela una búsqueda de grabaciones.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Search_Click(object sender, EventArgs e)
+        /// <param name="sender">Origen del evento</param>
+        /// <param name="e">Datos del evento.</param>
+        private async void Search_Click(object sender, EventArgs e)
         {
+            if (Searcher.IsRunning)
+            {
+                Searcher.Cancel();
+
+                return;
+            }
+
+            var channels = new List<Channel>();
+            foreach (var item in Channels.CheckedItems)
+            {
+                channels.Add((Channel)((ListViewItem)item).Tag);
+            }
+
+            await Task.Run(() =>
+            {
+                Searcher.Search(channels.ToArray(), Start.Value, End.Value);
+            });
         }
 
         /// <summary>
