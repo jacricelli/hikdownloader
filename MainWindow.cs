@@ -21,11 +21,11 @@
         }
 
         /// <summary>
-        /// Agrega un mensaje al registro de eventos.
+        /// Agrega un evento al registro de eventos.
         /// </summary>
         /// <param name="code">Código.</param>
         /// <param name="message">Mensaje.</param>
-        private void LogMessage(string message, uint code = 0)
+        private void LogEvent(string message, uint code = 0)
         {
             if (Events.InvokeRequired)
             {
@@ -78,18 +78,18 @@
             {
                 if (SDK.Initialize())
                 {
-                    LogMessage("Se ha inicializado el entorno de programación.");
+                    LogEvent("Se ha inicializado el entorno de programación.");
 
                     if (SDK.EnableLogging(Util.GetDirectory("logs")))
                     {
-                        LogMessage("Se ha habilitado el registro de mensajes de la SDK.");
+                        LogEvent("Se ha habilitado el registro de mensajes de la SDK.");
 
                         Session.Address = Properties.Settings.Default.Address;
                         Session.Port = Properties.Settings.Default.Port;
 
                         if (Session.Login(Properties.Settings.Default.UserName, Properties.Settings.Default.Password))
                         {
-                            LogMessage("Se ha iniciado sesión.", SDK.GetLastError());
+                            LogEvent("Se ha iniciado sesión.", SDK.GetLastError());
 
                             Invoke(new MethodInvoker(delegate
                             {
@@ -100,17 +100,17 @@
                         }
                         else
                         {
-                            LogMessage("Error al iniciar sesión.", SDK.GetLastError());
+                            LogEvent("Error al iniciar sesión.", SDK.GetLastError());
                         }
                     }
                     else
                     {
-                        LogMessage("Error al habilitar el registro de mensajes.", SDK.GetLastError());
+                        LogEvent("Error al habilitar el registro de mensajes.", SDK.GetLastError());
                     }
                 }
                 else
                 {
-                    LogMessage("Error al inicializar el entorno de programación.", SDK.GetLastError());
+                    LogEvent("Error al inicializar el entorno de programación.", SDK.GetLastError());
                 }
             });
         }
