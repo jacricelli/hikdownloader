@@ -323,6 +323,8 @@
 
             Invoke(new MethodInvoker(delegate
             {
+                Search.Text = "&Cancelar búsqueda";
+
                 Channels.Enabled = false;
                 Periods.Enabled = false;
                 Start.Enabled = false;
@@ -330,8 +332,6 @@
                 groupBox3.Enabled = false;
                 Recordings.BeginUpdate();
                 Recordings.Items.Clear();
-
-                Search.Text = "&Cancelar búsqueda";
             }));
         }
 
@@ -344,14 +344,15 @@
         {
             Invoke(new MethodInvoker(delegate
             {
+                Search.Text = "&Buscar grabaciones";
+
                 Channels.Enabled = true;
                 Periods.Enabled = true;
                 groupBox3.Enabled = true;
                 Start.Enabled = (PeriodsTypes)Periods.SelectedIndex == PeriodsTypes.customRange;
                 End.Enabled = Start.Enabled;
                 Recordings.EndUpdate();
-
-                Search.Text = "&Buscar grabaciones";
+                groupBox3.Text = string.Format("Grabaciones ({0})", Recordings.Items.Count);
             }));
 
             LogEvent("Se ha finalizado la búsqueda.");
@@ -391,9 +392,25 @@
         /// <param name="e"></param>
         public void Search_OnResult(object sender, EventArgs e)
         {
-            var evt = (SearchEvent)e;
+            var evt = (SearchResult)e;
 
             searchCounters[evt.Channel]++;
+
+            var item = new ListViewItem(new string[]
+            {
+                evt.Recording.FileName,
+                evt.Recording.FileSizeWithPrefix,
+                evt.Recording.Start.ToString("dd/MM/yyyy hh:mm:ss"),
+                evt.Recording.End.ToString("dd/MM/yyyy hh:mm:ss"),
+            })
+            {
+                Tag = evt
+            };
+
+            Recordings.Invoke(new MethodInvoker(delegate
+            {
+                Recordings.Items.Add(item);
+            }));
         }
 
         /// <summary>

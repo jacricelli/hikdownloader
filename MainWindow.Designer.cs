@@ -75,7 +75,7 @@
             this.groupBox3.Size = new System.Drawing.Size(704, 544);
             this.groupBox3.TabIndex = 7;
             this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Grabaciones";
+            this.groupBox3.Text = "Grabaciones (0)";
             // 
             // Download
             // 
