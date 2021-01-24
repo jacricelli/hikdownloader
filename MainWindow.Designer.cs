@@ -48,7 +48,7 @@
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.Search = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
-            this.Period = new System.Windows.Forms.ComboBox();
+            this.Periods = new System.Windows.Forms.ComboBox();
             this.End = new System.Windows.Forms.DateTimePicker();
             this.label1 = new System.Windows.Forms.Label();
             this.Start = new System.Windows.Forms.DateTimePicker();
@@ -181,11 +181,11 @@
             this.label2.TabIndex = 7;
             this.label2.Text = "Finalización";
             // 
-            // Period
+            // Periods
             // 
-            this.Period.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.Period.FormattingEnabled = true;
-            this.Period.Items.AddRange(new object[] {
+            this.Periods.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.Periods.FormattingEnabled = true;
+            this.Periods.Items.AddRange(new object[] {
             "Hoy",
             "Ayer",
             "Esta semana",
@@ -194,11 +194,11 @@
             "Este mes",
             "Mes anterior",
             "Rango personalizado"});
-            this.Period.Location = new System.Drawing.Point(8, 363);
-            this.Period.Name = "Period";
-            this.Period.Size = new System.Drawing.Size(176, 23);
-            this.Period.TabIndex = 4;
-            this.Period.SelectedIndexChanged += new System.EventHandler(this.Period_SelectedIndexChanged);
+            this.Periods.Location = new System.Drawing.Point(8, 363);
+            this.Periods.Name = "Periods";
+            this.Periods.Size = new System.Drawing.Size(176, 23);
+            this.Periods.TabIndex = 4;
+            this.Periods.SelectedIndexChanged += new System.EventHandler(this.Periods_SelectedIndexChanged);
             // 
             // End
             // 
@@ -268,7 +268,7 @@
             this.groupBox4.Controls.Add(this.End);
             this.groupBox4.Controls.Add(this.label2);
             this.groupBox4.Controls.Add(this.Start);
-            this.groupBox4.Controls.Add(this.Period);
+            this.groupBox4.Controls.Add(this.Periods);
             this.groupBox4.Controls.Add(this.label1);
             this.groupBox4.Location = new System.Drawing.Point(8, 8);
             this.groupBox4.Name = "groupBox4";
@@ -347,7 +347,7 @@
         private System.Windows.Forms.ColumnHeader columnHeader5;
         private System.Windows.Forms.Button Search;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ComboBox Period;
+        private System.Windows.Forms.ComboBox Periods;
         private System.Windows.Forms.DateTimePicker End;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.DateTimePicker Start;
