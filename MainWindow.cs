@@ -21,6 +21,26 @@
         }
 
         /// <summary>
+        /// Agrega un mensaje al registro de eventos.
+        /// </summary>
+        /// <param name="code">Código.</param>
+        /// <param name="message">Mensaje.</param>
+        private void LogMessage(string message, uint code = 0)
+        {
+            if (Events.InvokeRequired)
+            {
+                Events.Invoke(new MethodInvoker(delegate
+                {
+                    Events.Items.Add(new ListViewItem(new string[] { code.ToString(), message }));
+                }));
+            }
+            else
+            {
+                Events.Items.Add(new ListViewItem(new string[] { code.ToString(), message }));
+            }
+        }
+
+        /// <summary>
         /// Responde a la carga del formulario.
         /// </summary>
         /// <param name="sender">Origen del evento</param>
@@ -41,8 +61,6 @@
                     Tag = new Channel(i),
                 });
             }
-
-            columnHeader6.Width = Events.Width - 25;
 
             Period.SelectedIndex = 3; // Semana anterior
 
@@ -71,7 +89,7 @@
 
                         if (Session.Login(Properties.Settings.Default.UserName, Properties.Settings.Default.Password))
                         {
-                            LogMessage(string.Format("Se ha iniciado sesión (ID: {0}).", Session.User.Identifier));
+                            LogMessage("Se ha iniciado sesión.", SDK.GetLastError());
 
                             Invoke(new MethodInvoker(delegate
                             {
@@ -82,17 +100,17 @@
                         }
                         else
                         {
-                            LogMessage(string.Format("Error al iniciar sesión (Código: {0}).", SDK.GetLastError()));
+                            LogMessage("Error al iniciar sesión.", SDK.GetLastError());
                         }
                     }
                     else
                     {
-                        LogMessage(string.Format("Error al habilitar el registro de mensajes (Código: {0}).", SDK.GetLastError()));
+                        LogMessage("Error al habilitar el registro de mensajes.", SDK.GetLastError());
                     }
                 }
                 else
                 {
-                    LogMessage(string.Format("Error al inicializar el entorno de programación (Código: {0}).", SDK.GetLastError()));
+                    LogMessage("Error al inicializar el entorno de programación.", SDK.GetLastError());
                 }
             });
         }
@@ -272,25 +290,6 @@
             {
                 Searcher.Search(channels.ToArray(), Start.Value, End.Value);
             });
-        }
-
-        /// <summary>
-        /// Agrega un mensaje al registro de eventos.
-        /// </summary>
-        /// <param name="message">Mensaje.</param>
-        private void LogMessage(string message)
-        {
-            if (Events.InvokeRequired)
-            {
-                Events.Invoke(new MethodInvoker(delegate
-                {
-                    Events.Items.Add(message);
-                }));
-            }
-            else
-            {
-                Events.Items.Add(message);
-            }
         }
     }
 }

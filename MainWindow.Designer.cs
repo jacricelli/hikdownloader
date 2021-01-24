@@ -58,6 +58,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.Channels = new System.Windows.Forms.ListView();
             this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.SuspendLayout();
@@ -238,9 +239,10 @@
             // Events
             // 
             this.Events.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader6});
+            this.columnHeader6,
+            this.columnHeader8});
             this.Events.FullRowSelect = true;
-            this.Events.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+            this.Events.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.Events.HideSelection = false;
             this.Events.Location = new System.Drawing.Point(8, 560);
             this.Events.MultiSelect = false;
@@ -249,6 +251,10 @@
             this.Events.TabIndex = 8;
             this.Events.UseCompatibleStateImageBehavior = false;
             this.Events.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader6
+            // 
+            this.columnHeader6.Text = "Código";
             // 
             // groupBox4
             // 
@@ -295,6 +301,11 @@
             // columnHeader7
             // 
             this.columnHeader7.Width = 140;
+            // 
+            // columnHeader8
+            // 
+            this.columnHeader8.Text = "Mensaje";
+            this.columnHeader8.Width = 800;
             // 
             // MainWindow
             // 
@@ -347,6 +358,7 @@
         private System.Windows.Forms.ListView Channels;
         private System.Windows.Forms.ColumnHeader columnHeader7;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.ColumnHeader columnHeader8;
     }
 }
 
