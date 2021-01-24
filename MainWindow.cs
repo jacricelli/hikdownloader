@@ -252,6 +252,9 @@
                 if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(dialog.SelectedPath))
                 {
                     DownloadDir.Text = dialog.SelectedPath;
+
+                    Properties.Settings.Default.Downloads = dialog.SelectedPath;
+                    Properties.Settings.Default.Save();
                 }
             }
         }
