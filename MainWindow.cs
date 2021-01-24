@@ -4,6 +4,7 @@
     using System.Threading.Tasks;
     using System.Windows.Forms;
     using FluentDateTime;
+    using HCNetSDK;
 
     /// <summary>
     /// Ventana principal.
@@ -14,6 +15,16 @@
         /// Canales.
         /// </summary>
         private CheckBox[] channels;
+
+        /// <summary>
+        /// Manejador de la búsqueda.
+        /// </summary>
+        private int findHandle = -1;
+
+        /// <summary>
+        /// Indica si la búsqueda se ha cancelado.
+        /// </summary>
+        private bool searchCancelled = false;
 
         /// <summary>
         /// Constructor.
@@ -56,11 +67,14 @@
         {
             await Task.Run(() =>
             {
-                if (HCNetSDK.Initialize())
+                if (SDK.Initialize())
                 {
-                    if (HCNetSDK.EnableLogging(Util.GetDirectory("logs")))
+                    if (SDK.EnableLogging(Util.GetDirectory("logs")))
                     {
-                        if (HCNetSDK.Login(Properties.Settings.Default.Address, Properties.Settings.Default.Port, Properties.Settings.Default.UserName, Properties.Settings.Default.Password))
+                        Session.Address = Properties.Settings.Default.Address;
+                        Session.Port = Properties.Settings.Default.Port;
+
+                        if (Session.Login(Properties.Settings.Default.UserName, Properties.Settings.Default.Password))
                         {
                             Invoke(new MethodInvoker(delegate
                             {
@@ -71,17 +85,17 @@
                         }
                         else
                         {
-                            MessageBox.Show(string.Format("Error #{0} al iniciar sesión.", HCNetSDK.GetLastError()), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show(string.Format("Error #{0} al iniciar sesión.", SDK.GetLastError()), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     }
                     else
                     {
-                        MessageBox.Show(string.Format("Error #{0} al habilitar el registro de mensajes.", HCNetSDK.GetLastError()), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show(string.Format("Error #{0} al habilitar el registro de mensajes.", SDK.GetLastError()), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
                 else
                 {
-                    MessageBox.Show(string.Format("Error #{0} al inicializar el entorno de programación.", HCNetSDK.GetLastError()), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(string.Format("Error #{0} al inicializar el entorno de programación.", SDK.GetLastError()), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             });
         }
@@ -240,6 +254,26 @@
                 if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(dialog.SelectedPath))
                 {
                     DownloadDir.Text = dialog.SelectedPath;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Ejecuta o cancela una búsqueda de grabaciones.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Search_Click(object sender, EventArgs e)
+        {
+            if (findHandle > -1)
+            {
+                searchCancelled = true;
+            }
+            else
+            {
+                if (!searchCancelled)
+                {
+
                 }
             }
         }

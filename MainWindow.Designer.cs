@@ -1,5 +1,7 @@
 ﻿namespace HikDownloader
 {
+    using HCNetSDK;
+
     partial class MainWindow
     {
         /// <summary>
@@ -13,9 +15,9 @@
         /// <param name="disposing">true si los recursos administrados se deben desechar; false en caso contrario.</param>
         protected override void Dispose(bool disposing)
         {
-            HCNetSDK.Logout();
+            Session.Logout();
 
-            HCNetSDK.Cleanup();
+            SDK.Cleanup();
 
             if (disposing && (components != null))
             {
@@ -196,6 +198,7 @@
             this.Search.TabIndex = 4;
             this.Search.Text = "&Buscar grabaciones";
             this.Search.UseVisualStyleBackColor = true;
+            this.Search.Click += new System.EventHandler(this.Search_Click);
             // 
             // label2
             // 
