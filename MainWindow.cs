@@ -13,6 +13,11 @@
     public partial class MainWindow : Form
     {
         /// <summary>
+        /// Contadores de búsqueda.
+        /// </summary>
+        private Dictionary<Channel, int> searchCounters;
+
+        /// <summary>
         /// Constructor.
         /// </summary>
         public MainWindow()
@@ -65,6 +70,14 @@
             Period.SelectedIndex = 3; // Semana anterior
 
             DownloadDir.Text = Properties.Settings.Default.Downloads;
+
+            Searcher.OnStart += Search_OnStart;
+            Searcher.OnFinish += Search_OnFinish;
+            Searcher.OnBegin += Search_OnBegin;
+            Searcher.OnEnd += Search_OnEnd;
+            Searcher.OnResult += Search_OnResult;
+            Searcher.OnError += Search_OnError;
+            Searcher.OnCancel += Search_OnCancel;
         }
 
         /// <summary>
@@ -290,6 +303,112 @@
             {
                 Searcher.Search(channels.ToArray(), Start.Value, End.Value);
             });
+        }
+
+        /// <summary>
+        /// Inicio de la búsqueda.
+        /// </summary>
+        /// <param name="sender">Origen del evento</param>
+        /// <param name="e">Datos del evento.</param>
+        public void Search_OnStart(object sender, EventArgs e)
+        {
+            LogEvent("Se ha iniciado la búsqueda.");
+
+            searchCounters = new Dictionary<Channel, int>();
+
+            Invoke(new MethodInvoker(delegate
+            {
+                Channels.Enabled = false;
+                Period.Enabled = false;
+                Start.Enabled = false;
+                End.Enabled = false;
+                groupBox3.Enabled = false;
+                Recordings.BeginUpdate();
+                Recordings.Items.Clear();
+
+                Search.Text = "&Cancelar búsqueda";
+            }));
+        }
+
+        /// <summary>
+        /// Fin de la búsqueda.
+        /// </summary>
+        /// <param name="sender">Origen del evento</param>
+        /// <param name="e">Datos del evento.</param>
+        public void Search_OnFinish(object sender, EventArgs e)
+        {
+            Invoke(new MethodInvoker(delegate
+            {
+                Channels.Enabled = true;
+                Period.Enabled = true;
+                groupBox3.Enabled = true;
+                Start.Enabled = Period.SelectedIndex == 7;
+                End.Enabled = Period.SelectedIndex == 7;
+                Recordings.EndUpdate();
+
+                Search.Text = "&Buscar grabaciones";
+            }));
+
+            LogEvent("Se ha finalizado la búsqueda.");
+        }
+
+        /// <summary>
+        /// Comienzo de la búsqueda en un canal.
+        /// </summary>
+        /// <param name="sender">Origen del evento</param>
+        /// <param name="e">Datos del evento.</param>
+        public void Search_OnBegin(object sender, EventArgs e)
+        {
+            var evt = (SearchEvent)e;
+
+            searchCounters[evt.Channel] = 0;
+
+            LogEvent(string.Format("Comenzando búsqueda en el canal {0}.", evt.Channel.Number));
+        }
+
+        /// <summary>
+        /// Fin de la búsqueda en un canal.
+        /// </summary>
+        /// <param name="sender">Origen del evento</param>
+        /// <param name="e">Datos del evento.</param>
+        public void Search_OnEnd(object sender, EventArgs e)
+        {
+            var evt = (SearchEvent)e;
+
+            LogEvent(string.Format("Se han encontrado {0} grabaciones.", searchCounters[evt.Channel]));
+            LogEvent(string.Format("Finalizada búsqueda en el canal {0}.", evt.Channel.Number));
+        }
+
+        /// <summary>
+        /// Procesa un resultado de la búsqueda.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void Search_OnResult(object sender, EventArgs e)
+        {
+            var evt = (SearchEvent)e;
+
+            searchCounters[evt.Channel]++;
+        }
+
+        /// <summary>
+        /// Responde a un error en la búsqueda.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void Search_OnError(object sender, EventArgs e)
+        {
+            LogEvent("Se ha producido un error.", ((SearchError)e).Code);
+        }
+
+        /// <summary>
+        /// Responde a la cancelación de la búsqueda.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void Search_OnCancel(object sender, EventArgs e)
+        {
+            LogEvent("Se ha cancelado la búsqueda.");
         }
     }
 }
