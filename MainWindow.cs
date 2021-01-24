@@ -77,7 +77,7 @@
             {
                 Channels.Items.Add(new ListViewItem
                 {
-                    Text = Properties.Resources.ResourceManager.GetString("Channel" + i),
+                    Text = string.Format("{0:00} - {1}", i, Properties.Resources.ResourceManager.GetString("Channel" + i)),
                     Tag = new Channel(i),
                 });
             }

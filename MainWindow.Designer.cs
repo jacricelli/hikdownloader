@@ -304,7 +304,7 @@
             // 
             // columnHeader7
             // 
-            this.columnHeader7.Width = 140;
+            this.columnHeader7.Width = 165;
             // 
             // MainWindow
             // 
