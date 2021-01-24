@@ -1,9 +1,11 @@
 ﻿namespace HikDownloader.HCNetSDK
 {
+    using System;
+
     /// <summary>
     /// Resultado de búsqueda.
     /// </summary>
-    public class SearchResult : SearchEvent
+    public class SearchResult : EventArgs
     {
         /// <summary>
         /// Obtiene un valor con la grabación.
@@ -13,9 +15,8 @@
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="channel">Canal.</param>
         /// <param name="recording">Grabación.</param>
-        public SearchResult(Channel channel, Recording recording): base(channel)
+        public SearchResult(Recording recording)
         {
             Recording = recording;
         }

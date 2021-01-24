@@ -394,17 +394,17 @@
         {
             var evt = (SearchResult)e;
 
-            searchCounters[evt.Channel]++;
+            searchCounters[evt.Recording.Channel]++;
 
             var item = new ListViewItem(new string[]
             {
-                evt.Recording.FileName,
-                evt.Recording.FileSizeWithPrefix,
-                evt.Recording.Start.ToString("dd/MM/yyyy hh:mm:ss"),
-                evt.Recording.End.ToString("dd/MM/yyyy hh:mm:ss"),
+                evt.Recording.Video.FileName,
+                evt.Recording.Video.FileSizeWithPrefix,
+                evt.Recording.Video.Start.ToString("dd/MM/yyyy hh:mm:ss"),
+                evt.Recording.Video.End.ToString("dd/MM/yyyy hh:mm:ss"),
             })
             {
-                Tag = evt
+                Tag = evt.Recording
             };
 
             Recordings.Invoke(new MethodInvoker(delegate

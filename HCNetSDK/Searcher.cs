@@ -128,7 +128,7 @@
                         }
                         else if (result == NET_DVR_FILE_SUCCESS)
                         {
-                            var recordingStart = string.Format(
+                            var videoStart = string.Format(
                                 "{0}-{1:00}-{2:00} {3:00}:{4:00}:{5:00}",
                                 record.struStartTime.dwYear,
                                 record.struStartTime.dwMonth,
@@ -137,7 +137,7 @@
                                 record.struStartTime.dwMinute,
                                 record.struStartTime.dwSecond
                                 );
-                            var recordingEnd = string.Format(
+                            var videoEnd = string.Format(
                                 "{0}-{1:00}-{2:00} {3:00}:{4:00}:{5:00}",
                                 record.struStopTime.dwYear,
                                 record.struStopTime.dwMonth,
@@ -146,9 +146,11 @@
                                 record.struStopTime.dwMinute,
                                 record.struStopTime.dwSecond
                                 );
-                            var recording = new Recording(record.sFileName, record.dwFileSize, DateTime.Parse(recordingStart), DateTime.Parse(recordingEnd));
+                            var recording = new Recording(
+                                channel,
+                                new Video(record.sFileName, record.dwFileSize, DateTime.Parse(videoStart), DateTime.Parse(videoEnd)));
 
-                            OnResult?.Invoke(null, new SearchResult(channel, recording));
+                            OnResult?.Invoke(null, new SearchResult(recording));
                         }
                         else if (result == NET_DVR_FIND_TIMEOUT)
                         {
