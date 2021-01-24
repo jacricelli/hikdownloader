@@ -17,16 +17,6 @@
         private CheckBox[] channels;
 
         /// <summary>
-        /// Manejador de la búsqueda.
-        /// </summary>
-        private int findHandle = -1;
-
-        /// <summary>
-        /// Indica si la búsqueda se ha cancelado.
-        /// </summary>
-        private bool searchCancelled = false;
-
-        /// <summary>
         /// Constructor.
         /// </summary>
         public MainWindow()
@@ -265,17 +255,6 @@
         /// <param name="e"></param>
         private void Search_Click(object sender, EventArgs e)
         {
-            if (findHandle > -1)
-            {
-                searchCancelled = true;
-            }
-            else
-            {
-                if (!searchCancelled)
-                {
-
-                }
-            }
         }
     }
 }
