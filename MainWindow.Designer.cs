@@ -70,6 +70,8 @@
             this.Channel3 = new System.Windows.Forms.CheckBox();
             this.Channel2 = new System.Windows.Forms.CheckBox();
             this.Channel1 = new System.Windows.Forms.CheckBox();
+            this.Events = new System.Windows.Forms.ListView();
+            this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -480,11 +482,27 @@
             this.Channel1.UseVisualStyleBackColor = true;
             this.Channel1.CheckedChanged += new System.EventHandler(this.Channels_CheckChanged);
             // 
+            // Events
+            // 
+            this.Events.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader6});
+            this.Events.FullRowSelect = true;
+            this.Events.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+            this.Events.HideSelection = false;
+            this.Events.Location = new System.Drawing.Point(8, 408);
+            this.Events.MultiSelect = false;
+            this.Events.Name = "Events";
+            this.Events.Size = new System.Drawing.Size(1037, 136);
+            this.Events.TabIndex = 8;
+            this.Events.UseCompatibleStateImageBehavior = false;
+            this.Events.View = System.Windows.Forms.View.Details;
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1053, 402);
+            this.ClientSize = new System.Drawing.Size(1053, 551);
+            this.Controls.Add(this.Events);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -545,6 +563,8 @@
         private System.Windows.Forms.CheckBox Channel3;
         private System.Windows.Forms.CheckBox Channel2;
         private System.Windows.Forms.CheckBox Channel1;
+        private System.Windows.Forms.ListView Events;
+        private System.Windows.Forms.ColumnHeader columnHeader6;
     }
 }
 

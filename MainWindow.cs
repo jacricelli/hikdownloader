@@ -43,6 +43,8 @@
         /// <param name="e">Datos del evento.</param>
         private void MainWindow_Load(object sender, EventArgs e)
         {
+            columnHeader6.Width = Events.Width - 25;
+
             Period.SelectedIndex = 3; // Semana anterior
 
             DownloadDir.Text = Properties.Settings.Default.Downloads;
@@ -59,13 +61,19 @@
             {
                 if (SDK.Initialize())
                 {
+                    LogMessage("Se ha inicializado el entorno de programación.");
+
                     if (SDK.EnableLogging(Util.GetDirectory("logs")))
                     {
+                        LogMessage("Se ha habilitado el registro de mensajes de la SDK.");
+
                         Session.Address = Properties.Settings.Default.Address;
                         Session.Port = Properties.Settings.Default.Port;
 
                         if (Session.Login(Properties.Settings.Default.UserName, Properties.Settings.Default.Password))
                         {
+                            LogMessage(string.Format("Se ha iniciado sesión (ID: {0}).", Session.User.Identifier));
+
                             Invoke(new MethodInvoker(delegate
                             {
                                 Enabled = true;
@@ -75,17 +83,17 @@
                         }
                         else
                         {
-                            MessageBox.Show(string.Format("Error #{0} al iniciar sesión.", SDK.GetLastError()), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            LogMessage(string.Format("Error al iniciar sesión (Código: {0}).", SDK.GetLastError()));
                         }
                     }
                     else
                     {
-                        MessageBox.Show(string.Format("Error #{0} al habilitar el registro de mensajes.", SDK.GetLastError()), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        LogMessage(string.Format("Error al habilitar el registro de mensajes (Código: {0}).", SDK.GetLastError()));
                     }
                 }
                 else
                 {
-                    MessageBox.Show(string.Format("Error #{0} al inicializar el entorno de programación.", SDK.GetLastError()), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    LogMessage(string.Format("Error al inicializar el entorno de programación (Código: {0}).", SDK.GetLastError()));
                 }
             });
         }
@@ -255,6 +263,25 @@
         /// <param name="e"></param>
         private void Search_Click(object sender, EventArgs e)
         {
+        }
+
+        /// <summary>
+        /// Agrega un mensaje al registro de eventos.
+        /// </summary>
+        /// <param name="message">Mensaje.</param>
+        private void LogMessage(string message)
+        {
+            if (Events.InvokeRequired)
+            {
+                Events.Invoke(new MethodInvoker(delegate
+                {
+                    Events.Items.Add(message);
+                }));
+            }
+            else
+            {
+                Events.Items.Add(message);
+            }
         }
     }
 }
