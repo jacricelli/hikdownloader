@@ -288,7 +288,7 @@
             this.groupBox1.Size = new System.Drawing.Size(320, 228);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Cámaras";
+            this.groupBox1.Text = "Canales";
             // 
             // Channel16
             // 
