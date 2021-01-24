@@ -12,28 +12,11 @@
     public partial class MainWindow : Form
     {
         /// <summary>
-        /// Canales.
-        /// </summary>
-        private CheckBox[] channels;
-
-        /// <summary>
         /// Constructor.
         /// </summary>
         public MainWindow()
         {
             InitializeComponent();
-
-            channels = new CheckBox[]
-            {
-                Channel1, Channel2, Channel3, Channel4, Channel5, Channel6, Channel6, Channel7, Channel8,
-                Channel9, Channel10, Channel11, Channel12, Channel13, Channel14, Channel15, Channel16,
-            };
-
-            if (Properties.Settings.Default.Downloads == string.Empty)
-            {
-                Properties.Settings.Default.Downloads = Util.GetDirectory("downloads");
-                Properties.Settings.Default.Save();
-            }
         }
 
         /// <summary>
@@ -43,6 +26,21 @@
         /// <param name="e">Datos del evento.</param>
         private void MainWindow_Load(object sender, EventArgs e)
         {
+            if (Properties.Settings.Default.Downloads == string.Empty)
+            {
+                Properties.Settings.Default.Downloads = Util.GetDirectory("downloads");
+                Properties.Settings.Default.Save();
+            }
+
+            for (var i = 1; i <= 16; i++)
+            {
+                Channels.Items.Add(new ListViewItem
+                {
+                    Text = Properties.Resources.ResourceManager.GetString("Channel" + i),
+                    Tag = new Channel(i),
+                });
+            }
+
             columnHeader6.Width = Events.Width - 25;
 
             Period.SelectedIndex = 3; // Semana anterior
@@ -162,26 +160,6 @@
         }
 
         /// <summary>
-        /// Habilita el botón de búsqueda si al menos una casilla de verificación ha sido marcada.
-        /// </summary>
-        /// <param name="sender">Origen del evento</param>
-        /// <param name="e">Datos del evento.</param>
-        private void Channels_CheckChanged(object sender, EventArgs e)
-        {
-            var state = false;
-            foreach (var channel in channels)
-            {
-                if (channel.Checked)
-                {
-                    state = true;
-                    break;
-                }
-            }
-
-            Search.Enabled = state;
-        }
-
-        /// <summary>
         /// Responde al cambio de período.
         /// </summary>
         /// <param name="sender">Origen del evento</param>
@@ -257,6 +235,16 @@
                     Properties.Settings.Default.Save();
                 }
             }
+        }
+
+        /// <summary>
+        /// Cambia el estado del botón de búsqueda.
+        /// </summary>
+        /// <param name="sender">Origen del evento</param>
+        /// <param name="e">Datos del evento.</param>
+        private void Channels_ItemChecked(object sender, ItemCheckedEventArgs e)
+        {
+            Search.Enabled = Channels.CheckedIndices.Count > 0;
         }
 
         /// <summary>
