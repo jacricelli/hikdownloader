@@ -70,7 +70,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HCNetSDK\Channel.cs" />
+    <Compile Include="HCNetSDK\Recording.cs" />
     <Compile Include="HCNetSDK\SDK.cs" />
+    <Compile Include="HCNetSDK\Searcher.cs" />
+    <Compile Include="HCNetSDK\SearchError.cs" />
+    <Compile Include="HCNetSDK\SearchEvent.cs" />
+    <Compile Include="HCNetSDK\SearchResult.cs" />
     <Compile Include="HCNetSDK\Session.cs" />
     <Compile Include="HCNetSDK\User.cs" />
     <Compile Include="MainWindow.cs">
