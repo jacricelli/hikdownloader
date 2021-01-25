@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Threading.Tasks;
     using System.Windows.Forms;
     using FluentDateTime;
@@ -28,9 +29,55 @@
         }
 
         /// <summary>
+        /// Estado de la descarga.
+        /// </summary>
+        private enum DownloadStatus : int
+        {
+            /// <summary>
+            /// Completada.
+            /// </summary>
+            completed = 0,
+
+            /// <summary>
+            /// Incompleta.
+            /// </summary>
+            incomplete = 1,
+
+            /// <summary>
+            /// Pendiente.
+            /// </summary>
+            pending = 2
+        }
+
+        /// <summary>
         /// Contadores de búsqueda.
         /// </summary>
         private Dictionary<Channel, int> searchCounters;
+
+        /// <summary>
+        /// Indica si se están descargando archivos.
+        /// </summary>
+        private bool isDownloading = false;
+
+        /// <summary>
+        /// Descarga actual.
+        /// </summary>
+        private int currentDownload = -1;
+
+        /// <summary>
+        /// Manejador de la descarga.
+        /// </summary>
+        private int downloadHandle = -1;
+
+        /// <summary>
+        /// Ruta absoluta del archivo de la descarga actual.
+        /// </summary>
+        private string currentFile;
+
+        /// <summary>
+        /// Ruta absoluta del archivo temporal de la descarga actual.
+        /// </summary>
+        private string currentTempFile;
 
         /// <summary>
         /// Constructor.
@@ -354,6 +401,10 @@
                 Recordings.EndUpdate();
                 groupBox3.Text = string.Format("Grabaciones ({0})", Recordings.Items.Count);
                 Download.Enabled = Recordings.Items.Count > 0;
+
+                currentDownload = -1;
+                currentFile = null;
+                currentTempFile = null;
             }));
 
             LogEvent("Se ha finalizado la búsqueda.");
@@ -398,17 +449,17 @@
             searchCounters[evt.Recording.Channel]++;
 
             var status = string.Empty;
-            switch (Util.CheckDownloadStatus(evt.Recording))
+            switch (CheckDownloadStatus(evt.Recording))
             {
-                case Util.DownloadStatus.completed:
+                case DownloadStatus.completed:
                     status = "Completada";
                     break;
 
-                case Util.DownloadStatus.incomplete:
+                case DownloadStatus.incomplete:
                     status = "Incompleta";
                     break;
 
-                case Util.DownloadStatus.pending:
+                case DownloadStatus.pending:
                     status = "Pendiente";
                     break;
             }
@@ -459,7 +510,196 @@
         /// <param name="e">Datos del evento.</param>
         private void Download_Click(object sender, EventArgs e)
         {
+            if (!isDownloading)
+            {
+                DownloadRecording();
+            }
+            else
+            {
+                Downloader.StopDownload(downloadHandle);
 
+                Recordings.Items[currentDownload].SubItems[5].Text = "Cancelada";
+
+                DownloadManager.Enabled = false;
+                downloadHandle = -1;
+                currentDownload--;
+                isDownloading = false;
+
+                Download.Text = "&Descargar";
+                groupBox4.Enabled = true;
+                Browse.Enabled = true;
+            }
+        }
+
+        /// <summary>
+        /// Método auxiliar para descargar grabaciones.
+        /// </summary>
+        private void DownloadRecording()
+        {
+            if (currentDownload < 0)
+            {
+                currentDownload = 0;
+            }
+            else
+            {
+                currentDownload++;
+            }
+
+            if (Recordings.Items.Count > 0 && currentDownload < Recordings.Items.Count)
+            {
+                var recording = (Recording)Recordings.Items[currentDownload].Tag;
+                if (CheckDownloadStatus(recording) != DownloadStatus.completed)
+                {
+                    currentTempFile = GetRecordingPath(recording, "tmp");
+                    currentFile = GetRecordingPath(recording, "avi");
+
+                    var directory = Path.GetDirectoryName(currentTempFile);
+                    if (!Directory.Exists(directory))
+                    {
+                        Directory.CreateDirectory(directory);
+                    }
+
+                    downloadHandle = Downloader.PrepareDownload(Session.User.Identifier, recording.Video.FileName, currentTempFile);
+                    if (downloadHandle > -1)
+                    {
+                        if (Downloader.StartDownload(downloadHandle))
+                        {
+                            if (!isDownloading)
+                            {
+                                isDownloading = true;
+
+                                Download.Text = "&Cancelar";
+                                groupBox4.Enabled = false;
+                                Browse.Enabled = false;
+                            }
+
+                            DownloadManager.Enabled = true;
+                        }
+                        else
+                        {
+                            Recordings.Items[currentDownload].SubItems[5].Text = "Error";
+
+                            currentDownload--;
+
+                            LogEvent("Se ha producido un error al comenzar la descarga.", SDK.GetLastError());
+                        }
+                    }
+                    else
+                    {
+                        Recordings.Items[currentDownload].SubItems[5].Text = "Error";
+
+                        currentDownload--;
+
+                        LogEvent("Se ha producido un error al preparar la descarga.", SDK.GetLastError());
+                    }
+                }
+                else
+                {
+                    DownloadRecording();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gestiona la descarga de grabaciones.
+        /// </summary>
+        /// <param name="sender">Origen del evento</param>
+        /// <param name="e">Datos del evento.</param>
+        private void DownloadManager_Tick(object sender, EventArgs e)
+        {
+            var progress = Downloader.GetDownloadProgress(downloadHandle);
+            if (progress < 0)
+            {
+                Downloader.StopDownload(downloadHandle);
+
+                Recordings.Items[currentDownload].SubItems[5].Text = "Error";
+
+                DownloadManager.Enabled = false;
+                downloadHandle = -1;
+                currentDownload--;
+                isDownloading = false;
+
+                Download.Text = "&Descargar";
+                groupBox4.Enabled = true;
+                Browse.Enabled = true;
+
+                LogEvent("Se ha producido un error al obtener el progreso de la descarga.", SDK.GetLastError());
+            }
+            else if (progress >= 0 && progress < 100)
+            {
+                Recordings.Items[currentDownload].SubItems[5].Text = string.Format("Descargando {0}%", progress);
+            }
+            else if (progress == 100)
+            {
+                Downloader.StopDownload(downloadHandle);
+
+                DownloadManager.Enabled = false;
+                downloadHandle = -1;
+
+                File.Move(currentTempFile, currentFile);
+
+                Recordings.Items[currentDownload].SubItems[5].Text = "Completada";
+
+                DownloadRecording();
+            }
+            else if (progress == 200)
+            {
+                Downloader.StopDownload(downloadHandle);
+
+                Recordings.Items[currentDownload].SubItems[5].Text = "Error";
+
+                DownloadManager.Enabled = false;
+                downloadHandle = -1;
+                currentDownload--;
+                isDownloading = false;
+
+                Download.Text = "&Descargar";
+                groupBox4.Enabled = true;
+                Browse.Enabled = true;
+
+                LogEvent("Se ha producido un error al consultar el progreso de la descarga.", SDK.GetLastError());
+            }
+        }
+
+        /// <summary>
+        /// Obtiene la ruta absoluta para una grabación.
+        /// </summary>
+        /// <param name="recording">Grabación.</param>
+        /// <param name="extension">Extensión del archivo.</param>
+        /// <returns>Ruta absoluta.</returns>
+        private static string GetRecordingPath(Recording recording, string extension)
+        {
+            return string.Format(
+                "{0}\\{1}-{2:00}\\Channel {3:00}\\{4}_{5}_{6}.{7}",
+                Properties.Settings.Default.Downloads,
+                recording.Video.Start.Year,
+                recording.Video.Start.Month,
+                recording.Channel.Number,
+                recording.Video.Start.ToString("yyyy-MM-dd"),
+                recording.Video.Start.ToString("hhmmss"),
+                recording.Video.End.ToString("hhmmss"),
+                extension);
+        }
+
+        /// <summary>
+        /// Comprueba el estado de una descarga.
+        /// </summary>
+        /// <param name="recording">Grabación.</param>
+        /// <returns>Estado de la descarga.</returns>
+        private static DownloadStatus CheckDownloadStatus(Recording recording)
+        {
+            if (File.Exists(GetRecordingPath(recording, "avi")))
+            {
+                return DownloadStatus.completed;
+            }
+            else if (File.Exists(GetRecordingPath(recording, "tmp")))
+            {
+                return DownloadStatus.incomplete;
+            }
+            else
+            {
+                return DownloadStatus.pending;
+            }
         }
     }
 }
