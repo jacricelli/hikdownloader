@@ -558,6 +558,7 @@
                 currentDownload--;
                 isDownloading = false;
 
+                Text = Application.ProductName;
                 Download.Text = "&Descargar";
                 groupBox4.Enabled = true;
                 Browse.Enabled = true;
@@ -635,6 +636,7 @@
                 {
                     isDownloading = false;
 
+                    Text = Application.ProductName;
                     Download.Text = "&Descargar";
                     groupBox4.Enabled = true;
                     Browse.Enabled = true;
@@ -658,12 +660,9 @@
         private void DownloadManager_Tick(object sender, EventArgs e)
         {
             var timeRemaining = TimeSpan.FromTicks(DateTime.Now.Subtract(downloadStartTime).Ticks * (pendingRecordings.Count - (currentDownload + 1)) / (currentDownload + 1));
-            System.Diagnostics.Debug.WriteLine(timeRemaining.ToDisplayString());
+            var bytesPerSecond = Convert.ToUInt64(downloadedSize / (DateTime.Now - downloadStartTime).TotalSeconds);
 
-            var s = (DateTime.Now - downloadStartTime).TotalSeconds;
-            var r = Convert.ToUInt64(downloadedSize / s);
-
-            System.Diagnostics.Debug.WriteLine(Util.ToReadableSize(r));
+            Text = string.Format("{0} - [{1} / {2}]", Application.ProductName, timeRemaining.ToDisplayString(), Util.ToReadableSize(bytesPerSecond));
 
             var progress = Downloader.GetDownloadProgress(downloadHandle);
             if (progress < 0)
@@ -677,6 +676,7 @@
                 currentDownload--;
                 isDownloading = false;
 
+                Text = Application.ProductName;
                 Download.Text = "&Descargar";
                 groupBox4.Enabled = true;
                 Browse.Enabled = true;
@@ -713,6 +713,7 @@
                 currentDownload--;
                 isDownloading = false;
 
+                Text = Application.ProductName;
                 Download.Text = "&Descargar";
                 groupBox4.Enabled = true;
                 Browse.Enabled = true;
