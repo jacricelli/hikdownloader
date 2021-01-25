@@ -272,7 +272,7 @@
             // columnHeader6
             // 
             this.columnHeader6.Text = "Mensaje";
-            this.columnHeader6.Width = 910;
+            this.columnHeader6.Width = 890;
             // 
             // columnHeader8
             // 
