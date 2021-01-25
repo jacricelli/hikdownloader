@@ -141,6 +141,7 @@
             // columnHeader9
             // 
             this.columnHeader9.Text = "Canal";
+            this.columnHeader9.Width = 45;
             // 
             // columnHeader1
             // 
