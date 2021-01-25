@@ -50,6 +50,11 @@
         }
 
         /// <summary>
+        /// Contador global de la búsqueda.
+        /// </summary>
+        private int searchCounter = 0;
+
+        /// <summary>
         /// Contadores de búsqueda.
         /// </summary>
         private Dictionary<Channel, int> searchCounters;
@@ -366,6 +371,7 @@
         {
             LogEvent("Se ha iniciado la búsqueda.");
 
+            searchCounter = 0;
             searchCounters = new Dictionary<Channel, int>();
 
             Invoke(new MethodInvoker(delegate
@@ -446,6 +452,7 @@
         {
             var evt = (SearchResult)e;
 
+            searchCounter++;
             searchCounters[evt.Recording.Channel]++;
 
             var status = string.Empty;
@@ -466,6 +473,7 @@
 
             var item = new ListViewItem(new string[]
             {
+                searchCounter.ToString(),
                 evt.Recording.Channel.Number.ToString(),
                 evt.Recording.Video.FileName,
                 evt.Recording.Video.FileSizeWithPrefix,

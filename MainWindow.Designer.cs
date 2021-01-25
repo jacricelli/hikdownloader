@@ -42,6 +42,7 @@
             this.DownloadDir = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.Recordings = new System.Windows.Forms.ListView();
+            this.columnHeader10 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader9 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -75,7 +76,7 @@
             this.groupBox3.Controls.Add(this.Recordings);
             this.groupBox3.Location = new System.Drawing.Point(208, 8);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(704, 544);
+            this.groupBox3.Size = new System.Drawing.Size(804, 544);
             this.groupBox3.TabIndex = 7;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Grabaciones (0)";
@@ -83,7 +84,7 @@
             // Download
             // 
             this.Download.Enabled = false;
-            this.Download.Location = new System.Drawing.Point(574, 504);
+            this.Download.Location = new System.Drawing.Point(674, 504);
             this.Download.Name = "Download";
             this.Download.Size = new System.Drawing.Size(123, 32);
             this.Download.TabIndex = 8;
@@ -121,6 +122,7 @@
             // Recordings
             // 
             this.Recordings.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader10,
             this.columnHeader9,
             this.columnHeader1,
             this.columnHeader2,
@@ -133,15 +135,21 @@
             this.Recordings.Location = new System.Drawing.Point(8, 24);
             this.Recordings.MultiSelect = false;
             this.Recordings.Name = "Recordings";
-            this.Recordings.Size = new System.Drawing.Size(688, 464);
+            this.Recordings.Size = new System.Drawing.Size(788, 464);
             this.Recordings.TabIndex = 0;
             this.Recordings.UseCompatibleStateImageBehavior = false;
             this.Recordings.View = System.Windows.Forms.View.Details;
             // 
+            // columnHeader10
+            // 
+            this.columnHeader10.Text = "#";
+            this.columnHeader10.Width = 50;
+            // 
             // columnHeader9
             // 
             this.columnHeader9.Text = "Canal";
-            this.columnHeader9.Width = 45;
+            this.columnHeader9.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.columnHeader9.Width = 50;
             // 
             // columnHeader1
             // 
@@ -169,7 +177,7 @@
             // columnHeader5
             // 
             this.columnHeader5.Text = "Estado";
-            this.columnHeader5.Width = 130;
+            this.columnHeader5.Width = 140;
             // 
             // Search
             // 
@@ -256,7 +264,7 @@
             this.Events.Location = new System.Drawing.Point(8, 560);
             this.Events.MultiSelect = false;
             this.Events.Name = "Events";
-            this.Events.Size = new System.Drawing.Size(904, 120);
+            this.Events.Size = new System.Drawing.Size(1004, 120);
             this.Events.TabIndex = 8;
             this.Events.UseCompatibleStateImageBehavior = false;
             this.Events.View = System.Windows.Forms.View.Details;
@@ -264,7 +272,7 @@
             // columnHeader6
             // 
             this.columnHeader6.Text = "Mensaje";
-            this.columnHeader6.Width = 800;
+            this.columnHeader6.Width = 910;
             // 
             // columnHeader8
             // 
@@ -326,7 +334,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(921, 689);
+            this.ClientSize = new System.Drawing.Size(1021, 689);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.Events);
             this.Controls.Add(this.groupBox3);
@@ -376,6 +384,7 @@
         private System.Windows.Forms.ColumnHeader columnHeader8;
         private System.Windows.Forms.ColumnHeader columnHeader9;
         private System.Windows.Forms.Timer DownloadManager;
+        private System.Windows.Forms.ColumnHeader columnHeader10;
     }
 }
 
