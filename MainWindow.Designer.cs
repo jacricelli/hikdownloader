@@ -177,7 +177,7 @@
             // columnHeader5
             // 
             this.columnHeader5.Text = "Estado";
-            this.columnHeader5.Width = 140;
+            this.columnHeader5.Width = 120;
             // 
             // Search
             // 
