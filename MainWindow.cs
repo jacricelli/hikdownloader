@@ -353,6 +353,7 @@
                 End.Enabled = Start.Enabled;
                 Recordings.EndUpdate();
                 groupBox3.Text = string.Format("Grabaciones ({0})", Recordings.Items.Count);
+                Download.Enabled = Recordings.Items.Count > 0;
             }));
 
             LogEvent("Se ha finalizado la búsqueda.");
