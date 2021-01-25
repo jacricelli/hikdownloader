@@ -526,7 +526,7 @@
             {
                 Downloader.StopDownload(downloadHandle);
 
-                Recordings.Items[currentDownload].SubItems[5].Text = "Cancelada";
+                Recordings.Items[currentDownload].SubItems[6].Text = "Cancelada";
 
                 DownloadManager.Enabled = false;
                 downloadHandle = -1;
@@ -588,7 +588,7 @@
                         }
                         else
                         {
-                            Recordings.Items[currentDownload].SubItems[5].Text = "Error";
+                            Recordings.Items[currentDownload].SubItems[6].Text = "Error";
 
                             currentDownload--;
 
@@ -597,7 +597,7 @@
                     }
                     else
                     {
-                        Recordings.Items[currentDownload].SubItems[5].Text = "Error";
+                        Recordings.Items[currentDownload].SubItems[6].Text = "Error";
 
                         currentDownload--;
 
@@ -639,7 +639,7 @@
             {
                 Downloader.StopDownload(downloadHandle);
 
-                Recordings.Items[currentDownload].SubItems[5].Text = "Error";
+                Recordings.Items[currentDownload].SubItems[6].Text = "Error";
 
                 DownloadManager.Enabled = false;
                 downloadHandle = -1;
@@ -654,7 +654,7 @@
             }
             else if (progress >= 0 && progress < 100)
             {
-                Recordings.Items[currentDownload].SubItems[5].Text = string.Format("Descargando {0}%", progress);
+                Recordings.Items[currentDownload].SubItems[6].Text = string.Format("Descargando {0}%", progress);
             }
             else if (progress == 100)
             {
@@ -665,7 +665,7 @@
 
                 File.Move(currentTempFile, currentFile);
 
-                Recordings.Items[currentDownload].SubItems[5].Text = "Completada";
+                Recordings.Items[currentDownload].SubItems[6].Text = "Completada";
 
                 DownloadRecording();
             }
@@ -673,7 +673,7 @@
             {
                 Downloader.StopDownload(downloadHandle);
 
-                Recordings.Items[currentDownload].SubItems[5].Text = "Error";
+                Recordings.Items[currentDownload].SubItems[6].Text = "Error";
 
                 DownloadManager.Enabled = false;
                 downloadHandle = -1;
