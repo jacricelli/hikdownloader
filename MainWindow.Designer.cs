@@ -87,6 +87,7 @@
             this.Download.TabIndex = 8;
             this.Download.Text = "&Descargar";
             this.Download.UseVisualStyleBackColor = true;
+            this.Download.Click += new System.EventHandler(this.Download_Click);
             // 
             // Browse
             // 

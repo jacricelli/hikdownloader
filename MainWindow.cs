@@ -397,6 +397,22 @@
 
             searchCounters[evt.Recording.Channel]++;
 
+            var status = string.Empty;
+            switch (Util.CheckDownloadStatus(evt.Recording))
+            {
+                case Util.DownloadStatus.completed:
+                    status = "Completada";
+                    break;
+
+                case Util.DownloadStatus.incomplete:
+                    status = "Incompleta";
+                    break;
+
+                case Util.DownloadStatus.pending:
+                    status = "Pendiente";
+                    break;
+            }
+
             var item = new ListViewItem(new string[]
             {
                 evt.Recording.Channel.Number.ToString(),
@@ -404,6 +420,7 @@
                 evt.Recording.Video.FileSizeWithPrefix,
                 evt.Recording.Video.Start.ToString("dd/MM/yyyy hh:mm:ss"),
                 evt.Recording.Video.End.ToString("dd/MM/yyyy hh:mm:ss"),
+                status,
             })
             {
                 Tag = evt.Recording
@@ -433,6 +450,16 @@
         public void Search_OnCancel(object sender, EventArgs e)
         {
             LogEvent("Se ha cancelado la búsqueda.");
+        }
+
+        /// <summary>
+        /// Descarga grabaciones.
+        /// </summary>
+        /// <param name="sender">Origen del evento</param>
+        /// <param name="e">Datos del evento.</param>
+        private void Download_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
