@@ -573,6 +573,9 @@
                                 Browse.Enabled = false;
                             }
 
+                            Recordings.Items[currentDownload].Selected = true;
+                            Recordings.Items[currentDownload].EnsureVisible();
+
                             DownloadManager.Enabled = true;
                         }
                         else
