@@ -53,8 +53,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.Start = new System.Windows.Forms.DateTimePicker();
             this.Events = new System.Windows.Forms.ListView();
-            this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.label4 = new System.Windows.Forms.Label();
             this.Channels = new System.Windows.Forms.ListView();
@@ -251,14 +251,15 @@
             this.Events.UseCompatibleStateImageBehavior = false;
             this.Events.View = System.Windows.Forms.View.Details;
             // 
-            // columnHeader6
-            // 
-            this.columnHeader6.Text = "Código";
-            // 
             // columnHeader8
             // 
-            this.columnHeader8.Text = "Mensaje";
-            this.columnHeader8.Width = 800;
+            this.columnHeader8.Text = "Código";
+            this.columnHeader8.Width = 80;
+            // 
+            // columnHeader6
+            // 
+            this.columnHeader6.Text = "Mensaje";
+            this.columnHeader6.Width = 800;
             // 
             // groupBox4
             // 

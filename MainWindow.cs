@@ -51,12 +51,12 @@
             {
                 Events.Invoke(new MethodInvoker(delegate
                 {
-                    Events.Items.Add(new ListViewItem(new string[] { code.ToString(), message }));
+                    Events.Items.Add(new ListViewItem(new string[] { message, code.ToString() }));
                 }));
             }
             else
             {
-                Events.Items.Add(new ListViewItem(new string[] { code.ToString(), message }));
+                Events.Items.Add(new ListViewItem(new string[] { message, code.ToString() }));
             }
         }
 
