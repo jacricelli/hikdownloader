@@ -55,9 +55,19 @@
         private int recordingsPerChannel;
 
         /// <summary>
+        /// Grabaciones pendiente de descarga.
+        /// </summary>
+        private List<int> pendingRecordings;
+
+        /// <summary>
         /// Indica si se están descargando archivos.
         /// </summary>
         private bool isDownloading = false;
+
+        /// <summary>
+        /// Índice de la grabación que se está descargando.
+        /// </summary>
+        private int currentRecordingIndex = -1;
 
         /// <summary>
         /// Descarga actual.
@@ -369,7 +379,6 @@
             Invoke(new MethodInvoker(delegate
             {
                 Search.Text = "&Cancelar búsqueda";
-
                 Channels.Enabled = false;
                 Periods.Enabled = false;
                 Start.Enabled = false;
@@ -377,6 +386,8 @@
                 groupBox3.Enabled = false;
                 Recordings.BeginUpdate();
                 Recordings.Items.Clear();
+
+                pendingRecordings = new List<int>();
             }));
         }
 
@@ -453,10 +464,12 @@
 
                 case DownloadStatus.incomplete:
                     status = "Incompleta";
+                    pendingRecordings.Add(Recordings.Items.Count);
                     break;
 
                 case DownloadStatus.pending:
                     status = "Pendiente";
+                    pendingRecordings.Add(Recordings.Items.Count);
                     break;
             }
 
@@ -517,7 +530,7 @@
             {
                 Downloader.StopDownload(downloadHandle);
 
-                Recordings.Items[currentDownload].SubItems[6].Text = "Cancelada";
+                Recordings.Items[currentRecordingIndex].SubItems[6].Text = "Cancelada";
 
                 DownloadManager.Enabled = false;
                 downloadHandle = -1;
@@ -544,60 +557,54 @@
                 currentDownload++;
             }
 
-            if (Recordings.Items.Count > 0 && currentDownload < Recordings.Items.Count)
+            if (pendingRecordings.Count > 0 && currentDownload < pendingRecordings.Count)
             {
-                var recording = (Recording)Recordings.Items[currentDownload].Tag;
-                if (CheckDownloadStatus(recording) != DownloadStatus.completed)
+                currentRecordingIndex = pendingRecordings[currentDownload];
+                var recording = (Recording)Recordings.Items[currentRecordingIndex].Tag;
+                currentTempFile = GetRecordingPath(recording, "tmp");
+                currentFile = GetRecordingPath(recording, "avi");
+
+                var directory = Path.GetDirectoryName(currentTempFile);
+                if (!Directory.Exists(directory))
                 {
-                    currentTempFile = GetRecordingPath(recording, "tmp");
-                    currentFile = GetRecordingPath(recording, "avi");
+                    Directory.CreateDirectory(directory);
+                }
 
-                    var directory = Path.GetDirectoryName(currentTempFile);
-                    if (!Directory.Exists(directory))
+                downloadHandle = Downloader.PrepareDownload(Session.User.Identifier, recording.Video.FileName, currentTempFile);
+                if (downloadHandle > -1)
+                {
+                    if (Downloader.StartDownload(downloadHandle))
                     {
-                        Directory.CreateDirectory(directory);
-                    }
-
-                    downloadHandle = Downloader.PrepareDownload(Session.User.Identifier, recording.Video.FileName, currentTempFile);
-                    if (downloadHandle > -1)
-                    {
-                        if (Downloader.StartDownload(downloadHandle))
+                        if (!isDownloading)
                         {
-                            if (!isDownloading)
-                            {
-                                isDownloading = true;
+                            isDownloading = true;
 
-                                Download.Text = "&Cancelar";
-                                groupBox4.Enabled = false;
-                                Browse.Enabled = false;
-                            }
-
-                            Recordings.Items[currentDownload].Selected = true;
-                            Recordings.Items[currentDownload].EnsureVisible();
-
-                            DownloadManager.Enabled = true;
+                            Download.Text = "&Cancelar";
+                            groupBox4.Enabled = false;
+                            Browse.Enabled = false;
                         }
-                        else
-                        {
-                            Recordings.Items[currentDownload].SubItems[6].Text = "Error";
 
-                            currentDownload--;
+                        Recordings.Items[currentRecordingIndex].Selected = true;
+                        Recordings.Items[currentRecordingIndex].EnsureVisible();
 
-                            LogEvent("Se ha producido un error al comenzar la descarga.", SDK.GetLastError());
-                        }
+                        DownloadManager.Enabled = true;
                     }
                     else
                     {
-                        Recordings.Items[currentDownload].SubItems[6].Text = "Error";
+                        Recordings.Items[currentRecordingIndex].SubItems[6].Text = "Error";
 
                         currentDownload--;
 
-                        LogEvent("Se ha producido un error al preparar la descarga.", SDK.GetLastError());
+                        LogEvent("Se ha producido un error al comenzar la descarga.", SDK.GetLastError());
                     }
                 }
                 else
                 {
-                    DownloadRecording();
+                    Recordings.Items[currentRecordingIndex].SubItems[6].Text = "Error";
+
+                    currentDownload--;
+
+                    LogEvent("Se ha producido un error al preparar la descarga.", SDK.GetLastError());
                 }
             }
             else
@@ -614,6 +621,7 @@
                 DownloadManager.Enabled = false;
 
                 currentDownload = -1;
+                currentRecordingIndex = -1;
                 downloadHandle = -1;
             }
         }
@@ -630,7 +638,7 @@
             {
                 Downloader.StopDownload(downloadHandle);
 
-                Recordings.Items[currentDownload].SubItems[6].Text = "Error";
+                Recordings.Items[currentRecordingIndex].SubItems[6].Text = "Error";
 
                 DownloadManager.Enabled = false;
                 downloadHandle = -1;
@@ -645,7 +653,7 @@
             }
             else if (progress >= 0 && progress < 100)
             {
-                Recordings.Items[currentDownload].SubItems[6].Text = string.Format("Descargando {0}%", progress);
+                Recordings.Items[currentRecordingIndex].SubItems[6].Text = string.Format("Descargando {0}%", progress);
             }
             else if (progress == 100)
             {
@@ -656,7 +664,7 @@
 
                 File.Move(currentTempFile, currentFile);
 
-                Recordings.Items[currentDownload].SubItems[6].Text = "Completada";
+                Recordings.Items[currentRecordingIndex].SubItems[6].Text = "Completada";
 
                 DownloadRecording();
             }
@@ -664,7 +672,7 @@
             {
                 Downloader.StopDownload(downloadHandle);
 
-                Recordings.Items[currentDownload].SubItems[6].Text = "Error";
+                Recordings.Items[currentRecordingIndex].SubItems[6].Text = "Error";
 
                 DownloadManager.Enabled = false;
                 downloadHandle = -1;
