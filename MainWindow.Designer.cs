@@ -41,6 +41,7 @@
             this.DownloadDir = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.Recordings = new System.Windows.Forms.ListView();
+            this.columnHeader9 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -53,8 +54,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.Start = new System.Windows.Forms.DateTimePicker();
             this.Events = new System.Windows.Forms.ListView();
-            this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.label4 = new System.Windows.Forms.Label();
             this.Channels = new System.Windows.Forms.ListView();
@@ -117,6 +118,7 @@
             // Recordings
             // 
             this.Recordings.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader9,
             this.columnHeader1,
             this.columnHeader2,
             this.columnHeader3,
@@ -133,6 +135,10 @@
             this.Recordings.UseCompatibleStateImageBehavior = false;
             this.Recordings.View = System.Windows.Forms.View.Details;
             // 
+            // columnHeader9
+            // 
+            this.columnHeader9.Text = "Canal";
+            // 
             // columnHeader1
             // 
             this.columnHeader1.Text = "Archivo";
@@ -142,7 +148,7 @@
             // 
             this.columnHeader2.Text = "Tamaño";
             this.columnHeader2.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.columnHeader2.Width = 100;
+            this.columnHeader2.Width = 80;
             // 
             // columnHeader3
             // 
@@ -251,15 +257,15 @@
             this.Events.UseCompatibleStateImageBehavior = false;
             this.Events.View = System.Windows.Forms.View.Details;
             // 
-            // columnHeader8
-            // 
-            this.columnHeader8.Text = "Código";
-            this.columnHeader8.Width = 80;
-            // 
             // columnHeader6
             // 
             this.columnHeader6.Text = "Mensaje";
             this.columnHeader6.Width = 800;
+            // 
+            // columnHeader8
+            // 
+            this.columnHeader8.Text = "Código";
+            this.columnHeader8.Width = 80;
             // 
             // groupBox4
             // 
@@ -359,6 +365,7 @@
         private System.Windows.Forms.ColumnHeader columnHeader7;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ColumnHeader columnHeader8;
+        private System.Windows.Forms.ColumnHeader columnHeader9;
     }
 }
 
