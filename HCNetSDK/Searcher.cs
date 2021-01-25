@@ -1,6 +1,7 @@
 ﻿namespace HikDownloader.HCNetSDK
 {
     using System;
+    using System.Collections.Generic;
     using System.Runtime.InteropServices;
 
     /// <summary>
@@ -87,89 +88,98 @@
                 IsRunning = true;
                 cancelled = false;
 
-                var conditions = default(NET_DVR_FILECOND_V40);
-                conditions.lChannel = channel.Number;
-                conditions.dwFileType = 0xff;
-                conditions.dwIsLocked = 0xff;
-
-                conditions.struStartTime.dwYear = (uint)start.Year;
-                conditions.struStartTime.dwMonth = (uint)start.Month;
-                conditions.struStartTime.dwDay = (uint)start.Day;
-                conditions.struStartTime.dwHour = (uint)start.Hour;
-                conditions.struStartTime.dwMinute = (uint)start.Minute;
-                conditions.struStartTime.dwSecond = (uint)start.Second;
-
-                conditions.struStopTime.dwYear = (uint)end.Year;
-                conditions.struStopTime.dwMonth = (uint)end.Month;
-                conditions.struStopTime.dwDay = (uint)end.Day;
-                conditions.struStopTime.dwHour = (uint)end.Hour;
-                conditions.struStopTime.dwMinute = (uint)end.Minute;
-                conditions.struStopTime.dwSecond = (uint)end.Second;
-
-                handle = NET_DVR_FindFile_V40(Session.User.Identifier, ref conditions);
-                if (handle > -1)
+                foreach (var from in EachDay(start, end))
                 {
-                    var record = default(NET_DVR_FINDDATA_V30);
-                    while (true)
+                    var thru = from.AddHours(23).AddMinutes(59).AddSeconds(59);
+                    if (thru > end)
                     {
-                        if (cancelled)
-                        {
-                            skipCancelEvent = true;
-
-                            OnCancel?.Invoke(null, new SearchEvent(channel));
-
-                            break;
-                        }
-
-                        var result = NET_DVR_FindNextFile_V30(handle, ref record);
-                        if (result == NET_DVR_ISFINDING)
-                        {
-                            continue;
-                        }
-                        else if (result == NET_DVR_FILE_SUCCESS)
-                        {
-                            var videoStart = string.Format(
-                                "{0}-{1:00}-{2:00} {3:00}:{4:00}:{5:00}",
-                                record.struStartTime.dwYear,
-                                record.struStartTime.dwMonth,
-                                record.struStartTime.dwDay,
-                                record.struStartTime.dwHour,
-                                record.struStartTime.dwMinute,
-                                record.struStartTime.dwSecond
-                                );
-                            var videoEnd = string.Format(
-                                "{0}-{1:00}-{2:00} {3:00}:{4:00}:{5:00}",
-                                record.struStopTime.dwYear,
-                                record.struStopTime.dwMonth,
-                                record.struStopTime.dwDay,
-                                record.struStopTime.dwHour,
-                                record.struStopTime.dwMinute,
-                                record.struStopTime.dwSecond
-                                );
-                            var recording = new Recording(
-                                channel,
-                                new Video(record.sFileName, record.dwFileSize, DateTime.Parse(videoStart), DateTime.Parse(videoEnd)));
-
-                            OnResult?.Invoke(null, new SearchResult(recording));
-                        }
-                        else if (result == NET_DVR_FIND_TIMEOUT)
-                        {
-                            OnError?.Invoke(null, new SearchError(channel, NET_DVR_FIND_TIMEOUT));
-
-                            break;
-                        }
-                        else if (result == NET_DVR_FILE_NOFIND || result == NET_DVR_NOMOREFILE)
-                        {
-                            break;
-                        }
+                        thru = end;
                     }
 
-                    NET_DVR_FindClose_V30(handle);
-                    handle = -1;
-                }
-                else
-                {
-                    OnError?.Invoke(null, new SearchError(channel, SDK.GetLastError()));
+                    var conditions = default(NET_DVR_FILECOND_V40);
+                    conditions.lChannel = channel.Number;
+                    conditions.dwFileType = 0xff;
+                    conditions.dwIsLocked = 0xff;
+
+                    conditions.struStartTime.dwYear = (uint)from.Year;
+                    conditions.struStartTime.dwMonth = (uint)from.Month;
+                    conditions.struStartTime.dwDay = (uint)from.Day;
+                    conditions.struStartTime.dwHour = (uint)from.Hour;
+                    conditions.struStartTime.dwMinute = (uint)from.Minute;
+                    conditions.struStartTime.dwSecond = (uint)from.Second;
+
+                    conditions.struStopTime.dwYear = (uint)thru.Year;
+                    conditions.struStopTime.dwMonth = (uint)thru.Month;
+                    conditions.struStopTime.dwDay = (uint)thru.Day;
+                    conditions.struStopTime.dwHour = (uint)thru.Hour;
+                    conditions.struStopTime.dwMinute = (uint)thru.Minute;
+                    conditions.struStopTime.dwSecond = (uint)thru.Second;
+
+                    handle = NET_DVR_FindFile_V40(Session.User.Identifier, ref conditions);
+                    if (handle > -1)
+                    {
+                        var record = default(NET_DVR_FINDDATA_V30);
+                        while (true)
+                        {
+                            if (cancelled)
+                            {
+                                skipCancelEvent = true;
+
+                                OnCancel?.Invoke(null, new SearchEvent(channel));
+
+                                break;
+                            }
+
+                            var result = NET_DVR_FindNextFile_V30(handle, ref record);
+                            if (result == NET_DVR_ISFINDING)
+                            {
+                                continue;
+                            }
+                            else if (result == NET_DVR_FILE_SUCCESS)
+                            {
+                                var videoStart = string.Format(
+                                    "{0}-{1:00}-{2:00} {3:00}:{4:00}:{5:00}",
+                                    record.struStartTime.dwYear,
+                                    record.struStartTime.dwMonth,
+                                    record.struStartTime.dwDay,
+                                    record.struStartTime.dwHour,
+                                    record.struStartTime.dwMinute,
+                                    record.struStartTime.dwSecond
+                                    );
+                                var videoEnd = string.Format(
+                                    "{0}-{1:00}-{2:00} {3:00}:{4:00}:{5:00}",
+                                    record.struStopTime.dwYear,
+                                    record.struStopTime.dwMonth,
+                                    record.struStopTime.dwDay,
+                                    record.struStopTime.dwHour,
+                                    record.struStopTime.dwMinute,
+                                    record.struStopTime.dwSecond
+                                    );
+                                var recording = new Recording(
+                                    channel,
+                                    new Video(record.sFileName, record.dwFileSize, DateTime.Parse(videoStart), DateTime.Parse(videoEnd)));
+
+                                OnResult?.Invoke(null, new SearchResult(recording));
+                            }
+                            else if (result == NET_DVR_FIND_TIMEOUT)
+                            {
+                                OnError?.Invoke(null, new SearchError(channel, NET_DVR_FIND_TIMEOUT));
+
+                                break;
+                            }
+                            else if (result == NET_DVR_FILE_NOFIND || result == NET_DVR_NOMOREFILE)
+                            {
+                                break;
+                            }
+                        }
+
+                        NET_DVR_FindClose_V30(handle);
+                        handle = -1;
+                    }
+                    else
+                    {
+                        OnError?.Invoke(null, new SearchError(channel, SDK.GetLastError()));
+                    }
                 }
 
                 OnEnd?.Invoke(null, new SearchEvent(channel));
@@ -190,6 +200,18 @@
             {
                 cancelled = true;
             }
+        }
+
+        /// <summary>
+        /// Obtiene cada día entre dos fechas.
+        /// </summary>
+        /// <param name="from">Desde.</param>
+        /// <param name="thru">Hasta</param>
+        /// <returns>Cada día entre <paramref name="from"/> y <paramref name="thru"/> inclusive.</returns>
+        private static IEnumerable<DateTime> EachDay(DateTime from, DateTime thru)
+        {
+            for (var day = from.Date; day.Date <= thru.Date; day = day.AddDays(1))
+                yield return day;
         }
 
         /// <summary>
