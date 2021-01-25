@@ -90,6 +90,16 @@
         private string currentTempFile;
 
         /// <summary>
+        /// Momento en el que se inicia la descarga.
+        /// </summary>
+        private DateTime downloadStartTime;
+
+        /// <summary>
+        /// Tamaño descargado.
+        /// </summary>
+        private ulong downloadedSize = 0;
+
+        /// <summary>
         /// Constructor.
         /// </summary>
         public MainWindow()
@@ -386,8 +396,6 @@
                 groupBox3.Enabled = false;
                 Recordings.BeginUpdate();
                 Recordings.Items.Clear();
-
-                pendingRecordings = new List<int>();
             }));
         }
 
@@ -464,12 +472,10 @@
 
                 case DownloadStatus.incomplete:
                     status = "Incompleta";
-                    pendingRecordings.Add(Recordings.Items.Count);
                     break;
 
                 case DownloadStatus.pending:
                     status = "Pendiente";
-                    pendingRecordings.Add(Recordings.Items.Count);
                     break;
             }
 
@@ -524,7 +530,22 @@
         {
             if (!isDownloading)
             {
-                DownloadRecording();
+                if (Recordings.Items.Count > 0)
+                {
+                    pendingRecordings = new List<int>();
+                    downloadedSize = 0;
+
+                    for (var i = 0; i < Recordings.Items.Count; i++)
+                    {
+                        var recording = (Recording)Recordings.Items[i].Tag;
+                        if (CheckDownloadStatus(recording) != DownloadStatus.completed)
+                        {
+                            pendingRecordings.Add(i);
+                        }
+                    }
+
+                    DownloadRecording();
+                }
             }
             else
             {
@@ -577,6 +598,7 @@
                     {
                         if (!isDownloading)
                         {
+                            downloadStartTime = DateTime.Now;
                             isDownloading = true;
 
                             Download.Text = "&Cancelar";
@@ -626,6 +648,8 @@
             }
         }
 
+
+
         /// <summary>
         /// Gestiona la descarga de grabaciones.
         /// </summary>
@@ -633,6 +657,14 @@
         /// <param name="e">Datos del evento.</param>
         private void DownloadManager_Tick(object sender, EventArgs e)
         {
+            var timeRemaining = TimeSpan.FromTicks(DateTime.Now.Subtract(downloadStartTime).Ticks * (pendingRecordings.Count - (currentDownload + 1)) / (currentDownload + 1));
+            System.Diagnostics.Debug.WriteLine(timeRemaining.ToDisplayString());
+
+            var s = (DateTime.Now - downloadStartTime).TotalSeconds;
+            var r = Convert.ToUInt64(downloadedSize / s);
+
+            System.Diagnostics.Debug.WriteLine(Util.ToReadableSize(r));
+
             var progress = Downloader.GetDownloadProgress(downloadHandle);
             if (progress < 0)
             {
@@ -665,6 +697,8 @@
                 File.Move(currentTempFile, currentFile);
 
                 Recordings.Items[currentRecordingIndex].SubItems[6].Text = "Completada";
+
+                downloadedSize += ((Recording)Recordings.Items[currentRecordingIndex].Tag).Video.FileSize;
 
                 DownloadRecording();
             }
