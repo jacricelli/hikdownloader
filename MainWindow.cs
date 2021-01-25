@@ -50,14 +50,9 @@
         }
 
         /// <summary>
-        /// Contador global de la búsqueda.
+        /// Contador de grabaciones por canal.
         /// </summary>
-        private int searchCounter = 0;
-
-        /// <summary>
-        /// Contadores de búsqueda.
-        /// </summary>
-        private Dictionary<Channel, int> searchCounters;
+        private int recordingsPerChannel;
 
         /// <summary>
         /// Indica si se están descargando archivos.
@@ -371,9 +366,6 @@
         {
             LogEvent("Se ha iniciado la búsqueda.");
 
-            searchCounter = 0;
-            searchCounters = new Dictionary<Channel, int>();
-
             Invoke(new MethodInvoker(delegate
             {
                 Search.Text = "&Cancelar búsqueda";
@@ -425,7 +417,7 @@
         {
             var evt = (SearchEvent)e;
 
-            searchCounters[evt.Channel] = 0;
+            recordingsPerChannel = 0;
 
             LogEvent(string.Format("Comenzando búsqueda en el canal {0}.", evt.Channel.Number));
         }
@@ -439,7 +431,7 @@
         {
             var evt = (SearchEvent)e;
 
-            LogEvent(string.Format("Se han encontrado {0} grabaciones.", searchCounters[evt.Channel]));
+            LogEvent(string.Format("Se han encontrado {0} grabaciones.", recordingsPerChannel));
             LogEvent(string.Format("Finalizada búsqueda en el canal {0}.", evt.Channel.Number));
         }
 
@@ -451,9 +443,6 @@
         public void Search_OnResult(object sender, EventArgs e)
         {
             var evt = (SearchResult)e;
-
-            searchCounter++;
-            searchCounters[evt.Recording.Channel]++;
 
             var status = string.Empty;
             switch (CheckDownloadStatus(evt.Recording))
@@ -473,7 +462,7 @@
 
             var item = new ListViewItem(new string[]
             {
-                searchCounter.ToString(),
+                (Recordings.Items.Count + 1).ToString(),
                 evt.Recording.Channel.Number.ToString(),
                 evt.Recording.Video.FileName,
                 evt.Recording.Video.FileSizeWithPrefix,
@@ -489,6 +478,8 @@
             {
                 Recordings.Items.Add(item);
             }));
+
+            recordingsPerChannel++;
         }
 
         /// <summary>
