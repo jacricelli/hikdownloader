@@ -25,5 +25,23 @@
 
             return path;
         }
+
+        /// <summary>
+        /// Formatea tamaños de datos en formas legibles por humanos.
+        /// </summary>
+        /// <param name="bytes">Tamaño en bytes.</param>
+        /// <returns>Tamaño legible por humanos.</returns>
+        public static string ToReadableSize(ulong bytes)
+        {
+            string[] sizes = { "B", "KB", "MB", "GB", "TB" };
+            double len = bytes;
+            int order = 0;
+            while (len >= 1024 && order < sizes.Length - 1)
+            {
+                order++;
+                len /= 1024;
+            }
+            return string.Format("{0:0.##} {1}", len, sizes[order]);
+        }
     }
 }

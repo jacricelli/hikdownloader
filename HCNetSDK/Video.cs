@@ -20,7 +20,7 @@
         /// <summary>
         /// Obtiene el tamaño del archivo con el sufijo correspondiente.
         /// </summary>
-        public string FileSizeWithPrefix => ToReadableSize(FileSize);
+        public string FileSizeWithPrefix => Util.ToReadableSize(Convert.ToUInt64(FileSize));
 
         /// <summary>
         /// Obtiene el comienzo.
@@ -45,24 +45,6 @@
             FileSize = fileSize;
             Start = start;
             End = end;
-        }
-
-        /// <summary>
-        /// Formatea tamaños de datos en formas legibles por humanos.
-        /// </summary>
-        /// <param name="bytes">Tamaño en bytes.</param>
-        /// <returns>Tamaño legible por humanos.</returns>
-        private string ToReadableSize(uint bytes)
-        {
-            string[] sizes = { "B", "KB", "MB", "GB", "TB" };
-            double len = bytes;
-            int order = 0;
-            while (len >= 1024 && order < sizes.Length - 1)
-            {
-                order++;
-                len /= 1024;
-            }
-            return string.Format("{0:0.##} {1}", len, sizes[order]);
         }
     }
 }
