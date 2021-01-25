@@ -601,6 +601,22 @@
                     DownloadRecording();
                 }
             }
+            else
+            {
+                if (isDownloading)
+                {
+                    isDownloading = false;
+
+                    Download.Text = "&Descargar";
+                    groupBox4.Enabled = true;
+                    Browse.Enabled = true;
+                }
+
+                DownloadManager.Enabled = false;
+
+                currentDownload = -1;
+                downloadHandle = -1;
+            }
         }
 
         /// <summary>
