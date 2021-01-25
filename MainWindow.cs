@@ -440,8 +440,8 @@
         /// <summary>
         /// Procesa un resultado de la búsqueda.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="sender">Origen del evento</param>
+        /// <param name="e">Datos del evento.</param>
         public void Search_OnResult(object sender, EventArgs e)
         {
             var evt = (SearchResult)e;
@@ -486,8 +486,8 @@
         /// <summary>
         /// Responde a un error en la búsqueda.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="sender">Origen del evento</param>
+        /// <param name="e">Datos del evento.</param>
         public void Search_OnError(object sender, EventArgs e)
         {
             LogEvent("Se ha producido un error.", ((SearchError)e).Code);
@@ -496,8 +496,8 @@
         /// <summary>
         /// Responde a la cancelación de la búsqueda.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="sender">Origen del evento</param>
+        /// <param name="e">Datos del evento.</param>
         public void Search_OnCancel(object sender, EventArgs e)
         {
             LogEvent("Se ha cancelado la búsqueda.");
