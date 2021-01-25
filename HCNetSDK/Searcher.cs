@@ -67,6 +67,7 @@
         /// <param name="end">Finalización.</param>
         public static void Search(Channel[] channels, DateTime start, DateTime end)
         {
+            var results = new List<string>();
             var skipCancelEvent = false;
 
             OnStart?.Invoke(null, new EventArgs());
@@ -137,6 +138,12 @@
                             }
                             else if (result == NET_DVR_FILE_SUCCESS)
                             {
+                                if (results.Contains(record.sFileName))
+                                {
+                                    continue;
+                                }
+                                results.Add(record.sFileName);
+
                                 var videoStart = string.Format(
                                     "{0}-{1:00}-{2:00} {3:00}:{4:00}:{5:00}",
                                     record.struStartTime.dwYear,
