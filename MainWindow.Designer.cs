@@ -51,7 +51,7 @@
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.Search = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
-            this.Periods = new System.Windows.Forms.ComboBox();
+            this.Intervals = new System.Windows.Forms.ComboBox();
             this.End = new System.Windows.Forms.DateTimePicker();
             this.label1 = new System.Windows.Forms.Label();
             this.Start = new System.Windows.Forms.DateTimePicker();
@@ -195,15 +195,15 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(6, 445);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(69, 15);
+            this.label2.Size = new System.Drawing.Size(72, 15);
             this.label2.TabIndex = 7;
-            this.label2.Text = "Finalización";
+            this.label2.Text = "Finalización:";
             // 
-            // Periods
+            // Intervals
             // 
-            this.Periods.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.Periods.FormattingEnabled = true;
-            this.Periods.Items.AddRange(new object[] {
+            this.Intervals.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.Intervals.FormattingEnabled = true;
+            this.Intervals.Items.AddRange(new object[] {
             "Hoy",
             "Ayer",
             "Esta semana",
@@ -212,11 +212,11 @@
             "Este mes",
             "Mes anterior",
             "Rango personalizado"});
-            this.Periods.Location = new System.Drawing.Point(8, 363);
-            this.Periods.Name = "Periods";
-            this.Periods.Size = new System.Drawing.Size(176, 23);
-            this.Periods.TabIndex = 4;
-            this.Periods.SelectedIndexChanged += new System.EventHandler(this.Periods_SelectedIndexChanged);
+            this.Intervals.Location = new System.Drawing.Point(8, 363);
+            this.Intervals.Name = "Intervals";
+            this.Intervals.Size = new System.Drawing.Size(176, 23);
+            this.Intervals.TabIndex = 4;
+            this.Intervals.SelectedIndexChanged += new System.EventHandler(this.Intervals_SelectedIndexChanged);
             // 
             // End
             // 
@@ -234,9 +234,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(6, 392);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(61, 15);
+            this.label1.Size = new System.Drawing.Size(64, 15);
             this.label1.TabIndex = 5;
-            this.label1.Text = "Comienzo";
+            this.label1.Text = "Comienzo:";
             // 
             // Start
             // 
@@ -283,7 +283,7 @@
             this.groupBox4.Controls.Add(this.End);
             this.groupBox4.Controls.Add(this.label2);
             this.groupBox4.Controls.Add(this.Start);
-            this.groupBox4.Controls.Add(this.Periods);
+            this.groupBox4.Controls.Add(this.Intervals);
             this.groupBox4.Controls.Add(this.label1);
             this.groupBox4.Location = new System.Drawing.Point(8, 8);
             this.groupBox4.Name = "groupBox4";
@@ -297,9 +297,9 @@
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(6, 344);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(48, 15);
+            this.label4.Size = new System.Drawing.Size(56, 15);
             this.label4.TabIndex = 8;
-            this.label4.Text = "Período";
+            this.label4.Text = "Intervalo:";
             // 
             // Channels
             // 
@@ -367,7 +367,7 @@
         private System.Windows.Forms.ColumnHeader columnHeader5;
         private System.Windows.Forms.Button Search;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ComboBox Periods;
+        private System.Windows.Forms.ComboBox Intervals;
         private System.Windows.Forms.DateTimePicker End;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.DateTimePicker Start;

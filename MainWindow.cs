@@ -14,9 +14,9 @@
     public partial class MainWindow : Form
     {
         /// <summary>
-        /// Tipos de períodos.
+        /// Intervalos.
         /// </summary>
-        private enum PeriodsTypes : int
+        private enum Interval : int
         {
             today = 0,
             yesterday = 1,
@@ -139,7 +139,7 @@
                 });
             }
 
-            Periods.SelectedIndex = (int)PeriodsTypes.lastWeek;
+            Intervals.SelectedIndex = (int)Interval.lastWeek;
 
             DownloadDir.Text = Properties.Settings.Default.Downloads;
 
@@ -201,53 +201,53 @@
         }
 
         /// <summary>
-        /// Responde al cambio de período.
+        /// Responde al cambio de intervalo.
         /// </summary>
         /// <param name="sender">Origen del evento</param>
         /// <param name="e">Datos del evento.</param>
-        private void Periods_SelectedIndexChanged(object sender, EventArgs e)
+        private void Intervals_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var index = (PeriodsTypes)Periods.SelectedIndex;
+            var index = (Interval)Intervals.SelectedIndex;
             switch (index)
             {
-                case PeriodsTypes.today:
+                case Interval.today:
                     Start.Value = DateTime.Today.Midnight();
                     End.Value = DateTime.Today.EndOfDay();
                     break;
 
-                case PeriodsTypes.yesterday:
+                case Interval.yesterday:
                     Start.Value = DateTime.Today.PreviousDay().Midnight();
                     End.Value = DateTime.Today.PreviousDay().EndOfDay();
                     break;
 
-                case PeriodsTypes.thisWeek:
+                case Interval.thisWeek:
                     Start.Value = DateTime.Today.FirstDayOfWeek().AddDays(1);
                     End.Value = Start.Value.LastDayOfWeek().AddDays(1).EndOfDay();
                     break;
 
-                case PeriodsTypes.lastWeek:
+                case Interval.lastWeek:
                     Start.Value = DateTime.Today.FirstDayOfWeek().AddDays(1).WeekEarlier();
                     End.Value = Start.Value.LastDayOfWeek().AddDays(1).EndOfDay();
                     break;
 
-                case PeriodsTypes.lastTwoWeeks:
+                case Interval.lastTwoWeeks:
                     Start.Value = DateTime.Today.FirstDayOfWeek().AddDays(-13);
                     End.Value = DateTime.Today.WeekEarlier().LastDayOfWeek().AddDays(1).EndOfDay();
                     break;
 
-                case PeriodsTypes.thisMonth:
+                case Interval.thisMonth:
                     Start.Value = DateTime.Today.BeginningOfMonth();
                     End.Value = DateTime.Today.EndOfMonth();
                     break;
 
-                case PeriodsTypes.lastMonth:
+                case Interval.lastMonth:
                     Start.Value = DateTime.Today.PreviousMonth().BeginningOfMonth();
                     End.Value = DateTime.Today.PreviousMonth().EndOfMonth();
                     break;
             }
 
-            Start.Enabled = index == PeriodsTypes.customRange;
-            End.Enabled = index == PeriodsTypes.customRange;
+            Start.Enabled = index == Interval.customRange;
+            End.Enabled = index == Interval.customRange;
 
             Start.Tag = Start.Value;
             End.Tag = End.Value;
@@ -335,7 +335,7 @@
             {
                 Search.Text = "&Cancelar búsqueda";
                 Channels.Enabled = false;
-                Periods.Enabled = false;
+                Intervals.Enabled = false;
                 Start.Enabled = false;
                 End.Enabled = false;
                 groupBox3.Enabled = false;
@@ -356,9 +356,9 @@
                 Search.Text = "&Buscar grabaciones";
 
                 Channels.Enabled = true;
-                Periods.Enabled = true;
+                Intervals.Enabled = true;
                 groupBox3.Enabled = true;
-                Start.Enabled = (PeriodsTypes)Periods.SelectedIndex == PeriodsTypes.customRange;
+                Start.Enabled = (Interval)Intervals.SelectedIndex == Interval.customRange;
                 End.Enabled = Start.Enabled;
                 Recordings.EndUpdate();
                 Download.Enabled = Recordings.Items.Count > 0;
