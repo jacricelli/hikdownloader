@@ -90,16 +90,6 @@
         private string currentTempFile;
 
         /// <summary>
-        /// Momento en el que se inicia la descarga.
-        /// </summary>
-        private DateTime downloadStartTime;
-
-        /// <summary>
-        /// Tamaño descargado.
-        /// </summary>
-        private ulong downloadedSize = 0;
-
-        /// <summary>
         /// Constructor.
         /// </summary>
         public MainWindow()
@@ -532,7 +522,6 @@
                 if (Recordings.Items.Count > 0)
                 {
                     pendingRecordings = new List<int>();
-                    downloadedSize = 0;
 
                     for (var i = 0; i < Recordings.Items.Count; i++)
                     {
@@ -598,7 +587,6 @@
                     {
                         if (!isDownloading)
                         {
-                            downloadStartTime = DateTime.Now;
                             isDownloading = true;
 
                             Download.Text = "&Cancelar";
@@ -656,11 +644,6 @@
         /// <param name="e">Datos del evento.</param>
         private void DownloadManager_Tick(object sender, EventArgs e)
         {
-            var timeRemaining = TimeSpan.FromTicks(DateTime.Now.Subtract(downloadStartTime).Ticks * (pendingRecordings.Count - (currentDownload + 1)) / (currentDownload + 1));
-            var bytesPerSecond = Convert.ToUInt64(downloadedSize / (DateTime.Now - downloadStartTime).TotalSeconds);
-
-            Text = string.Format("{0} - [{1} / {2}]", Application.ProductName, timeRemaining.ToDisplayString(), Util.ToReadableSize(bytesPerSecond));
-
             var progress = Downloader.GetDownloadProgress(downloadHandle);
             if (progress < 0)
             {
@@ -694,8 +677,6 @@
                 File.Move(currentTempFile, currentFile);
 
                 Recordings.Items[currentRecordingIndex].SubItems[6].Text = "Completada";
-
-                downloadedSize += ((Recording)Recordings.Items[currentRecordingIndex].Tag).Video.FileSize;
 
                 DownloadRecording();
             }
