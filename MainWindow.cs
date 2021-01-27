@@ -400,7 +400,7 @@
                 evt.Recording.Video.FileSizeWithPrefix,
                 evt.Recording.Video.Start.ToString("dd/MM/yyyy hh:mm:ss"),
                 evt.Recording.Video.End.ToString("dd/MM/yyyy hh:mm:ss"),
-                string.Empty,
+                "Pendiente",
             })
             {
                 Tag = evt.Recording
