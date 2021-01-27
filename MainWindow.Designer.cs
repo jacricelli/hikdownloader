@@ -34,7 +34,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.Download = new System.Windows.Forms.Button();
@@ -62,7 +61,6 @@
             this.label4 = new System.Windows.Forms.Label();
             this.Channels = new System.Windows.Forms.ListView();
             this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.DownloadManager = new System.Windows.Forms.Timer(this.components);
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.SuspendLayout();
@@ -90,7 +88,6 @@
             this.Download.TabIndex = 8;
             this.Download.Text = "&Descargar";
             this.Download.UseVisualStyleBackColor = true;
-            this.Download.Click += new System.EventHandler(this.Download_Click);
             // 
             // Browse
             // 
@@ -321,11 +318,6 @@
             // 
             this.columnHeader7.Width = 165;
             // 
-            // DownloadManager
-            // 
-            this.DownloadManager.Interval = 1000;
-            this.DownloadManager.Tick += new System.EventHandler(this.DownloadManager_Tick);
-            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -379,7 +371,6 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ColumnHeader columnHeader8;
         private System.Windows.Forms.ColumnHeader columnHeader9;
-        private System.Windows.Forms.Timer DownloadManager;
         private System.Windows.Forms.ColumnHeader columnHeader10;
     }
 }
