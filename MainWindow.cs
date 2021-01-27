@@ -416,7 +416,6 @@
                 Start.Enabled = (PeriodsTypes)Periods.SelectedIndex == PeriodsTypes.customRange;
                 End.Enabled = Start.Enabled;
                 Recordings.EndUpdate();
-                groupBox3.Text = string.Format("Grabaciones ({0})", Recordings.Items.Count);
                 Download.Enabled = Recordings.Items.Count > 0;
 
                 currentDownload = -1;
@@ -649,8 +648,6 @@
                 downloadHandle = -1;
             }
         }
-
-
 
         /// <summary>
         /// Gestiona la descarga de grabaciones.
