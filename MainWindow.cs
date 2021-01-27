@@ -12,26 +12,7 @@
     /// </summary>
     public partial class MainWindow : Form
     {
-        /// <summary>
-        /// Intervalos.
-        /// </summary>
-        private enum Interval : int
-        {
-            today = 0,
-            yesterday = 1,
-            thisWeek = 2,
-            lastWeek = 3,
-            lastTwoWeeks = 4,
-            thisMonth = 5,
-            lastMonth = 6,
-            customRange = 7,
-        }
-
-        /// <summary>
-        /// Contador de grabaciones por canal.
-        /// </summary>
-        private int recordingsPerChannel;
-
+        #region Formulario
         /// <summary>
         /// Constructor.
         /// </summary>
@@ -41,58 +22,17 @@
         }
 
         /// <summary>
-        /// Agrega un evento al registro de eventos.
-        /// </summary>
-        /// <param name="code">Código.</param>
-        /// <param name="message">Mensaje.</param>
-        private void LogEvent(string message, uint code = 0)
-        {
-            if (Events.InvokeRequired)
-            {
-                Events.Invoke(new MethodInvoker(delegate
-                {
-                    Events.Items.Add(new ListViewItem(new string[] { message, code.ToString() }));
-                }));
-            }
-            else
-            {
-                Events.Items.Add(new ListViewItem(new string[] { message, code.ToString() }));
-            }
-        }
-
-        /// <summary>
         /// Responde a la carga del formulario.
         /// </summary>
         /// <param name="sender">Origen del evento</param>
         /// <param name="e">Datos del evento.</param>
         private void MainWindow_Load(object sender, EventArgs e)
         {
-            if (Properties.Settings.Default.Downloads == string.Empty)
-            {
-                Properties.Settings.Default.Downloads = Util.GetDirectory("downloads");
-                Properties.Settings.Default.Save();
-            }
+            SetupChannels();
 
-            for (var i = 1; i <= 16; i++)
-            {
-                Channels.Items.Add(new ListViewItem
-                {
-                    Text = string.Format("{0:00} - {1}", i, Properties.Resources.ResourceManager.GetString("Channel" + i)),
-                    Tag = new Channel(i),
-                });
-            }
+            SetupSearch();
 
-            Intervals.SelectedIndex = (int)Interval.lastWeek;
-
-            DownloadDir.Text = Properties.Settings.Default.Downloads;
-
-            Searcher.OnStart += Search_OnStart;
-            Searcher.OnFinish += Search_OnFinish;
-            Searcher.OnBegin += Search_OnBegin;
-            Searcher.OnEnd += Search_OnEnd;
-            Searcher.OnResult += Search_OnResult;
-            Searcher.OnError += Search_OnError;
-            Searcher.OnCancel += Search_OnCancel;
+            SetupDownload();
         }
 
         /// <summary>
@@ -141,6 +81,125 @@
                     LogEvent("Error al inicializar el entorno de programación.", SDK.GetLastError());
                 }
             });
+        }
+        #endregion
+
+        #region Descarga
+        /// <summary>
+        /// Prepara la descarga.
+        /// </summary>
+        private void SetupDownload()
+        {
+            if (Properties.Settings.Default.Downloads == string.Empty)
+            {
+                Properties.Settings.Default.Downloads = Util.GetDirectory("downloads");
+                Properties.Settings.Default.Save();
+            }
+
+            DownloadDir.Text = Properties.Settings.Default.Downloads;
+        }
+
+        /// <summary>
+        /// Cambia el directorio de descarga.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Browse_Click(object sender, EventArgs e)
+        {
+            using (var dialog = new FolderBrowserDialog())
+            {
+                dialog.ShowNewFolderButton = true;
+                if (DownloadDir.Text != string.Empty)
+                {
+                    dialog.SelectedPath = DownloadDir.Text;
+                }
+
+                var result = dialog.ShowDialog();
+                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(dialog.SelectedPath))
+                {
+                    DownloadDir.Text = dialog.SelectedPath;
+
+                    Properties.Settings.Default.Downloads = dialog.SelectedPath;
+                    Properties.Settings.Default.Save();
+                }
+            }
+        }
+        #endregion
+
+        #region Canales
+        /// <summary>
+        /// Prepara el listado de canales.
+        /// </summary>
+        private void SetupChannels()
+        {
+            for (var i = 1; i <= 16; i++)
+            {
+                Channels.Items.Add(new ListViewItem
+                {
+                    Text = string.Format("{0:00} - {1}", i, Properties.Resources.ResourceManager.GetString("Channel" + i)),
+                    Tag = new Channel(i),
+                });
+            }
+        }
+        #endregion
+
+        #region Eventos
+        /// <summary>
+        /// Agrega un evento al registro de eventos.
+        /// </summary>
+        /// <param name="code">Código.</param>
+        /// <param name="message">Mensaje.</param>
+        private void LogEvent(string message, uint code = 0)
+        {
+            if (Events.InvokeRequired)
+            {
+                Events.Invoke(new MethodInvoker(delegate
+                {
+                    Events.Items.Add(new ListViewItem(new string[] { message, code.ToString() }));
+                }));
+            }
+            else
+            {
+                Events.Items.Add(new ListViewItem(new string[] { message, code.ToString() }));
+            }
+        }
+        #endregion
+
+        #region Búsqueda
+        /// <summary>
+        /// Intervalos.
+        /// </summary>
+        private enum Interval : int
+        {
+            today = 0,
+            yesterday = 1,
+            thisWeek = 2,
+            lastWeek = 3,
+            lastTwoWeeks = 4,
+            thisMonth = 5,
+            lastMonth = 6,
+            customRange = 7,
+        }
+
+        /// <summary>
+        /// Contador de grabaciones por canal.
+        /// </summary>
+        private int recordingsPerChannel;
+
+        /// <summary>
+        /// Prepara la búsqueda.
+        /// </summary>
+        private void SetupSearch()
+        {
+            Intervals.SelectedIndex = (int)Interval.lastWeek;
+
+            Searcher.OnStart += Search_OnStart;
+            Searcher.OnFinish += Search_OnFinish;
+            Searcher.OnBegin += Search_OnBegin;
+            Searcher.OnEnd += Search_OnEnd;
+            Searcher.OnResult += Search_OnResult;
+            Searcher.OnError += Search_OnError;
+            Searcher.OnCancel += Search_OnCancel;
         }
 
         /// <summary>
@@ -194,32 +253,6 @@
 
             Start.Tag = Start.Value;
             End.Tag = End.Value;
-        }
-
-        /// <summary>
-        /// Cambia el directorio de descarga.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Browse_Click(object sender, EventArgs e)
-        {
-            using (var dialog = new FolderBrowserDialog())
-            {
-                dialog.ShowNewFolderButton = true;
-                if (DownloadDir.Text != string.Empty)
-                {
-                    dialog.SelectedPath = DownloadDir.Text;
-                }
-
-                var result = dialog.ShowDialog();
-                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(dialog.SelectedPath))
-                {
-                    DownloadDir.Text = dialog.SelectedPath;
-
-                    Properties.Settings.Default.Downloads = dialog.SelectedPath;
-                    Properties.Settings.Default.Save();
-                }
-            }
         }
 
         /// <summary>
@@ -386,5 +419,6 @@
         {
             LogEvent("Se ha cancelado la búsqueda.");
         }
+        #endregion
     }
 }
