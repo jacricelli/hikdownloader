@@ -398,8 +398,8 @@
                 evt.Recording.Channel.Number.ToString(),
                 evt.Recording.Video.FileName,
                 evt.Recording.Video.FileSizeWithPrefix,
-                evt.Recording.Video.Start.ToString("dd/MM/yyyy hh:mm:ss"),
-                evt.Recording.Video.End.ToString("dd/MM/yyyy hh:mm:ss"),
+                evt.Recording.Video.Start.ToString("dd/MM/yyyy HH:mm:ss"),
+                evt.Recording.Video.End.ToString("dd/MM/yyyy HH:mm:ss"),
                 "Pendiente",
             })
             {

@@ -218,7 +218,7 @@
             // End
             // 
             this.End.Checked = false;
-            this.End.CustomFormat = " dd-MM-yyyy HH:mm:ss";
+            this.End.CustomFormat = " dd/MM/yyyy HH:mm:ss";
             this.End.Enabled = false;
             this.End.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.End.Location = new System.Drawing.Point(8, 464);
@@ -238,7 +238,7 @@
             // Start
             // 
             this.Start.Checked = false;
-            this.Start.CustomFormat = " dd-MM-yyyy HH:mm:ss";
+            this.Start.CustomFormat = " dd/MM/yyyy HH:mm:ss";
             this.Start.Enabled = false;
             this.Start.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.Start.Location = new System.Drawing.Point(8, 411);
