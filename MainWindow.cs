@@ -82,6 +82,20 @@
                 }
             });
         }
+
+        /// <summary>
+        /// Cierre del formulario.
+        /// </summary>
+        /// <param name="sender">Origen del evento</param>
+        /// <param name="e">Datos del evento.</param>
+        private void MainWindow_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (Searcher.IsRunning)
+            {
+                e.Cancel = true;
+                MessageBox.Show("Cancele la búsqueda o espere a que finalice para cerrar la aplicación.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+        }
         #endregion
 
         #region Descarga
@@ -420,5 +434,6 @@
             LogEvent("Se ha cancelado la búsqueda.");
         }
         #endregion
+
     }
 }
