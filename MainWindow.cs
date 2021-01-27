@@ -201,58 +201,6 @@
         }
 
         /// <summary>
-        /// Guarda el valor validado en las propiedades del control.
-        /// </summary>
-        /// <param name="sender">Origen del evento</param>
-        /// <param name="e">Datos del evento.</param>
-        private void Start_Validated(object sender, EventArgs e)
-        {
-            Start.Tag = Start.Value;
-        }
-
-        /// <summary>
-        /// Valida que la fecha de comienzo es menor o igual que la fecha de finalización.
-        /// </summary>
-        /// <param name="sender">Origen del evento</param>
-        /// <param name="e">Datos del evento.</param>
-        private void Start_Validating(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            if (Start.Value >= End.Value)
-            {
-                MessageBox.Show("La fecha de comienzo debe ser menor a la fecha de finalización.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                e.Cancel = true;
-                Start.Value = (DateTime)Start.Tag;
-            }
-        }
-
-        /// <summary>
-        /// Guarda el valor validado en las propiedades del control.
-        /// </summary>
-        /// <param name="sender">Origen del evento</param>
-        /// <param name="e">Datos del evento.</param>
-        private void End_Validated(object sender, EventArgs e)
-        {
-            End.Tag = End.Value;
-        }
-
-        /// <summary>
-        /// Valida que la fecha de finalización es mayor o igual que la fecha de comienzo.
-        /// </summary>
-        /// <param name="sender">Origen del evento</param>
-        /// <param name="e">Datos del evento.</param>
-        private void End_Validating(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            if (End.Value <= Start.Value)
-            {
-                MessageBox.Show("La fecha de finalización debe ser mayor a la fecha de comienzo.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                e.Cancel = true;
-                End.Value = (DateTime)End.Tag;
-            }
-        }
-
-        /// <summary>
         /// Responde al cambio de período.
         /// </summary>
         /// <param name="sender">Origen del evento</param>
@@ -348,6 +296,13 @@
         /// <param name="e">Datos del evento.</param>
         private async void Search_Click(object sender, EventArgs e)
         {
+            if (End.Value < Start.Value)
+            {
+                MessageBox.Show("La fecha de comienzo debe ser menor a la fecha de finalización.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                return;
+            }
+
             if (Searcher.IsRunning)
             {
                 Searcher.Cancel();

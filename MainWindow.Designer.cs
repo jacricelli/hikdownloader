@@ -228,8 +228,6 @@
             this.End.Name = "End";
             this.End.Size = new System.Drawing.Size(176, 23);
             this.End.TabIndex = 6;
-            this.End.Validating += new System.ComponentModel.CancelEventHandler(this.End_Validating);
-            this.End.Validated += new System.EventHandler(this.End_Validated);
             // 
             // label1
             // 
@@ -250,8 +248,6 @@
             this.Start.Name = "Start";
             this.Start.Size = new System.Drawing.Size(176, 23);
             this.Start.TabIndex = 4;
-            this.Start.Validating += new System.ComponentModel.CancelEventHandler(this.Start_Validating);
-            this.Start.Validated += new System.EventHandler(this.Start_Validated);
             // 
             // Events
             // 
