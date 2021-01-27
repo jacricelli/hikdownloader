@@ -434,6 +434,5 @@
             LogEvent("Se ha cancelado la búsqueda.");
         }
         #endregion
-
     }
 }
