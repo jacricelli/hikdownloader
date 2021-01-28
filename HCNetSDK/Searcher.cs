@@ -50,14 +50,14 @@
         private static int handle = -1;
 
         /// <summary>
-        /// Indica que la búsqueda ha sido cancelada.
-        /// </summary>
-        private static bool cancelled = false;
-
-        /// <summary>
         /// Obtiene un valor que indica si la búsqueda se está llevando a cabo.
         /// </summary>
         public static bool IsRunning { get; private set; } = false;
+
+        /// <summary>
+        /// Obtiene o establece un valor que indica si está cancelada la búsqueda.
+        /// </summary>
+        public static bool Cancel { get; set; } = false;
 
         /// <summary>
         /// Realiza una búsqueda.
@@ -74,7 +74,7 @@
 
             foreach (var channel in channels)
             {
-                if (cancelled)
+                if (Cancel)
                 {
                     if (!skipCancelEvent)
                     {
@@ -87,7 +87,7 @@
                 OnBegin?.Invoke(null, new SearchEvent(channel));
 
                 IsRunning = true;
-                cancelled = false;
+                Cancel = false;
 
                 foreach (var from in EachDay(start, end))
                 {
@@ -122,7 +122,7 @@
                         var record = default(NET_DVR_FINDDATA_V30);
                         while (true)
                         {
-                            if (cancelled)
+                            if (Cancel)
                             {
                                 skipCancelEvent = true;
 
@@ -193,20 +193,9 @@
             }
 
             IsRunning = false;
-            cancelled = false;
+            Cancel = false;
 
             OnFinish?.Invoke(null, new EventArgs());
-        }
-
-        /// <summary>
-        /// Cancela la búsqueda.
-        /// </summary>
-        public static void Cancel()
-        {
-            if (IsRunning && !cancelled)
-            {
-                cancelled = true;
-            }
         }
 
         /// <summary>

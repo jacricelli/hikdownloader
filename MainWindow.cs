@@ -295,7 +295,7 @@
 
             if (Searcher.IsRunning)
             {
-                Searcher.Cancel();
+                Searcher.Cancel = true;
 
                 return;
             }
