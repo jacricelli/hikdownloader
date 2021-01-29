@@ -111,6 +111,9 @@
             }
 
             DownloadDir.Text = Properties.Settings.Default.Downloads;
+
+            Downloader.DownloadDir = Properties.Settings.Default.Downloads;
+            Downloader.ParallelDownloads = Properties.Settings.Default.ParallelDownloads;
         }
 
         /// <summary>
@@ -136,6 +139,33 @@
                     Properties.Settings.Default.Downloads = dialog.SelectedPath;
                     Properties.Settings.Default.Save();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Descarga grabaciones.
+        /// </summary>
+        /// <param name="sender">Origen del evento</param>
+        /// <param name="e">Datos del evento.</param>
+        private void Download_Click(object sender, EventArgs e)
+        {
+            if (Recordings.Items.Count == 0)
+            {
+                return;
+            }
+
+            if (!Downloader.IsRunning)
+            {
+                var recordings = new List<Recording>();
+                foreach (var item in Recordings.Items)
+                {
+                    recordings.Add((Recording)((ListViewItem)item).Tag);
+                }
+
+                Downloader.Download(recordings);
+            }
+            else
+            {
             }
         }
         #endregion
@@ -351,6 +381,7 @@
                 Start.Enabled = (Interval)Intervals.SelectedIndex == Interval.customRange;
                 End.Enabled = Start.Enabled;
                 Recordings.EndUpdate();
+                Download.Enabled = Recordings.Items.Count > 0;
             }));
 
             LogEvent("Se ha finalizado la búsqueda.");
@@ -391,6 +422,11 @@
         public void Search_OnResult(object sender, EventArgs e)
         {
             var evt = (SearchResult)e;
+
+            if (Downloader.RecordingFileExists(evt.Recording))
+            {
+                return;
+            }
 
             var item = new ListViewItem(new string[]
             {
