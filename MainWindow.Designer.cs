@@ -82,12 +82,13 @@
             // Download
             // 
             this.Download.Enabled = false;
-            this.Download.Location = new System.Drawing.Point(674, 504);
+            this.Download.Location = new System.Drawing.Point(674, 512);
             this.Download.Name = "Download";
-            this.Download.Size = new System.Drawing.Size(123, 32);
+            this.Download.Size = new System.Drawing.Size(123, 24);
             this.Download.TabIndex = 8;
             this.Download.Text = "&Descargar";
             this.Download.UseVisualStyleBackColor = true;
+            this.Download.Click += new System.EventHandler(this.Download_Click);
             // 
             // Browse
             // 
