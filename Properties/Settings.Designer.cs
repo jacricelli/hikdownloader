@@ -70,5 +70,14 @@ namespace HikDownloader.Properties {
                 this["Downloads"] = value;
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3")]
+        public int ParallelDownloads {
+            get {
+                return ((int)(this["ParallelDownloads"]));
+            }
+        }
     }
 }

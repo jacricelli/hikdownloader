@@ -1,6 +1,5 @@
 ﻿namespace HikDownloader
 {
-    using HikDownloader.HCNetSDK;
     using System.IO;
     using System.Reflection;
 

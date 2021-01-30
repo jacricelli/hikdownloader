@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Threading.Tasks;
     using System.Windows.Forms;
     using FluentDateTime;
@@ -13,92 +12,7 @@
     /// </summary>
     public partial class MainWindow : Form
     {
-        /// <summary>
-        /// Tipos de períodos.
-        /// </summary>
-        private enum PeriodsTypes : int
-        {
-            today = 0,
-            yesterday = 1,
-            thisWeek = 2,
-            lastWeek = 3,
-            lastTwoWeeks = 4,
-            thisMonth = 5,
-            lastMonth = 6,
-            customRange = 7,
-        }
-
-        /// <summary>
-        /// Estado de la descarga.
-        /// </summary>
-        private enum DownloadStatus : int
-        {
-            /// <summary>
-            /// Completada.
-            /// </summary>
-            completed = 0,
-
-            /// <summary>
-            /// Incompleta.
-            /// </summary>
-            incomplete = 1,
-
-            /// <summary>
-            /// Pendiente.
-            /// </summary>
-            pending = 2
-        }
-
-        /// <summary>
-        /// Contador de grabaciones por canal.
-        /// </summary>
-        private int recordingsPerChannel;
-
-        /// <summary>
-        /// Grabaciones pendiente de descarga.
-        /// </summary>
-        private List<int> pendingRecordings;
-
-        /// <summary>
-        /// Indica si se están descargando archivos.
-        /// </summary>
-        private bool isDownloading = false;
-
-        /// <summary>
-        /// Índice de la grabación que se está descargando.
-        /// </summary>
-        private int currentRecordingIndex = -1;
-
-        /// <summary>
-        /// Descarga actual.
-        /// </summary>
-        private int currentDownload = -1;
-
-        /// <summary>
-        /// Manejador de la descarga.
-        /// </summary>
-        private int downloadHandle = -1;
-
-        /// <summary>
-        /// Ruta absoluta del archivo de la descarga actual.
-        /// </summary>
-        private string currentFile;
-
-        /// <summary>
-        /// Ruta absoluta del archivo temporal de la descarga actual.
-        /// </summary>
-        private string currentTempFile;
-
-        /// <summary>
-        /// Momento en el que se inicia la descarga.
-        /// </summary>
-        private DateTime downloadStartTime;
-
-        /// <summary>
-        /// Tamaño descargado.
-        /// </summary>
-        private ulong downloadedSize = 0;
-
+        #region Formulario
         /// <summary>
         /// Constructor.
         /// </summary>
@@ -108,58 +22,17 @@
         }
 
         /// <summary>
-        /// Agrega un evento al registro de eventos.
-        /// </summary>
-        /// <param name="code">Código.</param>
-        /// <param name="message">Mensaje.</param>
-        private void LogEvent(string message, uint code = 0)
-        {
-            if (Events.InvokeRequired)
-            {
-                Events.Invoke(new MethodInvoker(delegate
-                {
-                    Events.Items.Add(new ListViewItem(new string[] { message, code.ToString() }));
-                }));
-            }
-            else
-            {
-                Events.Items.Add(new ListViewItem(new string[] { message, code.ToString() }));
-            }
-        }
-
-        /// <summary>
         /// Responde a la carga del formulario.
         /// </summary>
         /// <param name="sender">Origen del evento</param>
         /// <param name="e">Datos del evento.</param>
         private void MainWindow_Load(object sender, EventArgs e)
         {
-            if (Properties.Settings.Default.Downloads == string.Empty)
-            {
-                Properties.Settings.Default.Downloads = Util.GetDirectory("downloads");
-                Properties.Settings.Default.Save();
-            }
+            SetupChannels();
 
-            for (var i = 1; i <= 16; i++)
-            {
-                Channels.Items.Add(new ListViewItem
-                {
-                    Text = string.Format("{0:00} - {1}", i, Properties.Resources.ResourceManager.GetString("Channel" + i)),
-                    Tag = new Channel(i),
-                });
-            }
+            SetupSearch();
 
-            Periods.SelectedIndex = (int)PeriodsTypes.lastWeek;
-
-            DownloadDir.Text = Properties.Settings.Default.Downloads;
-
-            Searcher.OnStart += Search_OnStart;
-            Searcher.OnFinish += Search_OnFinish;
-            Searcher.OnBegin += Search_OnBegin;
-            Searcher.OnEnd += Search_OnEnd;
-            Searcher.OnResult += Search_OnResult;
-            Searcher.OnError += Search_OnError;
-            Searcher.OnCancel += Search_OnCancel;
+            SetupDownload();
         }
 
         /// <summary>
@@ -211,108 +84,49 @@
         }
 
         /// <summary>
-        /// Guarda el valor validado en las propiedades del control.
+        /// Cierre del formulario.
         /// </summary>
         /// <param name="sender">Origen del evento</param>
         /// <param name="e">Datos del evento.</param>
-        private void Start_Validated(object sender, EventArgs e)
+        private void MainWindow_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Start.Tag = Start.Value;
-        }
-
-        /// <summary>
-        /// Valida que la fecha de comienzo es menor o igual que la fecha de finalización.
-        /// </summary>
-        /// <param name="sender">Origen del evento</param>
-        /// <param name="e">Datos del evento.</param>
-        private void Start_Validating(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            if (Start.Value >= End.Value)
+            if (Searcher.IsRunning)
             {
-                MessageBox.Show("La fecha de comienzo debe ser menor a la fecha de finalización.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Information);
-
                 e.Cancel = true;
-                Start.Value = (DateTime)Start.Tag;
+                MessageBox.Show("Cancele la búsqueda o espere a que finalice para cerrar la aplicación.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
         }
+        #endregion
+
+        #region Descarga
+        /// <summary>
+        /// Descargas.
+        /// </summary>
+        private Dictionary<Recording, ListViewItem> downloads;
 
         /// <summary>
-        /// Guarda el valor validado en las propiedades del control.
+        /// Prepara la descarga.
         /// </summary>
-        /// <param name="sender">Origen del evento</param>
-        /// <param name="e">Datos del evento.</param>
-        private void End_Validated(object sender, EventArgs e)
+        private void SetupDownload()
         {
-            End.Tag = End.Value;
-        }
-
-        /// <summary>
-        /// Valida que la fecha de finalización es mayor o igual que la fecha de comienzo.
-        /// </summary>
-        /// <param name="sender">Origen del evento</param>
-        /// <param name="e">Datos del evento.</param>
-        private void End_Validating(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            if (End.Value <= Start.Value)
+            if (Properties.Settings.Default.Downloads == string.Empty)
             {
-                MessageBox.Show("La fecha de finalización debe ser mayor a la fecha de comienzo.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                e.Cancel = true;
-                End.Value = (DateTime)End.Tag;
-            }
-        }
-
-        /// <summary>
-        /// Responde al cambio de período.
-        /// </summary>
-        /// <param name="sender">Origen del evento</param>
-        /// <param name="e">Datos del evento.</param>
-        private void Periods_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            var index = (PeriodsTypes)Periods.SelectedIndex;
-            switch (index)
-            {
-                case PeriodsTypes.today:
-                    Start.Value = DateTime.Today.Midnight();
-                    End.Value = DateTime.Today.EndOfDay();
-                    break;
-
-                case PeriodsTypes.yesterday:
-                    Start.Value = DateTime.Today.PreviousDay().Midnight();
-                    End.Value = DateTime.Today.PreviousDay().EndOfDay();
-                    break;
-
-                case PeriodsTypes.thisWeek:
-                    Start.Value = DateTime.Today.FirstDayOfWeek().AddDays(1);
-                    End.Value = Start.Value.LastDayOfWeek().AddDays(1).EndOfDay();
-                    break;
-
-                case PeriodsTypes.lastWeek:
-                    Start.Value = DateTime.Today.FirstDayOfWeek().AddDays(1).WeekEarlier();
-                    End.Value = Start.Value.LastDayOfWeek().AddDays(1).EndOfDay();
-                    break;
-
-                case PeriodsTypes.lastTwoWeeks:
-                    Start.Value = DateTime.Today.FirstDayOfWeek().AddDays(-13);
-                    End.Value = DateTime.Today.WeekEarlier().LastDayOfWeek().AddDays(1).EndOfDay();
-                    break;
-
-                case PeriodsTypes.thisMonth:
-                    Start.Value = DateTime.Today.BeginningOfMonth();
-                    End.Value = DateTime.Today.EndOfMonth();
-                    break;
-
-                case PeriodsTypes.lastMonth:
-                    Start.Value = DateTime.Today.PreviousMonth().BeginningOfMonth();
-                    End.Value = DateTime.Today.PreviousMonth().EndOfMonth();
-                    break;
+                Properties.Settings.Default.Downloads = Util.GetDirectory("downloads");
+                Properties.Settings.Default.Save();
             }
 
-            Start.Enabled = index == PeriodsTypes.customRange;
-            End.Enabled = index == PeriodsTypes.customRange;
+            DownloadDir.Text = Properties.Settings.Default.Downloads;
 
-            Start.Tag = Start.Value;
-            End.Tag = End.Value;
+            Downloader.DownloadDir = Properties.Settings.Default.Downloads;
+            Downloader.ParallelDownloads = Properties.Settings.Default.ParallelDownloads;
+
+            Downloader.OnStart += Download_OnStart;
+            Downloader.OnFinish += Download_OnFinish;
+            Downloader.OnBegin += Download_OnBegin;
+            Downloader.OnEnd += Download_OnEnd;
+            Downloader.OnDownloading += Download_OnDownloading;
+            Downloader.OnError += Download_OnError;
+            Downloader.OnCancel += Download_OnCancel;
         }
 
         /// <summary>
@@ -342,6 +156,332 @@
         }
 
         /// <summary>
+        /// Descarga grabaciones.
+        /// </summary>
+        /// <param name="sender">Origen del evento</param>
+        /// <param name="e">Datos del evento.</param>
+        private async void Download_Click(object sender, EventArgs e)
+        {
+            if (Recordings.Items.Count == 0)
+            {
+                return;
+            }
+
+            await Task.Run(() =>
+            {
+                Invoke(new MethodInvoker(delegate
+                {
+                    if (Downloader.IsRunning)
+                    {
+                        Downloader.Cancel();
+
+                        return;
+                    }
+
+                    downloads = new Dictionary<Recording, ListViewItem>();
+
+                    var recordings = new List<Recording>();
+                    foreach (var item in Recordings.Items)
+                    {
+                        var recording = (ListViewItem)item;
+                        var t = (Recording)(recording).Tag;
+
+                        downloads.Add(t, recording);
+                        recordings.Add(t);
+                    }
+
+                    Downloader.Download(recordings);
+                }));
+            });
+        }
+
+        /// <summary>
+        /// Comienzo del proceso de descarga.
+        /// </summary>
+        /// <param name="sender">Origen del evento</param>
+        /// <param name="e">Datos del evento.</param>
+        private void Download_OnStart(object sender, EventArgs e)
+        {
+            LogEvent("Comenzando a descargar grabaciones.");
+
+            Invoke(new MethodInvoker(delegate
+            {
+                Download.Text = "&Cancelar";
+                groupBox4.Enabled = false;
+                Browse.Enabled = false;
+            }));
+        }
+
+        /// <summary>
+        /// Fin del proceso de descarga.
+        /// </summary>
+        /// <param name="sender">Origen del evento</param>
+        /// <param name="e">Datos del evento.</param>
+        private void Download_OnFinish(object sender, EventArgs e)
+        {
+            LogEvent("Se ha finalizado la descarga de grabaciones.");
+
+            Invoke(new MethodInvoker(delegate
+            {
+                Download.Text = "&Descargar";
+                groupBox4.Enabled = true;
+                Browse.Enabled = true;
+                Download.Enabled = Recordings.Items.Count > 0;
+            }));
+        }
+
+        /// <summary>
+        /// Comienzo de la descarga de una grabación.
+        /// </summary>
+        /// <param name="sender">Origen del evento</param>
+        /// <param name="e">Datos del evento.</param>
+        private void Download_OnBegin(object sender, EventArgs e)
+        {
+            var evt = (DownloadEvent)e;
+            var item = downloads[evt.Recording];
+
+            if (Recordings.InvokeRequired)
+            {
+                Recordings.Invoke(new MethodInvoker(delegate
+                {
+                    item.SubItems[6].Text = "Descargando 0%";
+                    item.EnsureVisible();
+                }));
+            }
+            else
+            {
+                item.SubItems[6].Text = "Descargando 0%";
+                item.EnsureVisible();
+            }
+        }
+
+        /// <summary>
+        /// Fin de la descarga de una grabación.
+        /// </summary>
+        /// <param name="sender">Origen del evento</param>
+        /// <param name="e">Datos del evento.</param>
+        private void Download_OnEnd(object sender, EventArgs e)
+        {
+            var evt = (DownloadEvent)e;
+            var item = downloads[evt.Recording];
+
+            if (Recordings.InvokeRequired)
+            {
+                Recordings.Invoke(new MethodInvoker(delegate
+                {
+                    item.Remove();
+                }));
+            }
+            else
+            {
+                item.Remove();
+            }
+
+            downloads[evt.Recording].Remove();
+        }
+
+        /// <summary>
+        /// Descarga en progreso.
+        /// </summary>
+        /// <param name="sender">Origen del evento</param>
+        /// <param name="e">Datos del evento.</param>
+        private void Download_OnDownloading(object sender, EventArgs e)
+        {
+            var evt = (DownloadProgress)e;
+            var item = downloads[evt.Recording];
+
+            if (Recordings.InvokeRequired)
+            {
+                Recordings.Invoke(new MethodInvoker(delegate
+                {
+                    item.SubItems[6].Text = string.Format("Descargando {0}%", evt.Progress);
+                }));
+            }
+            else
+            {
+                item.SubItems[6].Text = string.Format("Descargando {0}%", evt.Progress);
+            }
+        }
+
+        /// <summary>
+        /// Error en la descarga.
+        /// </summary>
+        /// <param name="sender">Origen del evento</param>
+        /// <param name="e">Datos del evento.</param>
+        private void Download_OnError(object sender, EventArgs e)
+        {
+            var evt = (DownloadError)e;
+            var item = downloads[evt.Recording];
+
+            LogEvent(string.Format("Se produjo un error al descargar la grabación {0}.", evt.Recording.Video.FileName), evt.Code);
+
+            if (Recordings.InvokeRequired)
+            {
+                Recordings.Invoke(new MethodInvoker(delegate
+                {
+                    item.SubItems[6].Text = "Error";
+                }));
+            }
+            else
+            {
+                item.SubItems[6].Text = "Error";
+            }
+        }
+
+        /// <summary>
+        /// Cancelación del proceso de descarga.
+        /// </summary>
+        /// <param name="sender">Origen del evento</param>
+        /// <param name="e">Datos del evento.</param>
+        private void Download_OnCancel(object sender, EventArgs e)
+        {
+            var evt = (DownloadEvent)e;
+            var item = downloads[evt.Recording];
+
+            if (Recordings.InvokeRequired)
+            {
+                Recordings.Invoke(new MethodInvoker(delegate
+                {
+                    item.SubItems[6].Text = "Cancelada";
+                }));
+            }
+            else
+            {
+                item.SubItems[6].Text = "Cancelada";
+            }
+        }
+        #endregion
+
+        #region Canales
+        /// <summary>
+        /// Prepara el listado de canales.
+        /// </summary>
+        private void SetupChannels()
+        {
+            for (var i = 1; i <= 16; i++)
+            {
+                Channels.Items.Add(new ListViewItem
+                {
+                    Text = string.Format("{0:00} - {1}", i, Properties.Resources.ResourceManager.GetString("Channel" + i)),
+                    Tag = new Channel(i),
+                });
+            }
+        }
+        #endregion
+
+        #region Eventos
+        /// <summary>
+        /// Agrega un evento al registro de eventos.
+        /// </summary>
+        /// <param name="code">Código.</param>
+        /// <param name="message">Mensaje.</param>
+        private void LogEvent(string message, uint code = 0)
+        {
+            if (Events.InvokeRequired)
+            {
+                Events.Invoke(new MethodInvoker(delegate
+                {
+                    Events.Items.Add(new ListViewItem(new string[] { message, code.ToString() }));
+                }));
+            }
+            else
+            {
+                Events.Items.Add(new ListViewItem(new string[] { message, code.ToString() }));
+            }
+        }
+        #endregion
+
+        #region Búsqueda
+        /// <summary>
+        /// Intervalos.
+        /// </summary>
+        private enum Interval : int
+        {
+            today = 0,
+            yesterday = 1,
+            thisWeek = 2,
+            lastWeek = 3,
+            lastTwoWeeks = 4,
+            thisMonth = 5,
+            lastMonth = 6,
+            customRange = 7,
+        }
+
+        /// <summary>
+        /// Contador de grabaciones por canal.
+        /// </summary>
+        private int recordingsPerChannel;
+
+        /// <summary>
+        /// Prepara la búsqueda.
+        /// </summary>
+        private void SetupSearch()
+        {
+            Intervals.SelectedIndex = (int)Interval.lastWeek;
+
+            Searcher.OnStart += Search_OnStart;
+            Searcher.OnFinish += Search_OnFinish;
+            Searcher.OnBegin += Search_OnBegin;
+            Searcher.OnEnd += Search_OnEnd;
+            Searcher.OnResult += Search_OnResult;
+            Searcher.OnError += Search_OnError;
+            Searcher.OnCancel += Search_OnCancel;
+        }
+
+        /// <summary>
+        /// Responde al cambio de intervalo.
+        /// </summary>
+        /// <param name="sender">Origen del evento</param>
+        /// <param name="e">Datos del evento.</param>
+        private void Intervals_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var index = (Interval)Intervals.SelectedIndex;
+            switch (index)
+            {
+                case Interval.today:
+                    Start.Value = DateTime.Today.Midnight();
+                    End.Value = DateTime.Today.EndOfDay();
+                    break;
+
+                case Interval.yesterday:
+                    Start.Value = DateTime.Today.PreviousDay().Midnight();
+                    End.Value = DateTime.Today.PreviousDay().EndOfDay();
+                    break;
+
+                case Interval.thisWeek:
+                    Start.Value = DateTime.Today.FirstDayOfWeek().AddDays(1);
+                    End.Value = Start.Value.LastDayOfWeek().AddDays(1).EndOfDay();
+                    break;
+
+                case Interval.lastWeek:
+                    Start.Value = DateTime.Today.FirstDayOfWeek().AddDays(1).WeekEarlier();
+                    End.Value = Start.Value.LastDayOfWeek().AddDays(1).EndOfDay();
+                    break;
+
+                case Interval.lastTwoWeeks:
+                    Start.Value = DateTime.Today.FirstDayOfWeek().AddDays(-13);
+                    End.Value = DateTime.Today.WeekEarlier().LastDayOfWeek().AddDays(1).EndOfDay();
+                    break;
+
+                case Interval.thisMonth:
+                    Start.Value = DateTime.Today.BeginningOfMonth();
+                    End.Value = DateTime.Today.EndOfMonth();
+                    break;
+
+                case Interval.lastMonth:
+                    Start.Value = DateTime.Today.PreviousMonth().BeginningOfMonth();
+                    End.Value = DateTime.Today.PreviousMonth().EndOfMonth();
+                    break;
+            }
+
+            Start.Enabled = index == Interval.customRange;
+            End.Enabled = index == Interval.customRange;
+
+            Start.Tag = Start.Value;
+            End.Tag = End.Value;
+        }
+
+        /// <summary>
         /// Cambia el estado del botón de búsqueda.
         /// </summary>
         /// <param name="sender">Origen del evento</param>
@@ -358,9 +498,16 @@
         /// <param name="e">Datos del evento.</param>
         private async void Search_Click(object sender, EventArgs e)
         {
+            if (End.Value < Start.Value)
+            {
+                MessageBox.Show("La fecha de comienzo debe ser menor a la fecha de finalización.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                return;
+            }
+
             if (Searcher.IsRunning)
             {
-                Searcher.Cancel();
+                Searcher.Cancel = true;
 
                 return;
             }
@@ -390,7 +537,7 @@
             {
                 Search.Text = "&Cancelar búsqueda";
                 Channels.Enabled = false;
-                Periods.Enabled = false;
+                Intervals.Enabled = false;
                 Start.Enabled = false;
                 End.Enabled = false;
                 groupBox3.Enabled = false;
@@ -411,17 +558,12 @@
                 Search.Text = "&Buscar grabaciones";
 
                 Channels.Enabled = true;
-                Periods.Enabled = true;
+                Intervals.Enabled = true;
                 groupBox3.Enabled = true;
-                Start.Enabled = (PeriodsTypes)Periods.SelectedIndex == PeriodsTypes.customRange;
+                Start.Enabled = (Interval)Intervals.SelectedIndex == Interval.customRange;
                 End.Enabled = Start.Enabled;
                 Recordings.EndUpdate();
-                groupBox3.Text = string.Format("Grabaciones ({0})", Recordings.Items.Count);
                 Download.Enabled = Recordings.Items.Count > 0;
-
-                currentDownload = -1;
-                currentFile = null;
-                currentTempFile = null;
             }));
 
             LogEvent("Se ha finalizado la búsqueda.");
@@ -463,20 +605,9 @@
         {
             var evt = (SearchResult)e;
 
-            var status = string.Empty;
-            switch (CheckDownloadStatus(evt.Recording))
+            if (Downloader.RecordingFileExists(evt.Recording))
             {
-                case DownloadStatus.completed:
-                    status = "Completada";
-                    break;
-
-                case DownloadStatus.incomplete:
-                    status = "Incompleta";
-                    break;
-
-                case DownloadStatus.pending:
-                    status = "Pendiente";
-                    break;
+                return;
             }
 
             var item = new ListViewItem(new string[]
@@ -485,9 +616,9 @@
                 evt.Recording.Channel.Number.ToString(),
                 evt.Recording.Video.FileName,
                 evt.Recording.Video.FileSizeWithPrefix,
-                evt.Recording.Video.Start.ToString("dd/MM/yyyy hh:mm:ss"),
-                evt.Recording.Video.End.ToString("dd/MM/yyyy hh:mm:ss"),
-                status,
+                evt.Recording.Video.Start.ToString("dd/MM/yyyy HH:mm:ss"),
+                evt.Recording.Video.End.ToString("dd/MM/yyyy HH:mm:ss"),
+                "Pendiente",
             })
             {
                 Tag = evt.Recording
@@ -520,247 +651,6 @@
         {
             LogEvent("Se ha cancelado la búsqueda.");
         }
-
-        /// <summary>
-        /// Descarga grabaciones.
-        /// </summary>
-        /// <param name="sender">Origen del evento</param>
-        /// <param name="e">Datos del evento.</param>
-        private void Download_Click(object sender, EventArgs e)
-        {
-            if (!isDownloading)
-            {
-                if (Recordings.Items.Count > 0)
-                {
-                    pendingRecordings = new List<int>();
-                    downloadedSize = 0;
-
-                    for (var i = 0; i < Recordings.Items.Count; i++)
-                    {
-                        var recording = (Recording)Recordings.Items[i].Tag;
-                        if (CheckDownloadStatus(recording) != DownloadStatus.completed)
-                        {
-                            pendingRecordings.Add(i);
-                        }
-                    }
-
-                    DownloadRecording();
-                }
-            }
-            else
-            {
-                Downloader.StopDownload(downloadHandle);
-
-                Recordings.Items[currentRecordingIndex].SubItems[6].Text = "Cancelada";
-
-                DownloadManager.Enabled = false;
-                downloadHandle = -1;
-                currentDownload--;
-                isDownloading = false;
-
-                Text = Application.ProductName;
-                Download.Text = "&Descargar";
-                groupBox4.Enabled = true;
-                Browse.Enabled = true;
-            }
-        }
-
-        /// <summary>
-        /// Método auxiliar para descargar grabaciones.
-        /// </summary>
-        private void DownloadRecording()
-        {
-            if (currentDownload < 0)
-            {
-                currentDownload = 0;
-            }
-            else
-            {
-                currentDownload++;
-            }
-
-            if (pendingRecordings.Count > 0 && currentDownload < pendingRecordings.Count)
-            {
-                currentRecordingIndex = pendingRecordings[currentDownload];
-                var recording = (Recording)Recordings.Items[currentRecordingIndex].Tag;
-                currentTempFile = GetRecordingPath(recording, "tmp");
-                currentFile = GetRecordingPath(recording, "avi");
-
-                var directory = Path.GetDirectoryName(currentTempFile);
-                if (!Directory.Exists(directory))
-                {
-                    Directory.CreateDirectory(directory);
-                }
-
-                downloadHandle = Downloader.PrepareDownload(Session.User.Identifier, recording.Video.FileName, currentTempFile);
-                if (downloadHandle > -1)
-                {
-                    if (Downloader.StartDownload(downloadHandle))
-                    {
-                        if (!isDownloading)
-                        {
-                            downloadStartTime = DateTime.Now;
-                            isDownloading = true;
-
-                            Download.Text = "&Cancelar";
-                            groupBox4.Enabled = false;
-                            Browse.Enabled = false;
-                        }
-
-                        Recordings.Items[currentRecordingIndex].Selected = true;
-                        Recordings.Items[currentRecordingIndex].EnsureVisible();
-
-                        DownloadManager.Enabled = true;
-                    }
-                    else
-                    {
-                        Recordings.Items[currentRecordingIndex].SubItems[6].Text = "Error";
-
-                        currentDownload--;
-
-                        LogEvent("Se ha producido un error al comenzar la descarga.", SDK.GetLastError());
-                    }
-                }
-                else
-                {
-                    Recordings.Items[currentRecordingIndex].SubItems[6].Text = "Error";
-
-                    currentDownload--;
-
-                    LogEvent("Se ha producido un error al preparar la descarga.", SDK.GetLastError());
-                }
-            }
-            else
-            {
-                if (isDownloading)
-                {
-                    isDownloading = false;
-
-                    Text = Application.ProductName;
-                    Download.Text = "&Descargar";
-                    groupBox4.Enabled = true;
-                    Browse.Enabled = true;
-                }
-
-                DownloadManager.Enabled = false;
-
-                currentDownload = -1;
-                currentRecordingIndex = -1;
-                downloadHandle = -1;
-            }
-        }
-
-
-
-        /// <summary>
-        /// Gestiona la descarga de grabaciones.
-        /// </summary>
-        /// <param name="sender">Origen del evento</param>
-        /// <param name="e">Datos del evento.</param>
-        private void DownloadManager_Tick(object sender, EventArgs e)
-        {
-            var timeRemaining = TimeSpan.FromTicks(DateTime.Now.Subtract(downloadStartTime).Ticks * (pendingRecordings.Count - (currentDownload + 1)) / (currentDownload + 1));
-            var bytesPerSecond = Convert.ToUInt64(downloadedSize / (DateTime.Now - downloadStartTime).TotalSeconds);
-
-            Text = string.Format("{0} - [{1} / {2}]", Application.ProductName, timeRemaining.ToDisplayString(), Util.ToReadableSize(bytesPerSecond));
-
-            var progress = Downloader.GetDownloadProgress(downloadHandle);
-            if (progress < 0)
-            {
-                Downloader.StopDownload(downloadHandle);
-
-                Recordings.Items[currentRecordingIndex].SubItems[6].Text = "Error";
-
-                DownloadManager.Enabled = false;
-                downloadHandle = -1;
-                currentDownload--;
-                isDownloading = false;
-
-                Text = Application.ProductName;
-                Download.Text = "&Descargar";
-                groupBox4.Enabled = true;
-                Browse.Enabled = true;
-
-                LogEvent("Se ha producido un error al obtener el progreso de la descarga.", SDK.GetLastError());
-            }
-            else if (progress >= 0 && progress < 100)
-            {
-                Recordings.Items[currentRecordingIndex].SubItems[6].Text = string.Format("Descargando {0}%", progress);
-            }
-            else if (progress == 100)
-            {
-                Downloader.StopDownload(downloadHandle);
-
-                DownloadManager.Enabled = false;
-                downloadHandle = -1;
-
-                File.Move(currentTempFile, currentFile);
-
-                Recordings.Items[currentRecordingIndex].SubItems[6].Text = "Completada";
-
-                downloadedSize += ((Recording)Recordings.Items[currentRecordingIndex].Tag).Video.FileSize;
-
-                DownloadRecording();
-            }
-            else if (progress == 200)
-            {
-                Downloader.StopDownload(downloadHandle);
-
-                Recordings.Items[currentRecordingIndex].SubItems[6].Text = "Error";
-
-                DownloadManager.Enabled = false;
-                downloadHandle = -1;
-                currentDownload--;
-                isDownloading = false;
-
-                Text = Application.ProductName;
-                Download.Text = "&Descargar";
-                groupBox4.Enabled = true;
-                Browse.Enabled = true;
-
-                LogEvent("Se ha producido un error al consultar el progreso de la descarga.", SDK.GetLastError());
-            }
-        }
-
-        /// <summary>
-        /// Obtiene la ruta absoluta para una grabación.
-        /// </summary>
-        /// <param name="recording">Grabación.</param>
-        /// <param name="extension">Extensión del archivo.</param>
-        /// <returns>Ruta absoluta.</returns>
-        private static string GetRecordingPath(Recording recording, string extension)
-        {
-            return string.Format(
-                "{0}\\{1}-{2:00}\\Channel {3:00}\\{4}_{5}_{6}.{7}",
-                Properties.Settings.Default.Downloads,
-                recording.Video.Start.Year,
-                recording.Video.Start.Month,
-                recording.Channel.Number,
-                recording.Video.Start.ToString("yyyy-MM-dd"),
-                recording.Video.Start.ToString("hhmmss"),
-                recording.Video.End.ToString("hhmmss"),
-                extension);
-        }
-
-        /// <summary>
-        /// Comprueba el estado de una descarga.
-        /// </summary>
-        /// <param name="recording">Grabación.</param>
-        /// <returns>Estado de la descarga.</returns>
-        private static DownloadStatus CheckDownloadStatus(Recording recording)
-        {
-            if (File.Exists(GetRecordingPath(recording, "avi")))
-            {
-                return DownloadStatus.completed;
-            }
-            else if (File.Exists(GetRecordingPath(recording, "tmp")))
-            {
-                return DownloadStatus.incomplete;
-            }
-            else
-            {
-                return DownloadStatus.pending;
-            }
-        }
+        #endregion
     }
 }
