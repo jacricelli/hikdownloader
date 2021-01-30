@@ -180,9 +180,9 @@
             // Search
             // 
             this.Search.Enabled = false;
-            this.Search.Location = new System.Drawing.Point(32, 500);
+            this.Search.Location = new System.Drawing.Point(32, 508);
             this.Search.Name = "Search";
-            this.Search.Size = new System.Drawing.Size(128, 32);
+            this.Search.Size = new System.Drawing.Size(128, 24);
             this.Search.TabIndex = 4;
             this.Search.Text = "&Buscar grabaciones";
             this.Search.UseVisualStyleBackColor = true;
