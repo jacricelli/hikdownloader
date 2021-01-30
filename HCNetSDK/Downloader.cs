@@ -2,8 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Linq;
+    using System.IO;
     using System.Runtime.InteropServices;
     using System.Timers;
 
@@ -12,6 +12,41 @@
     /// </summary>
     public static class Downloader
     {
+        /// <summary>
+        /// Comienzo del proceso de descarga.
+        /// </summary>
+        public static event EventHandler OnStart;
+
+        /// <summary>
+        /// Fin del proceso de descarga.
+        /// </summary>
+        public static event EventHandler OnFinish;
+
+        /// <summary>
+        /// Comienzo de la descarga de una grabación.
+        /// </summary>
+        public static event EventHandler OnBegin;
+
+        /// <summary>
+        /// Fin de la descarga de una grabación.
+        /// </summary>
+        public static event EventHandler OnEnd;
+
+        /// <summary>
+        /// Descarga en progreso.
+        /// </summary>
+        public static event EventHandler OnDownloading;
+
+        /// <summary>
+        /// Error en la descarga.
+        /// </summary>
+        public static event EventHandler OnError;
+
+        /// <summary>
+        /// Cancelación de la descarga.
+        /// </summary>
+        public static event EventHandler OnCancel;
+
         /// <summary>
         /// Directorio de descarga.
         /// </summary>
@@ -26,6 +61,11 @@
         /// Obtiene un valor que indica si se están descargando grabaciones.
         /// </summary>
         public static bool IsRunning { get; private set; } = false;
+
+        /// <summary>
+        /// Indica que la descarga se ha cancelado.
+        /// </summary>
+        private static bool cancelled;
 
         /// <summary>
         /// Grabaciones.
@@ -43,11 +83,6 @@
         private static Timer downloadManager;
 
         /// <summary>
-        /// Indica que la descarga se ha cancelado.
-        /// </summary>
-        private static bool cancelled;
-
-        /// <summary>
         /// Comprueba si existe el archivo de una grabación.
         /// </summary>
         /// <param name="recording">Grabación.</param>
@@ -57,6 +92,10 @@
             return File.Exists(GetRecordingPath(recording, "avi"));
         }
 
+        /// <summary>
+        /// Descarga grabaciones.
+        /// </summary>
+        /// <param name="recordings"></param>
         public static void Download(List<Recording> recordings)
         {
             if (IsRunning)
@@ -65,8 +104,8 @@
             }
 
             Downloader.recordings = recordings;
-
             downloads = new Dictionary<Recording, int>();
+
             downloadManager = new Timer(1000);
             downloadManager.Elapsed += DownloadManager_Tick;
             downloadManager.AutoReset = true;
@@ -74,42 +113,111 @@
 
             IsRunning = true;
             cancelled = false;
+
+            OnStart?.Invoke(null, new EventArgs());
         }
 
+        /// <summary>
+        /// Cancela las descargas.
+        /// </summary>
         public static void Cancel()
         {
             if (IsRunning)
             {
-                downloadManager.Stop();
-                downloadManager.Dispose();
-
-                cancelled = true;
-                IsRunning = false;
+                StopDownload();
             }
         }
 
+        /// <summary>
+        /// Detiene las descargas.
+        /// </summary>
+        private static void StopDownload()
+        {
+            downloadManager.Stop();
+            downloadManager.Dispose();
+
+            IsRunning = false;
+            cancelled = true;
+
+            if (downloads.Count > 0)
+            {
+                var copy = new Dictionary<Recording, int>(downloads);
+                foreach (KeyValuePair<Recording, int> entry in copy)
+                {
+                    NET_DVR_StopGetFile(entry.Value);
+
+                    downloads.Remove(entry.Key);
+
+                    OnCancel?.Invoke(null, new DownloadEvent(entry.Key));
+                }
+            }
+
+            OnFinish?.Invoke(null, new EventArgs());
+        }
+
+        /// <summary>
+        /// Gestiona las descargas.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="e"></param>
         private static void DownloadManager_Tick(Object source, ElapsedEventArgs e)
         {
+            if (cancelled)
+            {
+                return;
+            }
+
             if (recordings.Count == 0 && downloads.Count == 0)
             {
-                Cancel();
+                StopDownload();
 
                 return;
             }
 
-            var slots = ParallelDownloads - downloads.Count;
-            if (slots > recordings.Count)
+            var availableSlots = ParallelDownloads - downloads.Count;
+            if (availableSlots > recordings.Count)
             {
-                slots = recordings.Count;
+                availableSlots = recordings.Count;
             }
 
-            for (var slot = 1; slot <= slots; slot++)
+            for (var i = 1; i <= availableSlots; i++)
             {
-                PrepareDownload(recordings.First<Recording>());
+                var recording = recordings.First<Recording>();
+                recordings.Remove(recording);
+
+                if (RecordingFileExists(recording))
+                {
+                    OnEnd?.Invoke(null, new DownloadEvent(recording));
+
+                    continue;
+                }
+
+                var file = GetRecordingPath(recording);
+                var directory = Path.GetDirectoryName(file);
+                if (!Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
+
+                var handle = NET_DVR_GetFileByName(Session.User.Identifier, recording.Video.FileName, file);
+                if (handle > -1)
+                {
+                    uint iOutValue = 0;
+                    if (NET_DVR_PlayBackControl_V40(handle, 1, IntPtr.Zero, 0, IntPtr.Zero, ref iOutValue))
+                    {
+                        downloads.Add(recording, handle);
+
+                        OnBegin?.Invoke(null, new DownloadEvent(recording));
+
+                        continue;
+                    }
+                }
+
+                OnError?.Invoke(null, new DownloadError(recording, SDK.GetLastError()));
             }
 
-            var downloadsCopy = new Dictionary<Recording, int>(downloads);
-            foreach (KeyValuePair<Recording, int> entry in downloadsCopy)
+            var copy = new Dictionary<Recording, int>(downloads);
+            foreach (KeyValuePair<Recording, int> entry in copy)
             {
                 var progress = NET_DVR_GetDownloadPos(entry.Value);
                 if (progress < 0)
@@ -117,11 +225,11 @@
                     NET_DVR_StopGetFile(entry.Value);
                     downloads.Remove(entry.Key);
 
-                    System.Diagnostics.Debug.WriteLine(entry.Key.Video.FileName + " Error progress = 0");
+                    OnError?.Invoke(null, new DownloadError(entry.Key, SDK.GetLastError()));
                 }
                 else if (progress >= 0 && progress < 100)
                 {
-                    System.Diagnostics.Debug.WriteLine(entry.Key.Video.FileName + " downloaded " + progress + "%");
+                    OnDownloading?.Invoke(null, new DownloadProgress(entry.Key, progress));
                 }
                 else if (progress == 100)
                 {
@@ -130,163 +238,17 @@
 
                     File.Move(GetRecordingPath(entry.Key), GetRecordingPath(entry.Key, "avi"));
 
-                    System.Diagnostics.Debug.WriteLine(entry.Key.Video.FileName + " done!");
+                    OnEnd?.Invoke(null, new DownloadEvent(entry.Key));
                 }
                 else if (progress == 200)
                 {
                     NET_DVR_StopGetFile(entry.Value);
                     downloads.Remove(entry.Key);
 
-                    System.Diagnostics.Debug.WriteLine(entry.Key.Video.FileName + " network error!");
+                    OnError?.Invoke(null, new DownloadError(entry.Key, SDK.GetLastError()));
                 }
             }
-
-            System.Diagnostics.Debug.WriteLine(recordings.Count);
         }
-
-        private static void PrepareDownload(Recording recording)
-        {
-            recordings.Remove(recording);
-
-            if (RecordingFileExists(recording))
-            {
-                return;
-            }
-
-            var file = GetRecordingPath(recording);
-            var directory = Path.GetDirectoryName(file);
-            if (!Directory.Exists(directory))
-            {
-                Directory.CreateDirectory(directory);
-            }
-
-            var handle = NET_DVR_GetFileByName(Session.User.Identifier, recording.Video.FileName, file);
-            if (handle > -1)
-            {
-                uint iOutValue = 0;
-                if (NET_DVR_PlayBackControl_V40(handle, 1, IntPtr.Zero, 0, IntPtr.Zero, ref iOutValue))
-                {
-                    downloads.Add(recording, handle);
-                }
-            }
-
-            // Error!
-        }
-
-
-
-
-
-
-
-
-
-        //
-        //public static bool IsRunning { get; private set; }
-
-        //private static bool cancelled = false;
-
-        //private static Dictionary<string, Recording> downloads;
-
-        //private static Dictionary<Recording, int> curDownloads;
-
-        //private static void xDownloads_Tick(Object source, ElapsedEventArgs e)
-        //{
-        //    if (cancelled)
-        //    {
-        //        return;
-        //    }
-
-        //    var maxDownloads = 3;
-        //    var total = curDownloads.Count;
-        //    var availableSlots = maxDownloads - total;
-
-        //    for (var i = 1; i <= availableSlots; i++)
-        //    {
-        //        var x = downloads.Keys.First();
-        //        var z = downloads[x];
-        //        downloads.Remove(x);
-
-        //        var handle = PrepareDownload(z);
-        //        if (handle > -1)
-        //        {
-        //            curDownloads.Add(z, handle);
-        //        }
-        //    }
-
-        //    var copy = new Dictionary<Recording, int>(curDownloads);
-            //foreach (KeyValuePair<Recording, int> entry in copy)
-            //{
-            //    var progress = Downloader.GetDownloadProgress(entry.Value);
-            //    if (progress < 0)
-            //    {
-            //        StopDownload(entry.Value);
-            //        curDownloads.Remove(entry.Key);
-
-            //        System.Diagnostics.Debug.WriteLine(entry.Key.Video.FileName + " Error progress = 0");
-            //    }
-            //    else if (progress >= 0 && progress < 100)
-            //    {
-            //        System.Diagnostics.Debug.WriteLine(entry.Key.Video.FileName + " downloaded " + progress + "%");
-            //    }
-            //    else if (progress == 100)
-            //    {
-            //        StopDownload(entry.Value);
-            //        curDownloads.Remove(entry.Key);
-
-            //        System.Diagnostics.Debug.WriteLine(entry.Key.Video.FileName + " done!");
-            //    }
-            //    else if (progress == 200)
-            //    {
-            //        StopDownload(entry.Value);
-            //        curDownloads.Remove(entry.Key);
-
-            //        System.Diagnostics.Debug.WriteLine(entry.Key.Video.FileName + " network error!");
-            //    }
-            //}
-
-        //    System.Diagnostics.Debug.WriteLine(downloads.Count());
-        //}
-
-        //private static int PrepareDownload(Recording recording)
-        //{
-        //    var file = GetRecordingPath(recording, "avi");
-        //    var directory = Path.GetDirectoryName(file);
-
-
-
-        //    var handle = Downloader;
-        //    if (handle > -1)
-        //    {
-        //        if (StartDownload(handle))
-        //        {
-        //            return handle;
-        //        }
-        //    }
-
-        //    return -1;
-        //}
-
-        ///// <summary>
-        ///// Comienza la descarga de un archivo.
-        ///// </summary>
-        ///// <param name="lFileHandle">Identificador de la descarga.</param>
-        ///// <returns>Devuelve TRUE si la operación se ha completado exitosamente, FALSE de lo contrario.</returns>
-        //public static bool StartDownload(int lFileHandle)
-        //{
-        //    uint iOutValue = 0;
-
-        //    return NET_DVR_PlayBackControl_V40(lFileHandle, 1, IntPtr.Zero, 0, IntPtr.Zero, ref iOutValue);
-        //}
-
-        //public static void Cancel()
-        //{
-        //    cancelled = true;
-        //    downloadTimer.Stop();
-        //    downloadTimer.Dispose();
-
-        //    System.Diagnostics.Debug.WriteLine("Cancel");
-        //}
 
         /// <summary>
         /// Obtiene la ruta absoluta para el archivo de una grabación.
