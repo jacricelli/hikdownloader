@@ -72,6 +72,9 @@
   <ItemGroup>
     <Compile Include="HCNetSDK\Channel.cs" />
     <Compile Include="HCNetSDK\Downloader.cs" />
+    <Compile Include="HCNetSDK\DownloadProgress.cs" />
+    <Compile Include="HCNetSDK\DownloadError.cs" />
+    <Compile Include="HCNetSDK\DownloadEvent.cs" />
     <Compile Include="HCNetSDK\Video.cs" />
     <Compile Include="HCNetSDK\Recording.cs" />
     <Compile Include="HCNetSDK\SDK.cs" />

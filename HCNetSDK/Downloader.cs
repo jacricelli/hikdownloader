@@ -43,7 +43,7 @@
         public static event EventHandler OnError;
 
         /// <summary>
-        /// Cancelación de la descarga.
+        /// Cancelación del proceso de descarga.
         /// </summary>
         public static event EventHandler OnCancel;
 

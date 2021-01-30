@@ -100,6 +100,11 @@
 
         #region Descarga
         /// <summary>
+        /// Descargas.
+        /// </summary>
+        private Dictionary<Recording, ListViewItem> downloads;
+
+        /// <summary>
         /// Prepara la descarga.
         /// </summary>
         private void SetupDownload()
@@ -114,6 +119,14 @@
 
             Downloader.DownloadDir = Properties.Settings.Default.Downloads;
             Downloader.ParallelDownloads = Properties.Settings.Default.ParallelDownloads;
+
+            Downloader.OnStart += Download_OnStart;
+            Downloader.OnFinish += Download_OnFinish;
+            Downloader.OnBegin += Download_OnBegin;
+            Downloader.OnEnd += Download_OnEnd;
+            Downloader.OnDownloading += Download_OnDownloading;
+            Downloader.OnError += Download_OnError;
+            Downloader.OnCancel += Download_OnCancel;
         }
 
         /// <summary>
@@ -154,18 +167,181 @@
                 return;
             }
 
-            if (!Downloader.IsRunning)
+            if (Downloader.IsRunning)
             {
-                var recordings = new List<Recording>();
-                foreach (var item in Recordings.Items)
-                {
-                    recordings.Add((Recording)((ListViewItem)item).Tag);
-                }
+                Downloader.Cancel();
 
-                Downloader.Download(recordings);
+                return;
+            }
+
+            downloads = new Dictionary<Recording, ListViewItem>();
+
+            var recordings = new List<Recording>();
+            foreach (var item in Recordings.Items)
+            {
+                var recording = (ListViewItem)item;
+                var t = (Recording)(recording).Tag;
+
+                downloads.Add(t, recording);
+                recordings.Add(t);
+            }
+
+            Downloader.Download(recordings);
+        }
+
+        /// <summary>
+        /// Comienzo del proceso de descarga.
+        /// </summary>
+        /// <param name="sender">Origen del evento</param>
+        /// <param name="e">Datos del evento.</param>
+        private void Download_OnStart(object sender, EventArgs e)
+        {
+            LogEvent("Comenzando a descargar grabaciones.");
+
+            Invoke(new MethodInvoker(delegate
+            {
+                Download.Text = "&Cancelar";
+                groupBox4.Enabled = false;
+                Browse.Enabled = false;
+            }));
+        }
+
+        /// <summary>
+        /// Fin del proceso de descarga.
+        /// </summary>
+        /// <param name="sender">Origen del evento</param>
+        /// <param name="e">Datos del evento.</param>
+        private void Download_OnFinish(object sender, EventArgs e)
+        {
+            LogEvent("Se ha finalizado la descarga de grabaciones.");
+
+            Invoke(new MethodInvoker(delegate
+            {
+                Download.Text = "&Descargar";
+                groupBox4.Enabled = true;
+                Browse.Enabled = true;
+                Download.Enabled = Recordings.Items.Count > 0;
+            }));
+        }
+
+        /// <summary>
+        /// Comienzo de la descarga de una grabación.
+        /// </summary>
+        /// <param name="sender">Origen del evento</param>
+        /// <param name="e">Datos del evento.</param>
+        private void Download_OnBegin(object sender, EventArgs e)
+        {
+            var evt = (DownloadEvent)e;
+            var item = downloads[evt.Recording];
+
+            if (Recordings.InvokeRequired)
+            {
+                Recordings.Invoke(new MethodInvoker(delegate
+                {
+                    item.SubItems[6].Text = "Descargando 0%";
+                    item.EnsureVisible();
+                }));
             }
             else
             {
+                item.SubItems[6].Text = "Descargando 0%";
+                item.EnsureVisible();
+            }
+        }
+
+        /// <summary>
+        /// Fin de la descarga de una grabación.
+        /// </summary>
+        /// <param name="sender">Origen del evento</param>
+        /// <param name="e">Datos del evento.</param>
+        private void Download_OnEnd(object sender, EventArgs e)
+        {
+            var evt = (DownloadEvent)e;
+            var item = downloads[evt.Recording];
+
+            if (Recordings.InvokeRequired)
+            {
+                Recordings.Invoke(new MethodInvoker(delegate
+                {
+                    item.Remove();
+                }));
+            }
+            else
+            {
+                item.Remove();
+            }
+
+            downloads[evt.Recording].Remove();
+        }
+
+        /// <summary>
+        /// Descarga en progreso.
+        /// </summary>
+        /// <param name="sender">Origen del evento</param>
+        /// <param name="e">Datos del evento.</param>
+        private void Download_OnDownloading(object sender, EventArgs e)
+        {
+            var evt = (DownloadProgress)e;
+            var item = downloads[evt.Recording];
+
+            if (Recordings.InvokeRequired)
+            {
+                Recordings.Invoke(new MethodInvoker(delegate
+                {
+                    item.SubItems[6].Text = string.Format("Descargando {0}%", evt.Progress);
+                }));
+            }
+            else
+            {
+                item.SubItems[6].Text = string.Format("Descargando {0}%", evt.Progress);
+            }
+        }
+
+        /// <summary>
+        /// Error en la descarga.
+        /// </summary>
+        /// <param name="sender">Origen del evento</param>
+        /// <param name="e">Datos del evento.</param>
+        private void Download_OnError(object sender, EventArgs e)
+        {
+            var evt = (DownloadError)e;
+            var item = downloads[evt.Recording];
+
+            LogEvent(string.Format("Se produjo un error al descargar la grabación {0}.", evt.Recording.Video.FileName), evt.Code);
+
+            if (Recordings.InvokeRequired)
+            {
+                Recordings.Invoke(new MethodInvoker(delegate
+                {
+                    item.SubItems[6].Text = "Error";
+                }));
+            }
+            else
+            {
+                item.SubItems[6].Text = "Error";
+            }
+        }
+
+        /// <summary>
+        /// Cancelación del proceso de descarga.
+        /// </summary>
+        /// <param name="sender">Origen del evento</param>
+        /// <param name="e">Datos del evento.</param>
+        private void Download_OnCancel(object sender, EventArgs e)
+        {
+            var evt = (DownloadEvent)e;
+            var item = downloads[evt.Recording];
+
+            if (Recordings.InvokeRequired)
+            {
+                Recordings.Invoke(new MethodInvoker(delegate
+                {
+                    item.SubItems[6].Text = "Cancelada";
+                }));
+            }
+            else
+            {
+                item.SubItems[6].Text = "Cancelada";
             }
         }
         #endregion
