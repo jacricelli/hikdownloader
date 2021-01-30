@@ -160,33 +160,39 @@
         /// </summary>
         /// <param name="sender">Origen del evento</param>
         /// <param name="e">Datos del evento.</param>
-        private void Download_Click(object sender, EventArgs e)
+        private async void Download_Click(object sender, EventArgs e)
         {
             if (Recordings.Items.Count == 0)
             {
                 return;
             }
 
-            if (Downloader.IsRunning)
+            await Task.Run(() =>
             {
-                Downloader.Cancel();
+                Invoke(new MethodInvoker(delegate
+                {
+                    if (Downloader.IsRunning)
+                    {
+                        Downloader.Cancel();
 
-                return;
-            }
+                        return;
+                    }
 
-            downloads = new Dictionary<Recording, ListViewItem>();
+                    downloads = new Dictionary<Recording, ListViewItem>();
 
-            var recordings = new List<Recording>();
-            foreach (var item in Recordings.Items)
-            {
-                var recording = (ListViewItem)item;
-                var t = (Recording)(recording).Tag;
+                    var recordings = new List<Recording>();
+                    foreach (var item in Recordings.Items)
+                    {
+                        var recording = (ListViewItem)item;
+                        var t = (Recording)(recording).Tag;
 
-                downloads.Add(t, recording);
-                recordings.Add(t);
-            }
+                        downloads.Add(t, recording);
+                        recordings.Add(t);
+                    }
 
-            Downloader.Download(recordings);
+                    Downloader.Download(recordings);
+                }));
+            });
         }
 
         /// <summary>
