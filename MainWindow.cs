@@ -384,12 +384,12 @@
             {
                 Events.Invoke(new MethodInvoker(delegate
                 {
-                    Events.Items.Add(new ListViewItem(new string[] { message, code.ToString() }));
+                    Events.Items.Add(new ListViewItem(new string[] { DateTime.Now.ToString("dd/MM/yyyy HH:mm"), message, code.ToString() }));
                 }));
             }
             else
             {
-                Events.Items.Add(new ListViewItem(new string[] { message, code.ToString() }));
+                Events.Items.Add(new ListViewItem(new string[] { DateTime.Now.ToString("dd/MM/yyyy HH:mm"), message, code.ToString() }));
             }
         }
         #endregion

@@ -61,6 +61,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.Channels = new System.Windows.Forms.ListView();
             this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader11 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.SuspendLayout();
@@ -250,6 +251,7 @@
             // Events
             // 
             this.Events.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader11,
             this.columnHeader6,
             this.columnHeader8});
             this.Events.FullRowSelect = true;
@@ -266,7 +268,7 @@
             // columnHeader6
             // 
             this.columnHeader6.Text = "Mensaje";
-            this.columnHeader6.Width = 890;
+            this.columnHeader6.Width = 810;
             // 
             // columnHeader8
             // 
@@ -318,6 +320,11 @@
             // columnHeader7
             // 
             this.columnHeader7.Width = 165;
+            // 
+            // columnHeader11
+            // 
+            this.columnHeader11.Text = "Fecha";
+            this.columnHeader11.Width = 110;
             // 
             // MainWindow
             // 
@@ -374,6 +381,7 @@
         private System.Windows.Forms.ColumnHeader columnHeader8;
         private System.Windows.Forms.ColumnHeader columnHeader9;
         private System.Windows.Forms.ColumnHeader columnHeader10;
+        private System.Windows.Forms.ColumnHeader columnHeader11;
     }
 }
 
