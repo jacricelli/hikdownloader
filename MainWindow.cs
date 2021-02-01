@@ -152,6 +152,8 @@
 
                     Properties.Settings.Default.Downloads = dialog.SelectedPath;
                     Properties.Settings.Default.Save();
+
+                    Downloader.DownloadDir = Properties.Settings.Default.Downloads;
                 }
             }
         }
