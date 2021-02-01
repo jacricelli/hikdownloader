@@ -118,6 +118,25 @@
         }
 
         /// <summary>
+        /// Obtiene el nombre de archivo de una grabación.
+        /// </summary>
+        /// <param name="recording">Grabación.</param>
+        /// <param name="extension">Extensión del archivo.</param>
+        /// <returns>Nombre del archivo.</returns>
+        public static string GetRecordingFileName(Recording recording, string extension = "")
+        {
+            return string.Format(
+                "{0}-{1:00}\\Channel {2:00}\\{3}_{4}_{5}{6}",
+                recording.Video.Start.Year,
+                recording.Video.Start.Month,
+                recording.Channel.Number,
+                recording.Video.Start.ToString("yyyy-MM-dd"),
+                recording.Video.Start.ToString("HHmmss"),
+                recording.Video.End.ToString("HHmmss"),
+                extension != string.Empty ? $".{extension}" : "");
+        }
+
+        /// <summary>
         /// Cancela las descargas.
         /// </summary>
         public static void Cancel()
@@ -259,15 +278,9 @@
         private static string GetRecordingPath(Recording recording, string extension = "")
         {
             return string.Format(
-                "{0}\\{1}-{2:00}\\Channel {3:00}\\{4}_{5}_{6}{7}",
+                "{0}\\{1}",
                 DownloadDir,
-                recording.Video.Start.Year,
-                recording.Video.Start.Month,
-                recording.Channel.Number,
-                recording.Video.Start.ToString("yyyy-MM-dd"),
-                recording.Video.Start.ToString("HHmmss"),
-                recording.Video.End.ToString("HHmmss"),
-                extension != string.Empty ? $".{extension}" : "");
+                GetRecordingFileName(recording, extension));
         }
 
         /// <summary>
