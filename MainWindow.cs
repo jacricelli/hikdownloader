@@ -316,7 +316,9 @@
             var evt = (DownloadError)e;
             var item = downloads[evt.Recording];
 
-            LogEvent(string.Format("Se produjo un error al descargar la grabación {0}.", evt.Recording.Video.FileName), evt.Code);
+            LogEvent(
+                string.Format("Se produjo un error al descargar la grabación {0} ({1}).", evt.Recording.Video.FileName, Downloader.GetRecordingFileName(evt.Recording)),
+                evt.Code);
 
             if (Recordings.InvokeRequired)
             {
