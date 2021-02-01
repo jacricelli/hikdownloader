@@ -55,13 +55,13 @@
             this.label1 = new System.Windows.Forms.Label();
             this.Start = new System.Windows.Forms.DateTimePicker();
             this.Events = new System.Windows.Forms.ListView();
+            this.columnHeader11 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.label4 = new System.Windows.Forms.Label();
             this.Channels = new System.Windows.Forms.ListView();
             this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader11 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.SuspendLayout();
@@ -265,10 +265,15 @@
             this.Events.UseCompatibleStateImageBehavior = false;
             this.Events.View = System.Windows.Forms.View.Details;
             // 
+            // columnHeader11
+            // 
+            this.columnHeader11.Text = "Fecha";
+            this.columnHeader11.Width = 110;
+            // 
             // columnHeader6
             // 
             this.columnHeader6.Text = "Mensaje";
-            this.columnHeader6.Width = 810;
+            this.columnHeader6.Width = 775;
             // 
             // columnHeader8
             // 
@@ -320,11 +325,6 @@
             // columnHeader7
             // 
             this.columnHeader7.Width = 165;
-            // 
-            // columnHeader11
-            // 
-            this.columnHeader11.Text = "Fecha";
-            this.columnHeader11.Width = 110;
             // 
             // MainWindow
             // 
