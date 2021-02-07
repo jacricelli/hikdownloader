@@ -48,7 +48,7 @@
                 {
                     LogEvent("Se ha inicializado el entorno de programación.");
 
-                    var logPath = string.Format("logs\\{0}_{1}", DateTime.Now.ToString("yyyy-MM-dd"), System.Diagnostics.Process.GetCurrentProcess().Id);
+                    var logPath = string.Format("logs\\HCNetSDK\\{0}_{1}", DateTime.Now.ToString("yyyy-MM-dd"), System.Diagnostics.Process.GetCurrentProcess().Id);
                     if (SDK.EnableLogging(Util.GetDirectory(logPath)))
                     {
                         LogEvent("Se ha habilitado el registro de mensajes de la SDK.");
