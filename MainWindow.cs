@@ -387,11 +387,13 @@
                 Events.Invoke(new MethodInvoker(delegate
                 {
                     Events.Items.Add(new ListViewItem(new string[] { DateTime.Now.ToString("dd/MM/yyyy HH:mm"), message, code.ToString() }));
+                    Events.Items[Events.Items.Count - 1].EnsureVisible();
                 }));
             }
             else
             {
                 Events.Items.Add(new ListViewItem(new string[] { DateTime.Now.ToString("dd/MM/yyyy HH:mm"), message, code.ToString() }));
+                Events.Items[Events.Items.Count - 1].EnsureVisible();
             }
         }
         #endregion
