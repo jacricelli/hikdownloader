@@ -41,7 +41,7 @@
         /// Obtiene el código de error generado por la última operación.
         /// </summary>
         /// <returns>El código de error de la última operación.</returns>
-        [DllImport(@"lib\HCNetSDK.dll", EntryPoint = "NET_DVR_GetLastError")]
+        [DllImport(@"tools\HCNetSDK\HCNetSDK.dll", EntryPoint = "NET_DVR_GetLastError")]
         public static extern uint GetLastError();
 
         /// <summary>
@@ -58,14 +58,14 @@
         /// Inicializa el entorno de programación.
         /// </summary>
         /// <returns>Devuelve TRUE si la operación se ha completado exitosamente, FALSE de lo contrario.</returns>
-        [DllImport(@"lib\HCNetSDK.dll")]
+        [DllImport(@"tools\HCNetSDK\HCNetSDK.dll")]
         private static extern bool NET_DVR_Init();
 
         /// <summary>
         /// Libera recursos utilizados por HCNetSDK.dll.
         /// </summary>
         /// <returns>Devuelve TRUE si la operación se ha completado exitosamente, FALSE de lo contrario.</returns>
-        [DllImport(@"lib\HCNetSDK.dll")]
+        [DllImport(@"tools\HCNetSDK\HCNetSDK.dll")]
         private static extern bool NET_DVR_Cleanup();
 
         /// <summary>
@@ -75,7 +75,7 @@
         /// <param name="strLogDir">Ruta de acceso al directorio donde se guardan los archivos.</param>
         /// <param name="bAutoDel">Indica si se habilita la eliminación automática de archivos de registro cuando se alcance el número máximo.</param>
         /// <returns>Devuelve TRUE si la operación se ha completado exitosamente, FALSE de lo contrario.</returns>
-        [DllImport(@"lib\HCNetSDK.dll")]
+        [DllImport(@"tools\HCNetSDK\HCNetSDK.dll")]
         private static extern bool NET_DVR_SetLogToFile(int bLogEnable, string strLogDir, bool bAutoDel);
     }
 }

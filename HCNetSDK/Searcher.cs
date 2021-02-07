@@ -442,7 +442,7 @@
         /// <param name="lUserID">Identificador del usuario.</param>
         /// <param name="pFindCond">Condiciones de búsqueda.</param>
         /// <returns>Devuelve TRUE si la operación se ha completado exitosamente, FALSE de lo contrario.</returns>
-        [DllImport(@"lib\HCNetSDK.dll")]
+        [DllImport(@"tools\HCNetSDK\HCNetSDK.dll")]
         private static extern int NET_DVR_FindFile_V40(int lUserID, ref NET_DVR_FILECOND_V40 pFindCond);
 
         /// <summary>
@@ -451,7 +451,7 @@
         /// <param name="lFindHandle">Identificador de la búsqueda.</param>
         /// <param name="lpFindData">Datos de la búsqueda.</param>
         /// <returns>Devuelve -1 en caso de error, otro valor que indica el estado de la búsqueda.</returns>
-        [DllImport(@"lib\HCNetSDK.dll")]
+        [DllImport(@"tools\HCNetSDK\HCNetSDK.dll")]
         private static extern int NET_DVR_FindNextFile_V30(int lFindHandle, ref NET_DVR_FINDDATA_V30 lpFindData);
 
         /// <summary>
@@ -459,7 +459,7 @@
         /// </summary>
         /// <param name="lFindHandle">Identificador de la búsqueda.</param>
         /// <returns>Devuelve TRUE si la operación se ha completado exitosamente, FALSE de lo contrario.</returns>
-        [DllImport(@"lib\HCNetSDK.dll")]
+        [DllImport(@"tools\HCNetSDK\HCNetSDK.dll")]
         private static extern bool NET_DVR_FindClose_V30(int lFindHandle);
     }
 }

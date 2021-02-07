@@ -204,7 +204,7 @@
         /// <param name="sPassword">Contraseña.</param>
         /// <param name="lpDeviceInfo">Información del dispositivo.</param>
         /// <returns>Devuelve -1 en caso que el usuario y/o contraseña sean incorrectos, un valor mayor a cero como identificador del usuario</returns>
-        [DllImport(@"lib\HCNetSDK.dll")]
+        [DllImport(@"tools\HCNetSDK\HCNetSDK.dll")]
         private static extern int NET_DVR_Login_V30(string sDVRIP, int wDVRPort, string sUserName, string sPassword, ref NET_DVR_DEVICEINFO_V30 lpDeviceInfo);
 
         /// <summary>
@@ -212,7 +212,7 @@
         /// </summary>
         /// <param name="iUserID">Identificador del usuario.</param>
         /// <returns>Devuelve TRUE si la operación se ha completado exitosamente, FALSE de lo contrario.</returns>
-        [DllImport(@"lib\HCNetSDK.dll")]
+        [DllImport(@"tools\HCNetSDK\HCNetSDK.dll")]
         private static extern bool NET_DVR_Logout(int iUserID);
     }
 }

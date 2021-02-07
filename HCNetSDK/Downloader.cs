@@ -290,7 +290,7 @@
         /// <param name="sDVRFileName">Nombre del archivo.</param>
         /// <param name="sSavedFileName">Ruta de acceso donde se guardará el archivo.</param>
         /// <returns>Devuelve -1 en caso de error, un valor mayor a cero como identificador de la descarga.</returns>
-        [DllImport(@"lib\HCNetSDK.dll")]
+        [DllImport(@"tools\HCNetSDK\HCNetSDK.dll")]
         private static extern int NET_DVR_GetFileByName(int lUserID, string sDVRFileName, string sSavedFileName);
 
         /// <summary>
@@ -298,7 +298,7 @@
         /// </summary>
         /// <param name="lFileHandle">Identificador de la descarga.</param>
         /// <returns>Devuelve TRUE si la operación se ha completado exitosamente, FALSE de lo contrario.</returns>
-        [DllImport(@"lib\HCNetSDK.dll")]
+        [DllImport(@"tools\HCNetSDK\HCNetSDK.dll")]
         private static extern bool NET_DVR_StopGetFile(int lFileHandle);
 
         /// <summary>
@@ -306,7 +306,7 @@
         /// </summary>
         /// <param name="lFileHandle">Identificador de la descarga.</param>
         /// <returns>Progreso de la descarga.</returns>
-        [DllImport(@"lib\HCNetSDK.dll")]
+        [DllImport(@"tools\HCNetSDK\HCNetSDK.dll")]
         private static extern int NET_DVR_GetDownloadPos(int lFileHandle);
 
         /// <summary>
@@ -319,7 +319,7 @@
         /// <param name="lpOutBuffer">Puntero de parámetros de salida.</param>
         /// <param name="lpOutValue">Tamaño del parámetro de salida.</param>
         /// <returns>Devuelve TRUE si la operación se ha completado exitosamente, FALSE de lo contrario.</returns>
-        [DllImport(@"lib\HCNetSDK.dll")]
+        [DllImport(@"tools\HCNetSDK\HCNetSDK.dll")]
         private static extern bool NET_DVR_PlayBackControl_V40(int lPlayHandle, uint dwControlCode, IntPtr lpInBuffer, uint dwInValue, IntPtr lpOutBuffer, ref uint lpOutValue);
     }
 }
