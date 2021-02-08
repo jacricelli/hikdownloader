@@ -79,5 +79,29 @@ namespace HikDownloader.Properties {
                 return ((int)(this["ParallelDownloads"]));
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string FFmpegBinary {
+            get {
+                return ((string)(this["FFmpegBinary"]));
+            }
+            set {
+                this["FFmpegBinary"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string FFmpegOutDir {
+            get {
+                return ((string)(this["FFmpegOutDir"]));
+            }
+            set {
+                this["FFmpegOutDir"] = value;
+            }
+        }
     }
 }

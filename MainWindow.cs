@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Threading.Tasks;
     using System.Windows.Forms;
     using FluentDateTime;
@@ -33,6 +34,8 @@
             SetupSearch();
 
             SetupDownload();
+
+            SetupMerge();
         }
 
         /// <summary>
@@ -663,6 +666,31 @@
         #endregion
 
         #region Combinar
+
+        /// <summary>
+        /// Prepara la combinación de archivos.
+        /// </summary>
+        private void SetupMerge()
+        {
+            Util.GetDirectory("temp");
+
+            if (Properties.Settings.Default.FFmpegBinary == string.Empty)
+            {
+                var ffmpegBinary = Util.GetDirectory("tools\\ffmpeg\\bin\\") + "ffmpeg.exe";
+                if (File.Exists(ffmpegBinary))
+                {
+                    Properties.Settings.Default.FFmpegBinary = ffmpegBinary;
+                    Properties.Settings.Default.Save();
+                }
+            }
+
+            if (Properties.Settings.Default.FFmpegOutDir == string.Empty)
+            {
+                Properties.Settings.Default.FFmpegOutDir = Util.GetDirectory("videos");
+                Properties.Settings.Default.Save();
+            }
+        }
+         
         /// <summary>
         /// Combina los archivos de las grabaciones.
         /// </summary>
