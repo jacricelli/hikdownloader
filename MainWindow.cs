@@ -57,7 +57,7 @@
                     var logPath = string.Format("logs\\HCNetSDK\\{0}_{1}", DateTime.Now.ToString("yyyy-MM-dd"), System.Diagnostics.Process.GetCurrentProcess().Id);
                     if (SDK.EnableLogging(Util.GetDirectory(logPath)))
                     {
-                        LogEvent("Se ha habilitado el registro de mensajes de la SDK.");
+                        LogEvent(string.Format("Se ha habilitado el registro de mensajes de la SDK ({0}).", logPath));
 
                         Session.Address = Properties.Settings.Default.Address;
                         Session.Port = Properties.Settings.Default.Port;
@@ -729,7 +729,7 @@
         private List<string> BuildFilesList()
         {
             var groups = Directory.EnumerateFiles(Downloader.DownloadDir, "*.avi", SearchOption.AllDirectories)
-                .Select(x => x)
+                .Select(x => string.Format("file '{0}'", x))
                 .GroupBy(i =>
                 {
                     var parts = i.Split('\\');
@@ -747,9 +747,7 @@
                 var fileName = group.Key + ".txt";
                 try
                 {
-                    File.WriteAllLines(
-                        path + "\\" + fileName,
-                        group.Select(i => string.Format("file '{0}'", i)));
+                    File.WriteAllLines(path + "\\" + fileName, group);
 
                     results.Add(path + "\\" + fileName);
                 }
@@ -815,11 +813,12 @@
                         });
                     File.Delete(inlist);
 
-                    LogEvent(string.Format("Se ha combinado {0}", fileName));
+                    LogEvent(string.Format("Se ha combinado {0}.", fileName));
                 }
                 else
                 {
                     error = true;
+
                     var logPath = Util.GetDirectory("logs\\ffmpeg");
                     var logFile = fileName + ".log";
 
