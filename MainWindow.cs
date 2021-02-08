@@ -212,6 +212,7 @@
                 Download.Text = "&Cancelar";
                 groupBox4.Enabled = false;
                 Browse.Enabled = false;
+                Concat.Enabled = false;
             }));
         }
 
@@ -230,6 +231,7 @@
                 groupBox4.Enabled = true;
                 Browse.Enabled = true;
                 Download.Enabled = Recordings.Items.Count > 0;
+                Concat.Enabled = true;
             }));
         }
 
@@ -657,6 +659,18 @@
         public void Search_OnCancel(object sender, EventArgs e)
         {
             LogEvent("Se ha cancelado la búsqueda.");
+        }
+        #endregion
+
+        #region Combinar
+        /// <summary>
+        /// Combina los archivos de las grabaciones.
+        /// </summary>
+        /// <param name="sender">Origen del evento</param>
+        /// <param name="e">Datos del evento.</param>
+        private void Concat_Click(object sender, EventArgs e)
+        {
+
         }
         #endregion
     }

@@ -62,12 +62,14 @@
             this.label4 = new System.Windows.Forms.Label();
             this.Channels = new System.Windows.Forms.ListView();
             this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.Concat = new System.Windows.Forms.Button();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.Concat);
             this.groupBox3.Controls.Add(this.Download);
             this.groupBox3.Controls.Add(this.Browse);
             this.groupBox3.Controls.Add(this.DownloadDir);
@@ -83,7 +85,7 @@
             // Download
             // 
             this.Download.Enabled = false;
-            this.Download.Location = new System.Drawing.Point(704, 512);
+            this.Download.Location = new System.Drawing.Point(604, 512);
             this.Download.Name = "Download";
             this.Download.Size = new System.Drawing.Size(93, 24);
             this.Download.TabIndex = 8;
@@ -326,6 +328,16 @@
             // 
             this.columnHeader7.Width = 165;
             // 
+            // Concat
+            // 
+            this.Concat.Location = new System.Drawing.Point(704, 512);
+            this.Concat.Name = "Concat";
+            this.Concat.Size = new System.Drawing.Size(93, 24);
+            this.Concat.TabIndex = 9;
+            this.Concat.Text = "&Combinar";
+            this.Concat.UseVisualStyleBackColor = true;
+            this.Concat.Click += new System.EventHandler(this.Concat_Click);
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -382,6 +394,7 @@
         private System.Windows.Forms.ColumnHeader columnHeader9;
         private System.Windows.Forms.ColumnHeader columnHeader10;
         private System.Windows.Forms.ColumnHeader columnHeader11;
+        private System.Windows.Forms.Button Concat;
     }
 }
 
