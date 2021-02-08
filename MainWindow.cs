@@ -2,8 +2,10 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.IO;
     using System.Linq;
+    using System.Text;
     using System.Threading.Tasks;
     using System.Windows.Forms;
     using FluentDateTime;
@@ -690,21 +692,29 @@
                 Properties.Settings.Default.Save();
             }
         }
-         
+
         /// <summary>
         /// Combina los archivos de las grabaciones.
         /// </summary>
         /// <param name="sender">Origen del evento</param>
         /// <param name="e">Datos del evento.</param>
-        private void Concat_Click(object sender, EventArgs e)
+        private async void Concat_Click(object sender, EventArgs e)
         {
             var lists = BuildFilesList();
             if (lists.Count > 0)
             {
+                LogEvent("Se ha comenzando a combinar archivos.");
+                Concat.Enabled = false;
+                
                 foreach (var list in lists)
                 {
-                    ConcatFiles(list);
+                    await ConcatFiles(list);
                 }
+
+                ConcatCleanUp();
+
+                Concat.Enabled = true;
+                LogEvent("Se ha completado la combinación de archivos.");
             }
             else
             {
@@ -723,7 +733,7 @@
                 .GroupBy(i =>
                 {
                     var parts = i.Split('\\');
-                    var channel = parts[parts.Length - 2].Replace(" ", string.Empty);
+                    var channel = parts[parts.Length - 2];
                     var date = parts[parts.Length - 1].Split('_')[0];
 
                     return string.Format("{0}_{1}", channel, date);
@@ -756,8 +766,107 @@
         /// Combina una lista de archivos.
         /// </summary>
         /// <param name="inlist">Ruta de acceso a la lista de archivos.</param>
-        private void ConcatFiles(string inlist)
+        private async Task<bool> ConcatFiles(string inlist)
         {
+            var error = false;
+            var fileName = Path.GetFileNameWithoutExtension(inlist);
+            var parts = fileName.Split('_');
+            var path = Properties.Settings.Default.FFmpegOutDir;
+            var outFile = string.Format("{0}\\{1}\\{2}\\{3}.avi", path, parts[1].Substring(0, parts[1].Length - 3), parts[0], parts[1]);
+            var workingDirectory = Path.GetDirectoryName(outFile);
+
+            if (!Directory.Exists(workingDirectory))
+            {
+                Directory.CreateDirectory(workingDirectory);
+            }
+
+            await Task.Run(() =>
+            {
+                var log = new StringBuilder();
+
+                using (var ffmpeg = new Process())
+                {
+                    ffmpeg.StartInfo.FileName = Properties.Settings.Default.FFmpegBinary;
+                    ffmpeg.StartInfo.Arguments = string.Format("-y -loglevel error -f concat -safe 0 -i \"{0}\" -c copy \"{1}\"", inlist, outFile);
+                    ffmpeg.StartInfo.UseShellExecute = false;
+                    ffmpeg.StartInfo.RedirectStandardOutput = true;
+                    ffmpeg.StartInfo.RedirectStandardError = true;
+                    ffmpeg.StartInfo.CreateNoWindow = true;
+                    ffmpeg.StartInfo.WorkingDirectory = workingDirectory;
+
+                    ffmpeg.EnableRaisingEvents = true;
+                    ffmpeg.OutputDataReceived += (s, e) => log.AppendLine(e.Data);
+                    ffmpeg.ErrorDataReceived += (s, e) => log.AppendLine(e.Data);
+                    ffmpeg.Start();
+                    ffmpeg.BeginOutputReadLine();
+                    ffmpeg.BeginErrorReadLine();
+                    ffmpeg.WaitForExit();
+                }
+
+                var results = log.ToString().Trim();
+                if (results.Length == 0)
+                {
+                    File.ReadAllLines(inlist)
+                        .Select(i => i.Replace("file '", string.Empty).TrimEnd('\''))
+                        .ToList<string>()
+                        .ForEach(delegate (string f)
+                        {
+                            File.Delete(f);
+                        });
+                    File.Delete(inlist);
+
+                    LogEvent(string.Format("Se ha combinado {0}", fileName));
+                }
+                else
+                {
+                    error = true;
+                    var logPath = Util.GetDirectory("logs\\ffmpeg");
+                    var logFile = fileName + ".log";
+
+                    File.WriteAllText(logPath + "\\" + logFile, results);
+
+                    LogEvent(string.Format("Error al combinar archivos ({0}).", logFile));
+                }
+            });
+
+            return error != false;
+        }
+
+        /// <summary>
+        /// Limpieza.
+        /// </summary>
+        private void ConcatCleanUp()
+        {
+            DeleteEmptyDirs(Downloader.DownloadDir);
+
+            if (!Directory.Exists(Downloader.DownloadDir))
+            {
+                Directory.CreateDirectory(Downloader.DownloadDir);
+            }
+        }
+
+        /// <summary>
+        /// Elimina directorios vacíos de forma recursiva.
+        /// </summary>
+        /// <param name="path"></param>
+        private void DeleteEmptyDirs(string path)
+        {
+            foreach (var dir in Directory.EnumerateDirectories(path))
+            {
+                DeleteEmptyDirs(dir);
+            }
+
+            var entries = Directory.EnumerateFileSystemEntries(path);
+
+            if (!entries.Any())
+            {
+                try
+                {
+                    Directory.Delete(path);
+                }
+                catch (UnauthorizedAccessException) { }
+                catch (DirectoryNotFoundException) { }
+            }
         }
         #endregion
     }
