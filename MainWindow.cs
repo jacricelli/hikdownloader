@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using System.Threading.Tasks;
     using System.Windows.Forms;
     using FluentDateTime;
@@ -666,7 +667,6 @@
         #endregion
 
         #region Combinar
-
         /// <summary>
         /// Prepara la combinación de archivos.
         /// </summary>
@@ -698,7 +698,66 @@
         /// <param name="e">Datos del evento.</param>
         private void Concat_Click(object sender, EventArgs e)
         {
+            var lists = BuildFilesList();
+            if (lists.Count > 0)
+            {
+                foreach (var list in lists)
+                {
+                    ConcatFiles(list);
+                }
+            }
+            else
+            {
+                LogEvent("No se han encontrado archivos para combinar.");
+            }
+        }
 
+        /// <summary>
+        /// Genera listas de archivos agrupadas por canal y fecha.
+        /// </summary>
+        /// <returns></returns>
+        private List<string> BuildFilesList()
+        {
+            var groups = Directory.EnumerateFiles(Downloader.DownloadDir, "*.avi", SearchOption.AllDirectories)
+                .Select(x => x)
+                .GroupBy(i =>
+                {
+                    var parts = i.Split('\\');
+                    var channel = parts[parts.Length - 2].Replace(" ", string.Empty);
+                    var date = parts[parts.Length - 1].Split('_')[0];
+
+                    return string.Format("{0}_{1}", channel, date);
+                });
+
+            var results = new List<string>();
+
+            foreach (var group in groups)
+            {
+                var path = Util.GetDirectory("temp");
+                var fileName = group.Key + ".txt";
+                try
+                {
+                    File.WriteAllLines(
+                        path + "\\" + fileName,
+                        group.Select(i => string.Format("file '{0}'", i)));
+
+                    results.Add(path + "\\" + fileName);
+                }
+                catch (Exception ex)
+                {
+                    LogEvent(string.Format("{0} {1}", ex.Message, fileName));
+                }
+            }
+
+            return results;
+        }
+
+        /// <summary>
+        /// Combina una lista de archivos.
+        /// </summary>
+        /// <param name="inlist">Ruta de acceso a la lista de archivos.</param>
+        private void ConcatFiles(string inlist)
+        {
         }
         #endregion
     }
