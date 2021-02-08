@@ -57,7 +57,7 @@
                     var logPath = string.Format("logs\\HCNetSDK\\{0}_{1}", DateTime.Now.ToString("yyyy-MM-dd"), System.Diagnostics.Process.GetCurrentProcess().Id);
                     if (SDK.EnableLogging(Util.GetDirectory(logPath)))
                     {
-                        LogEvent("Se ha habilitado el registro de mensajes de la SDK.");
+                        LogEvent(string.Format("Se ha habilitado el registro de mensajes de la SDK ({0}).", logPath));
 
                         Session.Address = Properties.Settings.Default.Address;
                         Session.Port = Properties.Settings.Default.Port;
