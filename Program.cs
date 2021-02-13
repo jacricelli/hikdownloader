@@ -1,6 +1,8 @@
 ﻿namespace HikDownloader
 {
+    using Newtonsoft.Json;
     using System;
+    using System.IO;
     using System.Runtime.InteropServices;
 
     /// <summary>
@@ -104,6 +106,11 @@
         #endregion
 
         /// <summary>
+        /// Configuración.
+        /// </summary>
+        public static Config Config { get; private set; }
+
+        /// <summary>
         /// Punto de entrada principal para la aplicación.
         /// </summary>
         /// <param name="args">Argumentos.</param>
@@ -112,7 +119,10 @@
             SetConsoleCtrlHandler(new HandlerRoutine(ConsoleCtrlCheck), true);
             AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
 
+            Config = JsonConvert.DeserializeObject<Config>(File.ReadAllText("config.json"));
+
             HCNetSDK.Initialize();
+            HCNetSDK.SetLogToFile(Config.HCNetSDK.Log);
         }
     }
 }
