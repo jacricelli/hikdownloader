@@ -100,6 +100,8 @@
             {
                 cleanedUp = true;
 
+                HCNetSDK.Logout();
+
                 HCNetSDK.Cleanup();
             }
         }
@@ -137,6 +139,11 @@
                 if (!HCNetSDK.SetLogToFile(Config.HCNetSDK.Log))
                 {
                     Util.ShowWarning(HCNetSDK.GetLastError());
+                }
+
+                if (!HCNetSDK.Login(Config.HCNetSDK.Device))
+                {
+                    Stop(HCNetSDK.GetLastError());
                 }
             }
         }

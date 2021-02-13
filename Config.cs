@@ -22,6 +22,11 @@
         /// Configuración del registro de mensajes.
         /// </summary>
         public HCNetSDKLogConfig Log { get; set; }
+
+        /// <summary>
+        /// Configuración del dispositivo.
+        /// </summary>
+        public HCNetSDKDeviceConfig Device { get; set; }
     }
 
     /// <summary>
@@ -60,5 +65,31 @@
         /// Obtiene o establece la eliminación automática de archivos de registro cuando se alcance el número máximo.
         /// </summary>
         public bool AutoDel { get; set; }
+    }
+
+    /// <summary>
+    /// Configuración del dispositivo.
+    /// </summary>
+    public class HCNetSDKDeviceConfig
+    {
+        /// <summary>
+        /// Dirección.
+        /// </summary>
+        public string Address { get; set; }
+
+        /// <summary>
+        /// Puerto.
+        /// </summary>
+        public int Port { get; set; } = 8000;
+
+        /// <summary>
+        /// Nombre de usuario.
+        /// </summary>
+        public string UserName { get; set; }
+
+        /// <summary>
+        /// Contraseña.
+        /// </summary>
+        public string Password { get; set; }
     }
 }

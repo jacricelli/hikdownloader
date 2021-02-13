@@ -4,6 +4,12 @@
             "dir": "{appPath}\\logs\\HCNetSDK",
             "level": 3,
             "autoDel": true
+        },
+        "device": {
+            "address": "",
+            "port": 8000,
+            "userName": "",
+            "password": ""
         }
     }
 }
