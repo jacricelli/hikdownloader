@@ -119,7 +119,16 @@
             SetConsoleCtrlHandler(new HandlerRoutine(ConsoleCtrlCheck), true);
             AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
 
-            Config = JsonConvert.DeserializeObject<Config>(File.ReadAllText("config.json"));
+            try
+            {
+                Config = JsonConvert.DeserializeObject<Config>(File.ReadAllText("config.json"));
+            }
+            catch (Exception ex)
+            {
+                Util.ShowError(ex.Message);
+
+                Environment.Exit(-1);
+            }
 
             HCNetSDK.Initialize();
             HCNetSDK.SetLogToFile(Config.HCNetSDK.Log);
