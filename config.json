@@ -1,2 +1,9 @@
 ﻿{
+    "HCNetSDK": {
+        "log": {
+            "dir": "{appPath}\\logs\\HCNetSDK",
+            "level": 3,
+            "autoDel": true
+        }
+    }
 }
