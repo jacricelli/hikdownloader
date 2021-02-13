@@ -125,13 +125,31 @@
             }
             catch (Exception ex)
             {
-                Util.ShowError(ex.Message);
-
-                Environment.Exit(-1);
+                Stop(ex.Message);
             }
 
-            HCNetSDK.Initialize();
-            HCNetSDK.SetLogToFile(Config.HCNetSDK.Log);
+            if (!HCNetSDK.Initialize())
+            {
+                Stop(HCNetSDK.GetLastError());
+            }
+            else
+            {
+                if (!HCNetSDK.SetLogToFile(Config.HCNetSDK.Log))
+                {
+                    Util.ShowWarning(HCNetSDK.GetLastError());
+                }
+            }
+        }
+
+        /// <summary>
+        /// Muestra un mensaje y termina el proceso.
+        /// </summary>
+        /// <param name="message">Mensaje.</param>
+        public static void Stop(string message)
+        {
+            Util.ShowError(message);
+
+            Environment.Exit(-1);
         }
     }
 }
