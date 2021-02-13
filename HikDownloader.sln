@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
-VisualStudioVersion = 16.0.30907.101
+VisualStudioVersion = 16.0.31005.135
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HikDownloader", "HikDownloader.csproj", "{03E36A60-2374-4E20-8AC3-CA491D0C5433}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HikDownloader", "HikDownloader.csproj", "{FED6CF08-3973-4091-8CC3-F4EDEA0076D0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{03E36A60-2374-4E20-8AC3-CA491D0C5433}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{03E36A60-2374-4E20-8AC3-CA491D0C5433}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{03E36A60-2374-4E20-8AC3-CA491D0C5433}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{03E36A60-2374-4E20-8AC3-CA491D0C5433}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FED6CF08-3973-4091-8CC3-F4EDEA0076D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FED6CF08-3973-4091-8CC3-F4EDEA0076D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FED6CF08-3973-4091-8CC3-F4EDEA0076D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FED6CF08-3973-4091-8CC3-F4EDEA0076D0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {8DE64147-2204-436C-9603-784788D89CD8}
+		SolutionGuid = {BA1EAF79-794B-4728-88E7-D6330870B3F9}
 	EndGlobalSection
 EndGlobal
