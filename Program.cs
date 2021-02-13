@@ -1,14 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace HikDownloader
+﻿namespace HikDownloader
 {
-    class Program
+    /// <summary>
+    /// Programa.
+    /// </summary>
+    public static class Program
     {
-        static void Main(string[] args)
+        /// <summary>
+        /// Punto de entrada principal para la aplicación.
+        /// </summary>
+        /// <param name="args">Argumentos.</param>
+        public static void Main(string[] args)
         {
         }
     }
