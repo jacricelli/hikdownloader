@@ -97,6 +97,8 @@
             if (!cleanedUp)
             {
                 cleanedUp = true;
+
+                HCNetSDK.Cleanup();
             }
         }
         #endregion
@@ -109,6 +111,8 @@
         {
             SetConsoleCtrlHandler(new HandlerRoutine(ConsoleCtrlCheck), true);
             AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
+
+            HCNetSDK.Initialize();
         }
     }
 }
