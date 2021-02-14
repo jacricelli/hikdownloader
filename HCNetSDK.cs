@@ -1,6 +1,5 @@
 ﻿namespace HikDownloader
 {
-    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Reflection;
@@ -94,7 +93,7 @@
         {
             if (UserId < 0)
             {
-                var deviceInfo = default(NET_DVR_DEVICEINFO_V30);
+                var deviceInfo = default(NET_DVR_DEVICEINFO);
                 UserId = NET_DVR_Login_V30(config.Address, config.Port, config.UserName, config.Password, ref deviceInfo);
 
                 return UserId > -1;
@@ -123,7 +122,7 @@
         /// Información del dispositivo.
         /// </summary>
         [StructLayoutAttribute(LayoutKind.Sequential)]
-        private struct NET_DVR_DEVICEINFO_V30
+        private struct NET_DVR_DEVICEINFO
         {
             /// <summary>
             /// Número de serie.
@@ -258,7 +257,7 @@
         /// <param name="lpDeviceInfo">Información del dispositivo.</param>
         /// <returns>Devuelve -1 en caso que el usuario y/o contraseña sean incorrectos, un valor mayor a cero como identificador del usuario</returns>
         [DllImport(@"lib\HCNetSDK.dll")]
-        private static extern int NET_DVR_Login_V30(string sDVRIP, int wDVRPort, string sUserName, string sPassword, ref NET_DVR_DEVICEINFO_V30 lpDeviceInfo);
+        private static extern int NET_DVR_Login_V30(string sDVRIP, int wDVRPort, string sUserName, string sPassword, ref NET_DVR_DEVICEINFO lpDeviceInfo);
 
         /// <summary>
         /// Cierra una sesión.
@@ -360,7 +359,7 @@
         /// Condiciones de búsqueda.
         /// </summary>
         [StructLayoutAttribute(LayoutKind.Sequential)]
-        public struct NET_DVR_FILECOND_V40
+        public struct NET_DVR_FILECOND
         {
             /// <summary>
             /// Número de canal.
@@ -445,7 +444,7 @@
         /// Resultado de búsqueda.
         /// </summary>
         [StructLayoutAttribute(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-        public struct NET_DVR_FINDDATA_V30
+        public struct NET_DVR_FINDDATA
         {
             /// <summary>
             /// Nombre del archivo.
@@ -548,8 +547,8 @@
         /// <param name="lUserID">Identificador del usuario.</param>
         /// <param name="pFindCond">Condiciones de búsqueda.</param>
         /// <returns>Devuelve TRUE si la operación se ha completado exitosamente, FALSE de lo contrario.</returns>
-        [DllImport(@"lib\HCNetSDK.dll")]
-        public static extern int NET_DVR_FindFile_V40(int lUserID, ref NET_DVR_FILECOND_V40 pFindCond);
+        [DllImport(@"lib\HCNetSDK.dll", EntryPoint = "NET_DVR_FindFile_V40")]
+        public static extern int FindFile(int lUserID, ref NET_DVR_FILECOND pFindCond);
 
         /// <summary>
         /// Obtiene el próximo archivo de la búsqueda.
@@ -557,16 +556,16 @@
         /// <param name="lFindHandle">Identificador de la búsqueda.</param>
         /// <param name="lpFindData">Datos de la búsqueda.</param>
         /// <returns>Devuelve -1 en caso de error, otro valor que indica el estado de la búsqueda.</returns>
-        [DllImport(@"lib\HCNetSDK.dll")]
-        public static extern int NET_DVR_FindNextFile_V30(int lFindHandle, ref NET_DVR_FINDDATA_V30 lpFindData);
+        [DllImport(@"lib\HCNetSDK.dll", EntryPoint = "NET_DVR_FindNextFile_V30")]
+        public static extern int FindNextFile(int lFindHandle, ref NET_DVR_FINDDATA lpFindData);
 
         /// <summary>
         /// Detiene una búsqueda.
         /// </summary>
         /// <param name="lFindHandle">Identificador de la búsqueda.</param>
         /// <returns>Devuelve TRUE si la operación se ha completado exitosamente, FALSE de lo contrario.</returns>
-        [DllImport(@"lib\HCNetSDK.dll")]
-        public static extern bool NET_DVR_FindClose_V30(int lFindHandle);
+        [DllImport(@"lib\HCNetSDK.dll", EntryPoint = "NET_DVR_FindClose_V30")]
+        public static extern bool FindClose(int lFindHandle);
         #endregion
     }
 }

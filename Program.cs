@@ -178,9 +178,9 @@
         /// <param name="start">Fecha de comienzo.</param>
         /// <param name="end">Fecha de finalización.</param>
         /// <returns>Resultados de la búsqueda.</returns>
-        private static List<HCNetSDK.NET_DVR_FINDDATA_V30> Search(int[] channels, DateTime start, DateTime end)
+        private static List<HCNetSDK.NET_DVR_FINDDATA> Search(int[] channels, DateTime start, DateTime end)
         {
-            var results = new List<HCNetSDK.NET_DVR_FINDDATA_V30>();
+            var results = new List<HCNetSDK.NET_DVR_FINDDATA>();
 
             foreach (var channel in channels)
             {
@@ -192,7 +192,7 @@
                         thru = end;
                     }
 
-                    var conditions = default(HCNetSDK.NET_DVR_FILECOND_V40);
+                    var conditions = default(HCNetSDK.NET_DVR_FILECOND);
                     conditions.lChannel = channel;
                     conditions.dwFileType = 0xff;
                     conditions.dwIsLocked = 0xff;
@@ -211,13 +211,13 @@
                     conditions.struStopTime.dwMinute = 59;
                     conditions.struStopTime.dwSecond = 59;
 
-                    var handle = HCNetSDK.NET_DVR_FindFile_V40(HCNetSDK.UserId, ref conditions);
+                    var handle = HCNetSDK.FindFile(HCNetSDK.UserId, ref conditions);
                     if (handle > -1)
                     {
-                        var record = default(HCNetSDK.NET_DVR_FINDDATA_V30);
+                        var record = default(HCNetSDK.NET_DVR_FINDDATA);
                         while (true)
                         {
-                            var result = HCNetSDK.NET_DVR_FindNextFile_V30(handle, ref record);
+                            var result = HCNetSDK.FindNextFile(handle, ref record);
                             if (result == HCNetSDK.NET_DVR_ISFINDING)
                             {
                                 continue;
@@ -235,7 +235,7 @@
                             }
                         }
 
-                        HCNetSDK.NET_DVR_FindClose_V30(handle);
+                        HCNetSDK.FindClose(handle);
                     }
                     else
                     {
