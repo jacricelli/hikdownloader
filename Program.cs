@@ -1,5 +1,7 @@
 ﻿namespace HikDownloader
 {
+    using CommandLine;
+    using CommandLine.Text;
     using Newtonsoft.Json;
     using System;
     using System.IO;
@@ -130,22 +132,31 @@
                 Stop(ex.Message);
             }
 
-            if (!HCNetSDK.Initialize())
+            if (HCNetSDK.Initialize())
             {
-                Stop(HCNetSDK.GetLastError());
-            }
-            else
-            {
-                if (!HCNetSDK.SetLogToFile(Config.HCNetSDK.Log))
+                if (HCNetSDK.SetLogToFile(Config.HCNetSDK.Log))
                 {
-                    Util.ShowWarning(HCNetSDK.GetLastError());
-                }
+                    if (HCNetSDK.Login(Config.HCNetSDK.Device))
+                    {
+                        SentenceBuilder.Factory = () => new LocalizableSentenceBuilder();
 
-                if (!HCNetSDK.Login(Config.HCNetSDK.Device))
-                {
-                    Stop(HCNetSDK.GetLastError());
+                        Parser.Default.ParseArguments<Options>(args)
+                            .WithParsed(Run);
+
+                        return;
+                    }
                 }
             }
+
+            Stop(HCNetSDK.GetLastError());
+        }
+
+        /// <summary>
+        /// Ejecuta la descarga de grabaciones de acuerdo a las opciones especificadas.
+        /// </summary>
+        /// <param name="opts">Opciones.</param>
+        private static void Run(Options opts)
+        {
         }
 
         /// <summary>
