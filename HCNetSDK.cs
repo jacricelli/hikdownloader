@@ -83,7 +83,7 @@
         /// <summary>
         /// Identificador del usuario.
         /// </summary>
-        private static int _userId = -1;
+        public static int UserId { get; private set; } = -1;
 
         /// <summary>
         /// Inicia una sesión.
@@ -92,12 +92,12 @@
         /// <returns>Devuelve TRUE si la operación se ha completado exitosamente, FALSE de lo contrario.</returns>
         public static bool Login(HCNetSDKDeviceConfig config)
         {
-            if (_userId < 0)
+            if (UserId < 0)
             {
                 var deviceInfo = default(NET_DVR_DEVICEINFO_V30);
-                _userId = NET_DVR_Login_V30(config.Address, config.Port, config.UserName, config.Password, ref deviceInfo);
+                UserId = NET_DVR_Login_V30(config.Address, config.Port, config.UserName, config.Password, ref deviceInfo);
 
-                return _userId > -1;
+                return UserId > -1;
             }
 
             return false;
@@ -109,9 +109,9 @@
         /// <returns>Devuelve TRUE si la operación se ha completado exitosamente, FALSE de lo contrario.</returns>
         public static bool Logout()
         {
-            if (_userId > -1 && NET_DVR_Logout(_userId))
+            if (UserId > -1 && NET_DVR_Logout(UserId))
             {
-                _userId = -1;
+                UserId = -1;
 
                 return true;
             }
@@ -317,132 +317,44 @@
 
         #region Búsqueda
         /// <summary>
-        /// Realiza una búsqueda.
-        /// </summary>
-        /// <param name="channels">Uno o más canales.</param>
-        /// <param name="start">Fecha de comienzo.</param>
-        /// <param name="end">Fecha de finalización.</param>
-        /// <returns>Resultados de la búsqueda.</returns>
-        public static List<NET_DVR_FINDDATA_V30> Search(int[] channels, DateTime start, DateTime end)
-        {
-            var results = new List<NET_DVR_FINDDATA_V30>();
-
-            foreach (var channel in channels)
-            {
-                foreach (var from in EachDay(start, end))
-                {
-                    var thru = from.AddHours(23).AddMinutes(59).AddSeconds(59);
-                    if (thru > end)
-                    {
-                        thru = end;
-                    }
-
-                    var conditions = default(NET_DVR_FILECOND_V40);
-                    conditions.lChannel = channel;
-                    conditions.dwFileType = 0xff;
-                    conditions.dwIsLocked = 0xff;
-
-                    conditions.struStartTime.dwYear = (uint)from.Year;
-                    conditions.struStartTime.dwMonth = (uint)from.Month;
-                    conditions.struStartTime.dwDay = (uint)from.Day;
-                    conditions.struStartTime.dwHour = 0;
-                    conditions.struStartTime.dwMinute = 0;
-                    conditions.struStartTime.dwSecond = 0;
-
-                    conditions.struStopTime.dwYear = (uint)thru.Year;
-                    conditions.struStopTime.dwMonth = (uint)thru.Month;
-                    conditions.struStopTime.dwDay = (uint)thru.Day;
-                    conditions.struStopTime.dwHour = 23;
-                    conditions.struStopTime.dwMinute = 59;
-                    conditions.struStopTime.dwSecond = 59;
-
-                    var handle = NET_DVR_FindFile_V40(_userId, ref conditions);
-                    if (handle > -1)
-                    {
-                        var record = default(NET_DVR_FINDDATA_V30);
-                        while (true)
-                        {
-                            var result = NET_DVR_FindNextFile_V30(handle, ref record);
-                            if (result == NET_DVR_ISFINDING)
-                            {
-                                continue;
-                            }
-                            else if (result == NET_DVR_FILE_SUCCESS)
-                            {
-                                if (!results.Contains(record))
-                                {
-                                    results.Add(record);
-                                }
-                            }
-                            else if (result == NET_DVR_FIND_TIMEOUT || result == NET_DVR_FILE_NOFIND || result == NET_DVR_NOMOREFILE || result == NET_DVR_FILE_EXCEPTION)
-                            {
-                                break;
-                            }
-                        }
-
-                        NET_DVR_FindClose_V30(handle);
-                    }
-                    else
-                    {
-                        throw new Exception(GetLastError());
-                    }
-                }
-            }
-
-            return results;
-        }
-
-        /// <summary>
-        /// Obtiene cada día entre dos fechas.
-        /// </summary>
-        /// <param name="from">Desde.</param>
-        /// <param name="thru">Hasta</param>
-        /// <returns>Cada día entre <paramref name="from"/> y <paramref name="thru"/> inclusive.</returns>
-        private static IEnumerable<DateTime> EachDay(DateTime from, DateTime thru)
-        {
-            for (var day = from.Date; day.Date <= thru.Date; day = day.AddDays(1))
-                yield return day;
-        }
-
-        /// <summary>
         /// Longitud para el dato GUID.
         /// </summary>
-        private const int GUID_LEN = 16;
+        public const int GUID_LEN = 16;
 
         /// <summary>
         /// Longitud del número de tarjeta para exterior.
         /// </summary>
-        private const int CARDNUM_LEN_OUT = 32;
+        public const int CARDNUM_LEN_OUT = 32;
 
         /// <summary>
         /// Búsqueda completada.
         /// </summary>
-        private const int NET_DVR_FILE_SUCCESS = 1000;
+        public const int NET_DVR_FILE_SUCCESS = 1000;
 
         /// <summary>
         /// No se ha encontrado el archivo.
         /// </summary>
-        private const int NET_DVR_FILE_NOFIND = 1001;
+        public const int NET_DVR_FILE_NOFIND = 1001;
 
         /// <summary>
         /// Búsqueda en progreso.
         /// </summary>
-        private const int NET_DVR_ISFINDING = 1002;
+        public const int NET_DVR_ISFINDING = 1002;
 
         /// <summary>
         /// No hay más archivos.
         /// </summary>
-        private const int NET_DVR_NOMOREFILE = 1003;
+        public const int NET_DVR_NOMOREFILE = 1003;
 
         /// <summary>
         /// Error en la búsqueda.
         /// </summary>
-        private const int NET_DVR_FILE_EXCEPTION = 1004;
+        public const int NET_DVR_FILE_EXCEPTION = 1004;
 
         /// <summary>
         /// Tiempo de espera agotado.
         /// </summary>
-        private const int NET_DVR_FIND_TIMEOUT = 10005;
+        public const int NET_DVR_FIND_TIMEOUT = 10005;
 
         /// <summary>
         /// Condiciones de búsqueda.
@@ -637,7 +549,7 @@
         /// <param name="pFindCond">Condiciones de búsqueda.</param>
         /// <returns>Devuelve TRUE si la operación se ha completado exitosamente, FALSE de lo contrario.</returns>
         [DllImport(@"lib\HCNetSDK.dll")]
-        private static extern int NET_DVR_FindFile_V40(int lUserID, ref NET_DVR_FILECOND_V40 pFindCond);
+        public static extern int NET_DVR_FindFile_V40(int lUserID, ref NET_DVR_FILECOND_V40 pFindCond);
 
         /// <summary>
         /// Obtiene el próximo archivo de la búsqueda.
@@ -646,7 +558,7 @@
         /// <param name="lpFindData">Datos de la búsqueda.</param>
         /// <returns>Devuelve -1 en caso de error, otro valor que indica el estado de la búsqueda.</returns>
         [DllImport(@"lib\HCNetSDK.dll")]
-        private static extern int NET_DVR_FindNextFile_V30(int lFindHandle, ref NET_DVR_FINDDATA_V30 lpFindData);
+        public static extern int NET_DVR_FindNextFile_V30(int lFindHandle, ref NET_DVR_FINDDATA_V30 lpFindData);
 
         /// <summary>
         /// Detiene una búsqueda.
@@ -654,7 +566,7 @@
         /// <param name="lFindHandle">Identificador de la búsqueda.</param>
         /// <returns>Devuelve TRUE si la operación se ha completado exitosamente, FALSE de lo contrario.</returns>
         [DllImport(@"lib\HCNetSDK.dll")]
-        private static extern bool NET_DVR_FindClose_V30(int lFindHandle);
+        public static extern bool NET_DVR_FindClose_V30(int lFindHandle);
         #endregion
     }
 }
