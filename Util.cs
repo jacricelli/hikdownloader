@@ -1,7 +1,5 @@
 ﻿namespace HikDownloader
 {
-    using Pastel;
-    using System;
     using System.IO;
     using System.Reflection;
 
@@ -32,42 +30,6 @@
             }
 
             return path;
-        }
-
-        /// <summary>
-        /// Muestra un mensaje de éxito.
-        /// </summary>
-        /// <param name="message">Mensaje.</param>
-        public static void ShowSuccess(string message)
-        {
-            Console.WriteLine($"{message.TrimEnd('.')}.".Pastel("bab86c"));
-        }
-
-        /// <summary>
-        /// Muestra un mensaje de información.
-        /// </summary>
-        /// <param name="message">Mensaje.</param>
-        public static void ShowInfo(string message)
-        {
-            Console.WriteLine($"{message.TrimEnd('.')}.".Pastel("00FFFF"));
-        }
-
-        /// <summary>
-        /// Mensaje un mensaje de advertencia.
-        /// </summary>
-        /// <param name="message">Mensaje.</param>
-        public static void ShowWarning(string message)
-        {
-            Console.WriteLine($"{message.TrimEnd('.')}.".Pastel("FFFFFF").PastelBg("ffa500"));
-        }
-
-        /// <summary>
-        /// Muestra un mensaje de error.
-        /// </summary>
-        /// <param name="message">Mensaje.</param>
-        public static void ShowError(string message)
-        {
-            Console.WriteLine($"{message.TrimEnd('.')}.".Pastel("FFFFFF").PastelBg("FF0000"));
         }
     }
 }

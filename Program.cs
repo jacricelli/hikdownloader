@@ -124,35 +124,10 @@
         /// <param name="args">Argumentos.</param>
         public static void Main(string[] args)
         {
-            SetConsoleCtrlHandler(new HandlerRoutine(ConsoleCtrlCheck), true);
-            AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
+            SentenceBuilder.Factory = () => new LocalizableSentenceBuilder();
 
-            try
-            {
-                Config = JsonConvert.DeserializeObject<Config>(File.ReadAllText("config.json"));
-            }
-            catch (Exception ex)
-            {
-                Stop(ex.Message);
-            }
-
-            if (HCNetSDK.Initialize())
-            {
-                if (HCNetSDK.SetLogToFile(Config.HCNetSDK.Log))
-                {
-                    if (HCNetSDK.Login(Config.HCNetSDK.Device))
-                    {
-                        SentenceBuilder.Factory = () => new LocalizableSentenceBuilder();
-
-                        Parser.Default.ParseArguments<Options>(args)
-                            .WithParsed(Run);
-
-                        return;
-                    }
-                }
-            }
-
-            Stop(HCNetSDK.GetLastError());
+            Parser.Default.ParseArguments<Options>(args)
+                .WithParsed(Run);
         }
 
         /// <summary>
@@ -161,39 +136,53 @@
         /// <param name="opts">Opciones.</param>
         private static void Run(Options opts)
         {
-            var channels = opts.Canal.Distinct().ToArray();
             var location = Assembly.GetExecutingAssembly().Location;
             var versionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(location);
+            Console.WriteLine($"{versionInfo.ProductName} v{versionInfo.ProductVersion}\n");
 
-            Console.WriteLine($"{versionInfo.ProductName} v{versionInfo.ProductVersion}");
-            Console.WriteLine();
-            Console.WriteLine("Configuración de búsqueda:");
-            Console.WriteLine($"  > Canales:   {string.Join(", ", channels)}");
-            Console.WriteLine($"  > Intervalo: {opts.Desde:dd/MM/yyyy} a {opts.Hasta:dd/MM/yyyy}");
-            Console.WriteLine();
-
-            List<HCNetSDK.NET_DVR_FINDDATA> results;
             try
             {
-                results = Search(channels, opts.Desde, opts.Hasta);
+                SetConsoleCtrlHandler(new HandlerRoutine(ConsoleCtrlCheck), true);
+                AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
             }
             catch (Exception ex)
             {
-                Stop(ex.Message);
+                Console.WriteLine($"Error al configurar la consola: {ex.Message}".Pastel("FFFFFF").PastelBg("FF0000"));
+
+                return;
             }
+
+            try
+            {
+                Config = JsonConvert.DeserializeObject<Config>(File.ReadAllText("config.json"));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al cargar la configuración: {ex.Message}".Pastel("FFFFFF").PastelBg("FF0000"));
+
+                return;
+            }
+
+            if (HCNetSDK.Initialize())
+            {
+                if (HCNetSDK.SetLogToFile(Config.HCNetSDK.Log))
+                {
+                    if (HCNetSDK.Login(Config.HCNetSDK.Device))
+                    {
+                        var channels = opts.Canal.Distinct().ToArray();
+                        Array.Sort(channels);
+
+                        Search(channels, opts.Desde, opts.Hasta);
+
+                        return;
+                    }
+                }
+            }
+
+            Console.WriteLine($"HCNetSDK: {HCNetSDK.GetLastError()}".Pastel("FFFFFF").PastelBg("FF0000"));
         }
 
-        /// <summary>
-        /// Muestra un mensaje y termina el proceso.
-        /// </summary>
-        /// <param name="message">Mensaje.</param>
-        private static void Stop(string message)
-        {
-            Util.ShowError(message);
-
-            Environment.Exit(-1);
-        }
-
+        #region Búsqueda
         /// <summary>
         /// Realiza una búsqueda.
         /// </summary>
@@ -203,14 +192,15 @@
         /// <returns>Resultados de la búsqueda.</returns>
         private static List<HCNetSDK.NET_DVR_FINDDATA> Search(int[] channels, DateTime start, DateTime end)
         {
-            Console.WriteLine("Buscando...");
+            Console.WriteLine("Configuración de búsqueda:");
+            Console.WriteLine($"  > Canales:   {string.Join(", ", channels)}");
+            Console.WriteLine($"  > Intervalo: {start:dd/MM/yyyy} a {end:dd/MM/yyyy}\n");
 
             var total = 0;
             var results = new List<HCNetSDK.NET_DVR_FINDDATA>();
-
             foreach (var channel in channels)
             {
-                var totalPerChannel = 0;
+                var count = 0;
                 foreach (var from in EachDay(start, end))
                 {
                     var thru = from.AddHours(23).AddMinutes(59).AddSeconds(59);
@@ -255,7 +245,7 @@
                                 {
                                     results.Add(record);
 
-                                    totalPerChannel++;
+                                    count++;
                                 }
                             }
                             else if (result == HCNetSDK.NET_DVR_FILE_NOFIND || result == HCNetSDK.NET_DVR_NOMOREFILE)
@@ -280,18 +270,30 @@
                     }
                     else
                     {
-                        throw new Exception(HCNetSDK.GetLastError());
+                        Console.WriteLine($"  > Canal N° {channel:00}: {HCNetSDK.GetLastError()}".Pastel("FF0000"));
                     }
                 }
 
-                Console.WriteLine($"  > Canal N° {channel:00}: {totalPerChannel:N0} grabaciones.");
+                if (count > 0)
+                {
+                    Console.WriteLine($"  > Canal N° {channel:00}: {count:N0} grabaciones.");
+                }
+                else
+                {
+                    Console.WriteLine($"  > Canal N° {channel:00}: No se han encontrado grabaciones.");
+                }
 
-                total += totalPerChannel;
+                total += count;
             }
-                 
-            Console.WriteLine();
-            Console.WriteLine($"  Se han encontrado {total:N0} grabaciones.".Pastel("00FFFF"));
-            Console.WriteLine();
+
+            if (total > 0)
+            {
+                Console.WriteLine("\n" + $"  Se han encontrado {total:N0} grabaciones.".Pastel("00FFFF") + "\n");
+            }
+            else
+            {
+                Console.WriteLine("\n" + $"  No se han encontrado grabaciones.".Pastel("00FFFF") + "\n");
+            }
 
             return results;
         }
@@ -309,5 +311,6 @@
                 yield return day;
             }
         }
+        #endregion
     }
 }
