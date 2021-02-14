@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using CommandLine;
     using CommandLine.Text;
+    using FluentDateTime;
 
     /// <summary>
     /// Opciones.
@@ -52,6 +53,47 @@
                 else
                 {
                     _intervalo = value;
+
+                    if (_desde == default && _hasta == default)
+                    {
+                        switch (_intervalo)
+                        {
+                            case "hoy":
+                                _desde = DateTime.Today.Midnight();
+                                _hasta = DateTime.Today.EndOfDay();
+                                break;
+
+                            case "ayer":
+                                _desde = DateTime.Today.PreviousDay().Midnight();
+                                _hasta = DateTime.Today.PreviousDay().EndOfDay();
+                                break;
+
+                            case "estaSemana":
+                                _desde = DateTime.Today.FirstDayOfWeek().AddDays(1);
+                                _hasta = _desde.LastDayOfWeek().AddDays(1).EndOfDay();
+                                break;
+
+                            case "semanaPasada":
+                                _desde = DateTime.Today.FirstDayOfWeek().AddDays(1).WeekEarlier();
+                                _hasta = _desde.LastDayOfWeek().AddDays(1).EndOfDay();
+                                break;
+
+                            case "ultimasDosSemanas":
+                                _desde = DateTime.Today.FirstDayOfWeek().AddDays(-13);
+                                _hasta = DateTime.Today.WeekEarlier().LastDayOfWeek().AddDays(1).EndOfDay();
+                                break;
+
+                            case "esteMes":
+                                _desde = DateTime.Today.BeginningOfMonth();
+                                _hasta = DateTime.Today.EndOfMonth();
+                                break;
+
+                            case "mesPasado":
+                                _desde = DateTime.Today.PreviousMonth().BeginningOfMonth();
+                                _hasta = DateTime.Today.PreviousMonth().EndOfMonth();
+                                break;
+                        }
+                    }
                 }
             }
         }
@@ -64,6 +106,11 @@
         {
             get
             {
+                if (_desde == default && _hasta != default)
+                {
+                    _desde = _hasta.Midnight();
+                }
+
                 return _desde;
             }
 
@@ -89,6 +136,11 @@
         {
             get
             {
+                if (_hasta == default && _desde != default)
+                {
+                    _hasta = _desde.EndOfDay();
+                }
+
                 return _hasta;
             }
 
