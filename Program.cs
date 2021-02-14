@@ -163,7 +163,7 @@
         /// Muestra un mensaje y termina el proceso.
         /// </summary>
         /// <param name="message">Mensaje.</param>
-        public static void Stop(string message)
+        private static void Stop(string message)
         {
             Util.ShowError(message);
 
