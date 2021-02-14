@@ -5,8 +5,11 @@
     using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.IO;
+    using System.Reflection;
     using System.Runtime.InteropServices;
+    using Pastel;
 
     /// <summary>
     /// Programa.
@@ -158,6 +161,26 @@
         /// <param name="opts">Opciones.</param>
         private static void Run(Options opts)
         {
+            var channels = opts.Canal.Distinct().ToArray();
+            var location = Assembly.GetExecutingAssembly().Location;
+            var versionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(location);
+
+            Console.WriteLine($"{versionInfo.ProductName} v{versionInfo.ProductVersion}");
+            Console.WriteLine();
+            Console.WriteLine("Configuración de búsqueda:");
+            Console.WriteLine($"  > Canales:   {string.Join(", ", channels)}");
+            Console.WriteLine($"  > Intervalo: {opts.Desde:dd/MM/yyyy} a {opts.Hasta:dd/MM/yyyy}");
+            Console.WriteLine();
+
+            List<HCNetSDK.NET_DVR_FINDDATA> results;
+            try
+            {
+                results = Search(channels, opts.Desde, opts.Hasta);
+            }
+            catch (Exception ex)
+            {
+                Stop(ex.Message);
+            }
         }
 
         /// <summary>
@@ -180,10 +203,14 @@
         /// <returns>Resultados de la búsqueda.</returns>
         private static List<HCNetSDK.NET_DVR_FINDDATA> Search(int[] channels, DateTime start, DateTime end)
         {
+            Console.WriteLine("Buscando...");
+
+            var total = 0;
             var results = new List<HCNetSDK.NET_DVR_FINDDATA>();
 
             foreach (var channel in channels)
             {
+                var totalPerChannel = 0;
                 foreach (var from in EachDay(start, end))
                 {
                     var thru = from.AddHours(23).AddMinutes(59).AddSeconds(59);
@@ -227,10 +254,24 @@
                                 if (!results.Contains(record))
                                 {
                                     results.Add(record);
+
+                                    totalPerChannel++;
                                 }
                             }
-                            else if (result == HCNetSDK.NET_DVR_FIND_TIMEOUT || result == HCNetSDK.NET_DVR_FILE_NOFIND || result == HCNetSDK.NET_DVR_NOMOREFILE || result == HCNetSDK.NET_DVR_FILE_EXCEPTION)
+                            else if (result == HCNetSDK.NET_DVR_FILE_NOFIND || result == HCNetSDK.NET_DVR_NOMOREFILE)
                             {
+                                break;
+                            }
+                            else if (result == HCNetSDK.NET_DVR_FIND_TIMEOUT)
+                            {
+                                Console.WriteLine($"  > Canal N° {channel:00}: Tiempo de espera agotado.".Pastel("FFA500"));
+
+                                break;
+                            }
+                            else if (result == HCNetSDK.NET_DVR_FILE_EXCEPTION)
+                            {
+                                Console.WriteLine($"  > Canal N° {channel:00}: Error en la búsqueda.".Pastel("FF0000"));
+
                                 break;
                             }
                         }
@@ -242,7 +283,15 @@
                         throw new Exception(HCNetSDK.GetLastError());
                     }
                 }
+
+                Console.WriteLine($"  > Canal N° {channel:00}: {totalPerChannel:N0} grabaciones.");
+
+                total += totalPerChannel;
             }
+                 
+            Console.WriteLine();
+            Console.WriteLine($"  Se han encontrado {total:N0} grabaciones.".Pastel("00FFFF"));
+            Console.WriteLine();
 
             return results;
         }
