@@ -11,5 +11,11 @@
             "userName": "",
             "password": ""
         }
+    },
+    "HikDownloader": {
+        "downloads": {
+            "dir": "{appPath}\\downloads",
+            "parallel": 3
+        }
     }
 }
