@@ -165,6 +165,12 @@
         public bool Combinar { get; set; }
 
         /// <summary>
+        /// Solo buscar.
+        /// </summary>
+        [Option('b', "buscar", Default = false, HelpText = "Ejecuta solo una búsqueda sin descargar ni combinar grabaciones.")]
+        public bool Buscar { get; set; }
+
+        /// <summary>
         /// Ejemplos.
         /// </summary>
         [Usage]

@@ -42,7 +42,7 @@
 
             if (InitializeDependencies())
             {
-                DownloadRecordings(opts.Canal, opts.Desde, opts.Hasta, opts.Combinar);
+                DownloadRecordings(opts);
             }
         }
 
@@ -91,23 +91,23 @@
         /// <summary>
         /// Descarga grabaciones.
         /// </summary>
-        /// <param name="channels">Arreglo de canales.</param>
-        /// <param name="from">Fecha a partir de la cual buscar grabaciones.</param>
-        /// <param name="thru">Fecha hasta la cual buscar grabaciones.</param>
-        /// <param name="combine">Combina todas las grabaciones de cada día en un único archivo.</param>
-        private static void DownloadRecordings(IEnumerable<int> channels, DateTime from, DateTime thru, bool combine = true)
+        /// <param name="opts">Opciones.</param>
+        private static void DownloadRecordings(Options opts)
         {
-            var chnls = channels.Distinct().ToArray();
-            Array.Sort(chnls);
+            var channels = opts.Canal.Distinct().ToArray();
+            Array.Sort(channels);
 
-            var recordings = Search.Execute(chnls, from, thru);
+            var recordings = Search.Execute(channels, opts.Desde, opts.Hasta);
             if (recordings.Count > 0)
             {
-                Download.Execute(recordings);
-
-                if (combine)
+                if (!opts.Buscar)
                 {
-                    Combine.Execute();
+                    Download.Execute(recordings);
+
+                    if (opts.Combinar)
+                    {
+                        Combine.Execute();
+                    }
                 }
             }
 
