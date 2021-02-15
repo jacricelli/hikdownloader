@@ -61,6 +61,8 @@
                         thru = end;
                     }
 
+                    Console.Write($"\r    Canal N° {channel:00}: {from:dd/MM/yyyy}");
+
                     var conditions = default(HCNetSDK.Search.NET_DVR_FILECOND);
                     conditions.lChannel = channel;
                     conditions.dwFileType = 0xff;
@@ -112,13 +114,13 @@
                             }
                             else if (result == HCNetSDK.Search.NET_DVR_FIND_TIMEOUT)
                             {
-                                Console.WriteLine($"    Canal N° {channel:00}: Tiempo de espera agotado.");
+                                Console.WriteLine($"\r    Canal N° {channel:00}: {from:dd/MM/yyyy} (Tiempo de espera agotado)");
 
                                 break;
                             }
                             else if (result == HCNetSDK.Search.NET_DVR_FILE_EXCEPTION)
                             {
-                                Console.WriteLine($"    Canal N° {channel:00}: Error en la búsqueda.");
+                                Console.WriteLine($"\r    Canal N° {channel:00}: {from:dd/MM/yyyy} (Error en la búsqueda)");
 
                                 break;
                             }
@@ -128,7 +130,7 @@
                     }
                     else
                     {
-                        Console.WriteLine($"    Canal N° {channel:00}: {HCNetSDK.Error.GetLastError()}");
+                        Console.WriteLine($"\r    Canal N° {channel:00}: {from:dd/MM/yyyy} ({HCNetSDK.Error.GetLastError()})");
                     }
                 }
 
@@ -136,16 +138,16 @@
                 {
                     if (count == missing)
                     {
-                        Console.WriteLine($"    Canal N° {channel:00}: {missing:N0}");
+                        Console.Write($"\r    Canal N° {channel:00}: {missing:N0}                                        \n");
                     }
                     else
                     {
-                        Console.WriteLine($"    Canal N° {channel:00}: {missing:N0} de {count:N0}");
+                        Console.Write($"\r    Canal N° {channel:00}: {missing:N0} de {count:N0}                                        \n");
                     }
                 }
                 else
                 {
-                    Console.WriteLine($"    Canal N° {channel:00}: 0");
+                    Console.Write($"\r    Canal N° {channel:00}: 0                                        \n");
                 }
 
                 total += count;
