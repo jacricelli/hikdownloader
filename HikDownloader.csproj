@@ -78,8 +78,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Config.cs" />
-    <Compile Include="HCNetSDK.cs" />
+    <Compile Include="Combine.cs" />
+    <Compile Include="Config\Config.cs" />
+    <Compile Include="Config\FFmpegConfig.cs" />
+    <Compile Include="Config\HCNetSDKConfig.cs" />
+    <Compile Include="Config\HCNetSDKSessionConfig.cs" />
+    <Compile Include="Config\HCNetSDKLogConfig.cs" />
+    <Compile Include="Config\HikDownloaderConfig.cs" />
+    <Compile Include="Config\HikDownloaderDownloadConfig.cs" />
+    <Compile Include="ConsoleControlHandler.cs" />
+    <Compile Include="Download.cs" />
+    <Compile Include="HCNetSDK\Download.cs" />
+    <Compile Include="HCNetSDK\Error.cs" />
+    <Compile Include="HCNetSDK\Log.cs" />
+    <Compile Include="HCNetSDK\SDK.cs" />
+    <Compile Include="HCNetSDK\Search.cs" />
+    <Compile Include="HCNetSDK\Session.cs" />
     <Compile Include="LocalizableSentenceBuilder.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="Program.cs" />
@@ -89,6 +103,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Search.cs" />
     <Compile Include="StringBuilderExtensions.cs" />
     <Compile Include="StringExtensions.cs" />
     <Compile Include="Util.cs" />

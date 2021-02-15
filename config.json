@@ -5,7 +5,7 @@
             "level": 3,
             "autoDel": true
         },
-        "device": {
+        "session": {
             "address": "",
             "port": 8000,
             "userName": "",
@@ -15,7 +15,12 @@
     "HikDownloader": {
         "downloads": {
             "dir": "{appPath}\\downloads",
-            "parallel": 3
+            "simultaneousTasks": 3
         }
+    },
+    "FFmpeg": {
+        "bin": "{appPath}\\tools\\ffmpeg\bin\ffmpeg.exe",
+        "dir": "{appPath}\\videos",
+        "simultaneousTasks": 3
     }
 }
