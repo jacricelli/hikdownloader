@@ -161,7 +161,7 @@
         /// <summary>
         /// Combinar.
         /// </summary>
-        [Option('m', "combinar", Default = true, HelpText = "Combina todas las grabaciones de cada día en un único archivo.")]
+        [Option('m', "combinar", Default = false, HelpText = "Combina todas las grabaciones de cada día en un único archivo.")]
         public bool Combinar { get; set; }
 
         /// <summary>
