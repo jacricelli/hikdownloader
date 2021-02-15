@@ -149,7 +149,7 @@
         /// <param name="message">Mensaje.</param>
         private static void LogError(Search.Recording recording, string message)
         {
-            logStream.WriteLine($"[{DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")} - {recording.OriginalFileName} - {Path.GetFileName(recording.FullPath)}]: {message}");
+            logStream.WriteLine($"[{DateTime.Now:dd/MM/yyyy HH:mm:ss} - {recording.OriginalFileName} - {Path.GetFileName(recording.FullPath)}]: {message}");
             logStream.Flush();
         }
     }
