@@ -17,16 +17,6 @@
         private static StreamWriter logStream;
 
         /// <summary>
-        /// Ruta al directorio de descarga.
-        /// </summary>
-        public static string DownloadDir { get; set; }
-
-        /// <summary>
-        /// Número máximo de tareas simultáneas.
-        /// </summary>
-        public static int SimultaneousTasks { get; set; } = 3;
-
-        /// <summary>
         /// Descarga grabaciones.
         /// </summary>
         /// <param name="recordings">Grabaciones.</param>
@@ -37,8 +27,8 @@
             {
                 Console.WriteLine("Descargando...");
                 Console.WriteLine("  > Configuración:");
-                Console.WriteLine($"    Ruta de descarga:      {DownloadDir}");
-                Console.WriteLine($"    Descargas simultáneas: {SimultaneousTasks}\n");
+                Console.WriteLine($"    Ruta de descarga:      {Program.Config.HikDownloader.Downloads.Dir}");
+                Console.WriteLine($"    Descargas simultáneas: {Program.Config.HikDownloader.Downloads.SimultaneousTasks}\n");
                 Console.WriteLine("  > Progreso:");
 
                 var total = recordings.Count;
@@ -50,7 +40,7 @@
                     recordings,
                     new ParallelOptions
                     {
-                        MaxDegreeOfParallelism = SimultaneousTasks
+                        MaxDegreeOfParallelism = Program.Config.HikDownloader.Downloads.SimultaneousTasks
                     },
                     recording =>
                     {

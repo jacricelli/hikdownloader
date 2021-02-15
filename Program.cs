@@ -15,6 +15,11 @@
     public static class Program
     {
         /// <summary>
+        /// Configuración.
+        /// </summary>
+        public static Config.Config Config { get; private set; }
+
+        /// <summary>
         /// Punto de entrada principal para la aplicación.
         /// </summary>
         /// <param name="args">Argumentos.</param>
@@ -56,10 +61,9 @@
         /// </summary>
         private static bool InitializeDependencies()
         {
-            Config.Config config = null;
             try
             {
-                config = JsonConvert.DeserializeObject<Config.Config>(File.ReadAllText("config.json"));
+                Config = JsonConvert.DeserializeObject<Config.Config>(File.ReadAllText("config.json"));
             }
             catch (Exception ex)
             {
@@ -70,18 +74,10 @@
 
             if (HCNetSDK.SDK.Initialize())
             {
-                if (HCNetSDK.Log.SetLogToFile(config.HCNetSDK.Log))
+                if (HCNetSDK.Log.SetLogToFile(Config.HCNetSDK.Log))
                 {
-                    if (HCNetSDK.Session.Login(config.HCNetSDK.Session))
+                    if (HCNetSDK.Session.Login(Config.HCNetSDK.Session))
                     {
-                        Search.DownloadDir = config.HikDownloader.Downloads.Dir;
-
-                        Download.DownloadDir = config.HikDownloader.Downloads.Dir;
-                        Download.SimultaneousTasks = config.HikDownloader.Downloads.SimultaneousTasks;
-
-                        Combine.Config = config.FFmpeg;
-                        Combine.DownloadDir = config.HikDownloader.Downloads.Dir;
-
                         return true;
                     }
                 }

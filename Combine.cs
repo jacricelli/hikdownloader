@@ -14,25 +14,15 @@
     public static class Combine
     {
         /// <summary>
-        /// Configuración de FFmpeg.
-        /// </summary>
-        public static Config.FFmpegConfig Config { get; set; }
-
-        /// <summary>
-        /// Ruta al directorio de descarga.
-        /// </summary>
-        public static string DownloadDir { get; set; }
-
-        /// <summary>
         /// Combina todas las grabaciones de cada día en un único archivo.
         /// </summary>
         public static void Execute()
         {
             Console.WriteLine("Combinando...");
             Console.WriteLine("  > Configuración:");
-            Console.WriteLine($"    Ruta de guardado:   {Config.Dir}");
-            Console.WriteLine($"    Ruta de FFmpeg:     {Config.Bin}");
-            Console.WriteLine($"    Tareas simultáneas: {Config.SimultaneousTasks}\n");
+            Console.WriteLine($"    Ruta de guardado:   {Program.Config.FFmpeg.Dir}");
+            Console.WriteLine($"    Ruta de FFmpeg:     {Program.Config.FFmpeg.Bin}");
+            Console.WriteLine($"    Tareas simultáneas: {Program.Config.FFmpeg.SimultaneousTasks}\n");
             Console.WriteLine("  > Progreso:");
 
             var files = GenerateFileLists();
@@ -43,7 +33,7 @@
                     files,
                     new ParallelOptions
                     {
-                        MaxDegreeOfParallelism = Config.SimultaneousTasks
+                        MaxDegreeOfParallelism = Program.Config.FFmpeg.SimultaneousTasks
                     },
                     file =>
                     {
@@ -71,7 +61,7 @@
         /// <returns>Una lista de archivos que contiene las grabaciones agrupadas por canal y fecha.</returns>
         private static List<string> GenerateFileLists()
         {
-            var groups = Directory.EnumerateFiles(DownloadDir, "*.avi", SearchOption.AllDirectories)
+            var groups = Directory.EnumerateFiles(Program.Config.HikDownloader.Downloads.Dir, "*.avi", SearchOption.AllDirectories)
                 .Select(x => $"file '{x}'")
                 .GroupBy(i =>
                 {
@@ -105,7 +95,7 @@
             var ok = true;
             var fileName = Path.GetFileNameWithoutExtension(file);
             var parts = fileName.Split('_');
-            var path = Config.Dir;
+            var path = Program.Config.FFmpeg.Dir;
             var outFile = string.Format("{0}\\{1}\\{2}\\{3}.avi", path, parts[1].Substring(0, parts[1].Length - 3), parts[0], parts[1]);
             var workingDirectory = Path.GetDirectoryName(outFile);
 
@@ -118,7 +108,7 @@
 
             using (var ffmpeg = new Process())
             {
-                ffmpeg.StartInfo.FileName = Config.Bin;
+                ffmpeg.StartInfo.FileName = Program.Config.FFmpeg.Bin;
                 ffmpeg.StartInfo.Arguments = string.Format("-y -loglevel error -f concat -safe 0 -i \"{0}\" -c copy \"{1}\"", file, outFile);
                 ffmpeg.StartInfo.UseShellExecute = false;
                 ffmpeg.StartInfo.RedirectStandardOutput = true;
@@ -170,11 +160,11 @@
         /// </summary>
         private static void Cleanup()
         {
-            DeleteEmptyDirs(DownloadDir);
+            DeleteEmptyDirs(Program.Config.HikDownloader.Downloads.Dir);
 
-            if (!Directory.Exists(DownloadDir))
+            if (!Directory.Exists(Program.Config.HikDownloader.Downloads.Dir))
             {
-                Directory.CreateDirectory(DownloadDir);
+                Directory.CreateDirectory(Program.Config.HikDownloader.Downloads.Dir);
             }
         }
 

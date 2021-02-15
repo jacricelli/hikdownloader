@@ -10,11 +10,6 @@
     public static class Search
     {
         /// <summary>
-        /// Ruta al directorio de descarga.
-        /// </summary>
-        public static string DownloadDir { get; set; }
-
-        /// <summary>
         /// Representa una grabación.
         /// </summary>
         public struct Recording
@@ -181,7 +176,7 @@
         private static Recording GetRecording(HCNetSDK.Search.NET_DVR_FINDDATA searchResult)
         {
             var path = string.Format("{0}\\{1}-{2:00}\\Channel {3:00}",
-                DownloadDir,
+                Program.Config.HikDownloader.Downloads.Dir,
                 searchResult.struStartTime.dwYear,
                 searchResult.struStartTime.dwMonth,
                 searchResult.sFileName.Split('_')[0].TrimStart(new char[] { 'c', 'h' }));
