@@ -94,14 +94,17 @@
                             else if (result == HCNetSDK.Search.NET_DVR_FILE_SUCCESS)
                             {
                                 var item = GetRecording(searchResult);
-                                if (!recordings.Contains(item) && !File.Exists(item.FullPath))
+                                if (!recordings.Contains(item))
                                 {
-                                    recordings.Add(item);
+                                    count++;
 
-                                    missing++;
+                                    if (!File.Exists(item.FullPath))
+                                    {
+                                        recordings.Add(item);
+
+                                        missing++;
+                                    }
                                 }
-
-                                count++;
                             }
                             else if (result == HCNetSDK.Search.NET_DVR_FILE_NOFIND || result == HCNetSDK.Search.NET_DVR_NOMOREFILE)
                             {
