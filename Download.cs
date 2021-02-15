@@ -1,6 +1,5 @@
 ﻿namespace HikDownloader
 {
-    using Pastel;
     using System;
     using System.Collections.Generic;
     using System.IO;
@@ -45,7 +44,7 @@
                 var total = recordings.Count;
                 var count = 0;
                 var error = false;
-                Console.Write($"    Se han descargando 0 de {total} grabaciones.".Pastel("00FFFF"));
+                Console.Write($"    Se han descargando 0 de {total} grabaciones.");
 
                 Parallel.ForEach(
                     recordings,
@@ -63,23 +62,23 @@
                         count++;
                         if (!error)
                         {
-                            Console.Write($"\r    Se han descargando {count:N0} de {total:N0} grabaciones.".Pastel("00FFFF"));
+                            Console.Write($"\r    Se han descargando {count:N0} de {total:N0} grabaciones.");
                         }
                         else
                         {
-                            Console.Write($"\r    Se han descargando {count:N0} de {total:N0} grabaciones (con errores).".Pastel("00FFFF"));
+                            Console.Write($"\r    Se han descargando {count:N0} de {total:N0} grabaciones (con errores).");
                         }
                     }
                 );
 
                 if (!error)
                 {
-                    Console.WriteLine($"\r    Se han descargado todas las grabaciones.                                        ".Pastel("00FFFF"));
+                    Console.WriteLine($"\r    Se han descargado todas las grabaciones.                                        ");
                     Console.WriteLine();
                 }
                 else
                 {
-                    Console.WriteLine($"\r    Se han descargado todas las grabaciones (con errores).                                        ".Pastel("00FFFF"));
+                    Console.WriteLine($"\r    Se han descargado todas las grabaciones (con errores).                                        ");
                     Console.WriteLine();
                 }
             }

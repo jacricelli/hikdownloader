@@ -1,6 +1,5 @@
 ﻿namespace HikDownloader
 {
-    using Pastel;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
@@ -55,13 +54,13 @@
                 Cleanup();
 
                 Console.WriteLine();
-                Console.WriteLine($"    Se han combinado los archivos.".Pastel("00FFFF"));
+                Console.WriteLine($"    Se han combinado los archivos.");
                 Console.WriteLine();
             }
             else
             {
                 Console.WriteLine();
-                Console.WriteLine($"    No se han encontrado archivos.".Pastel("00FFFF"));
+                Console.WriteLine($"    No se han encontrado archivos.");
                 Console.WriteLine();
             }
         }
@@ -149,7 +148,7 @@
 
                 File.Delete(file);
 
-                Console.WriteLine($"    Se ha combinado {fileName}.".Pastel("00FFFF"));
+                Console.WriteLine($"    Se ha combinado {fileName}.");
             }
             else
             {
@@ -160,7 +159,7 @@
 
                 File.WriteAllText(logPath + "\\" + logFile, results);
 
-                Console.WriteLine($"    Error al combinar {fileName}.".Pastel("FF0000"));
+                Console.WriteLine($"    Error al combinar {fileName}.");
             }
 
             return ok;

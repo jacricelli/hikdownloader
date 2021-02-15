@@ -3,7 +3,6 @@
     using CommandLine;
     using CommandLine.Text;
     using Newtonsoft.Json;
-    using Pastel;
     using System;
     using System.Collections.Generic;
     using System.IO;
@@ -64,7 +63,7 @@
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error al cargar la configuración: {ex.Message}".Pastel("FFFFFF").PastelBg("FF0000"));
+                Console.WriteLine($"Error al cargar la configuración: {ex.Message}");
 
                 return false;
             }
@@ -88,7 +87,7 @@
                 }
             }
 
-            Console.WriteLine($"HCNetSDK: {HCNetSDK.Error.GetLastError()}".Pastel("FFFFFF").PastelBg("FF0000"));
+            Console.WriteLine($"HCNetSDK: {HCNetSDK.Error.GetLastError()}");
 
             return false;
         }
@@ -116,7 +115,7 @@
                 }
             }
 
-            Console.WriteLine("Se han completado todas las tareas.".Pastel("BAB86C"));
+            Console.WriteLine("Se han completado todas las tareas.");
             Console.WriteLine();
         }
     }

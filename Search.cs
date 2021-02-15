@@ -1,6 +1,5 @@
 ﻿namespace HikDownloader
 {
-    using Pastel;
     using System;
     using System.Collections.Generic;
     using System.IO;
@@ -115,13 +114,13 @@
                             }
                             else if (result == HCNetSDK.Search.NET_DVR_FIND_TIMEOUT)
                             {
-                                Console.WriteLine($"    Canal N° {channel:00}: Tiempo de espera agotado.".Pastel("FFA500"));
+                                Console.WriteLine($"    Canal N° {channel:00}: Tiempo de espera agotado.");
 
                                 break;
                             }
                             else if (result == HCNetSDK.Search.NET_DVR_FILE_EXCEPTION)
                             {
-                                Console.WriteLine($"    Canal N° {channel:00}: Error en la búsqueda.".Pastel("FF0000"));
+                                Console.WriteLine($"    Canal N° {channel:00}: Error en la búsqueda.");
 
                                 break;
                             }
@@ -131,7 +130,7 @@
                     }
                     else
                     {
-                        Console.WriteLine($"    Canal N° {channel:00}: {HCNetSDK.Error.GetLastError()}".Pastel("FF0000"));
+                        Console.WriteLine($"    Canal N° {channel:00}: {HCNetSDK.Error.GetLastError()}");
                     }
                 }
 
@@ -159,16 +158,16 @@
             {
                 if (total == pending)
                 {
-                    Console.WriteLine("\n" + $"    Restan por descargar {total:N0} grabaciones.".Pastel("00FFFF") + "\n");
+                    Console.WriteLine("\n" + $"    Restan por descargar {total:N0} grabaciones.\n");
                 }
                 else
                 {
-                    Console.WriteLine("\n" + $"    Restan por descargar {pending:N0} de {total:N0} grabaciones.".Pastel("00FFFF") + "\n");
+                    Console.WriteLine("\n" + $"    Restan por descargar {pending:N0} de {total:N0} grabaciones.\n");
                 }
             }
             else
             {
-                Console.WriteLine("\n" + $"    No quedan grabaciones por descargar.".Pastel("00FFFF") + "\n");
+                Console.WriteLine("\n" + $"    No quedan grabaciones por descargar.\n");
             }
 
             return recordings;
