@@ -83,7 +83,7 @@
                 results.Add(path + "\\" + fileName);
             }
 
-            return results;
+            return results.OrderBy(q => q).ToList();
         }
 
         /// <summary>
