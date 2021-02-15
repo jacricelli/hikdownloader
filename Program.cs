@@ -25,8 +25,6 @@
         /// <param name="args">Argumentos.</param>
         public static void Main(string[] args)
         {
-            ConsoleControlHandler.Enable();
-
             SentenceBuilder.Factory = () => new LocalizableSentenceBuilder();
             Parser.Default.ParseArguments<Options>(args)
                 .WithParsed(Run);
@@ -110,6 +108,10 @@
                     }
                 }
             }
+
+            HCNetSDK.Session.Logout();
+
+            HCNetSDK.SDK.Cleanup();
 
             Console.WriteLine("Se han completado todas las tareas.");
             Console.WriteLine();

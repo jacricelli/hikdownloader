@@ -83,7 +83,6 @@
     <Compile Include="Config\HCNetSDKLogConfig.cs" />
     <Compile Include="Config\HikDownloaderConfig.cs" />
     <Compile Include="Config\HikDownloaderDownloadConfig.cs" />
-    <Compile Include="ConsoleControlHandler.cs" />
     <Compile Include="Download.cs" />
     <Compile Include="HCNetSDK\Download.cs" />
     <Compile Include="HCNetSDK\Error.cs" />
