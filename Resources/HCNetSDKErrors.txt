@@ -1,0 +1,799 @@
+0	No error.
+1	Incorrect user name or password.
+2	No permission.
+3	Uninitialized.
+4	Incorrect channel No.
+5	No more device can be connected.
+6	Version mismatches.
+7	Connecting to device failed. The device is offline or network connection timed out.
+8	Sending data to device failed.
+9	Receiving data from device failed.
+10	Receiving data from device timed out.
+11	The data sent to the device is illegal, or the data received from the device error. E.g. The input data is not supported by the device for remote configuration.
+12	API calling order error.
+13	No permission for this operation.
+14	Executing device command timed out.
+15	Incorrect serial port No. The specified serial port does not exist.
+16	Alarm port No. error. The alarm input or output port of the specified device does not exist.
+17	Incorrect parameter. The input or output parameters of the SDK API is empty, or the parameter value or format is invalid.
+18	Device channel is in exception status.
+19	No HDD in the device.
+20	Incorrect HDD No.
+21	HDD full.
+22	HDD error.
+23	Device does not support this function.
+24	Device is busy.
+25	Failed to edit device parameters.
+26	Invalid password format.
+27	HDD is formatting. Failed to startup.
+28	Insufficient device resources.
+29	Device operation failed.
+30	Failed to collect local audio data or open audio output during two-way audio and broadcast.
+31	Two-way audio channel is occupied.
+32	Incorrect time input.
+33	No video file for playback.
+34	Failed to create a file during local recording, saving picture, getting configuration file or downloading video file remotely.
+35	Failed to open a file. The file does not exist or directory error.
+36	Operation conflicted.
+37	Failed to get the current played time.
+38	Failed to play.
+39	Invalid file format.
+40	File directory error.
+41	Allocating resources failed.
+42	Invalid sound card mode error. The opened sound play mode and configured mode mismatched.
+43	Insufficient buffer for receiving data or saving picture.
+44	Failed to create SOCKET.
+45	Failed to set SOCKET.
+46	No more registrations and live views can be connected.
+47	The user doest not exist. The user ID is logged out or unavailable.
+48	Writing FLASH error during device upgrade.
+49	Failed to upgrade device. Network problem or language mismatches.
+50	The decoding card is already initialized.
+51	Failed to call the function of player SDK.
+52	No more users can log in to.
+53	Failed to get the IP address or physical address of local PC.
+54	The decoding function of this channel is not enabled.
+55	IP address mismatches.
+56	MAC address mismatches.
+57	The language of upgrade file mismatches.
+58	No more channels can be started to play.
+59	Insufficient space to back up file.
+60	No backup device found.
+61	Picture pixel bit mismatches. Only 24 bits are allowed.
+62	Too large picture. The height*width should be less than 128x256.
+63	Too large picture. The picture size should be smaller than 100K.
+64	Failed to load the player(PlayCtrl.dll, SuperRender.dll, AudioRender.dll) to the current directory.
+65	Failed to find the function in player SDK.
+66	Failed to load the DS SDK to the current directory.
+67	Failed to find the function in the DS SDK.
+68	Failed to call the API in the hardware decoding library.
+69	The sound card is exclusive.
+70	Failed to join to multicast group.
+71	Failed to create log file directory.
+72	Failed to bind socket.
+73	Socket disconnected. Network disconnected or the destination is unreachable.
+74	Operation is executing. Failed to log out.
+75	Failed to listen.
+76	Program exception.
+77	Failed to write file during local recording, downloading file remotely or saving picture.
+78	The HDD is read-only. Formatting is forbidden.
+79	The user name already exists.
+80	Device model mismatches when importing parameters.
+81	Language mismatches when importing parameters.
+82	Software version mismatches when importing parameters.
+83	The external IP channel is offline live view.
+84	Failed to load StreamTransClient.dll.
+85	Failed to load SystemTransform.dll.
+86	No more IP channels can access to.
+87	No more video tags can be added.
+88	Invalid parameter mode of image enhancement.
+89	Code distributer is offline.
+90	Device is backing up.
+91	This operation is not supported by the channel.
+92	The height line is too concentrated, or the length line is not inclined enough.
+93	Cancel calibration conflict, if the rule and global actual size filter are configured.
+94	The calibration point is out of limitation.
+95	The size filter does not meet the requirement.
+96	Device has not registered to DDNS.
+97	DDNS internal error.
+98	This function is not supported by this Operating system.
+99	Decoding channel binding display output is limited.
+100	Failed to load the two-way audio SDK of the current directory.
+101	No correct upgrade packet.
+102	Login failed.
+103	The log switch file is under using.
+104	No port can be bound in the port pool.
+105	Incorrect stream packaging format.
+106	Incorrect IPID for IP access configuration.
+107	Failed to load the live view component.
+108	Failed to load the audio component.
+109	Failed to load the alarm component.
+110	Failed to load the playback component.
+111	Failed to load the display component.
+112	Failed to load application component.
+113	Failed to load the general configuration management component.
+121	Component version and core version mismatched when loading the component singly.
+122	Live view component version and core version mismatched.
+123	Audio component version and the core version mismatched.
+124	Alarm component version and the core version mismatched.
+125	Playback component version and the core version mismatched.
+126	Display component version and the core version mismatched.
+127	Application component version and the core version mismatched.
+128	General configuration management component version and the core version mismatched.
+136	Live view component version and SDK version mismatched.
+137	Audio component version and SDK version mismatched.
+138	Alarm component version and SDK version mismatched.
+139	Playback component version and SDK version mismatched.
+140	Display component version and SDK version mismatched.
+141	Application component version and SDK version mismatched.
+142	General configuration management component version and SDK version mismatched.
+150	Duplicated alias(for HiDDNS configuration).
+152	User name does not exist (error code of network camera and network speed dome with version from 5.1.7 to 5.3.1).
+153	The user name is locked.
+154	Invalid user ID.
+155	The version is too low.
+156	Failed to load libeay32.dl.l
+157	Failed to load ssleay32.dll.
+158	Failed to load libiconv.dll.
+159	Connecting to SSL failed.
+165	Failed to connect to test server.
+166	Failed to load NAS server to the directory, Invalid directory, or incorrect user name and password.
+167	Failed to load NAS server th the directory. No permission.
+168	The server uses domain name without configuring DNS, the domain name may be invalid.
+169	No gateway configured. Sending email may be failed.
+170	Incorrect user name or password of test server.
+171	Interaction exception between device and SMTP server.
+172	FTP server creating directory failed.
+173	FTP server has no wirting permission.
+174	IP conflicted.
+175	Storage pool space is full.
+176	Invalid cloud storage pool. No storage pool configured or incorrect storage pool ID.
+177	Restart to take effect.
+178	The ANR arming connection already exists( the error will be returned when arming with ANR function if the private SDK protocol arming connection is established).
+179	The ANR uploading connection already exists( the error will be returned when EHome protocol and private SDK protocol do not support ANR at the same time).
+180	The imported file format is incorrect.
+181	The imported file content is incorrect.
+182	No more HRUDP can be connected to device.
+183	Maximum number of multiplexed ports reaches.
+184	Creating port multiplier failed.
+185	Non-blocking picture capture is not supported.
+186	Invalid function. The asynchronous mode is enabled.
+187	Maximum number of multiplex ports reached.
+188	Link has not been created or the link is invalid.
+200	This name already exists.
+201	The number of RAID reaches the upper-limit.
+202	The number of virtual disk reaches the upper-limit.
+203	The virtual disk slots are full.
+204	The physical disk for rebuilding RAID is error.
+205	The physical disk for rebuilding RAID is specified as hot spare.
+206	The physical disk for rebuilding RAID is busy.
+207	Failed to migrate the current RAID type to the new type.
+208	Migration is paused.
+209	Migration is cancelled.
+210	Failed to delete RAID. Virtual disk exists in the RAID.
+211	Target physical disk is a part of the virtual disk and it is working normally.
+212	The specified physical disk is allocated as virtual disk.
+213	The number of physical disks and specified RAID level mismatched.
+214	The RAID is normal. Failed to rebuild.
+215	Background task is executing.
+216	Failed to create virtual disk by ATAPI disk.
+217	There is no need to migrate the RAID.
+218	The physical disk type is not allowed.
+219	No virtual disk. Operation failed.
+220	Insufficient disk space. Failed to allocate the disk as hot spare.
+221	The disk is already allocated as the hot spare of one RAID.
+222	No disk in the RAID.
+223	The name is empty.
+224	Incorrect input parameters.
+225	The physical disk is not available.
+226	The RAID is not available.
+227	Incorrect number of physical disks.
+228	Insufficient virtual disk space.
+229	Not exist.
+230	This operation is not supported.
+231	The RAID status is exception.
+232	The device node of virtual disk does not exist.
+233	No more slots are allowed.
+234	No virtual disk exists in the RAID.
+235	Invalid virtual disk slot.
+236	Insufficient physical disk space.
+237	Only the RAID in normal status supports to be migrated.
+238	Insufficient RAID space.
+239	Pulling disk out safely or rescanning.
+240	Creating RAID with size larger than 16T is not supported.
+250	The device is not activated (login failed.)
+251	Risky password.
+252	The device is already activated.
+300	The configured ID is invalid.
+301	Invalid polygon shape.
+302	Invalid rule parameters.
+303	Configured information conflicted.
+304	No calibration information.
+305	Invalid camera parameters.
+306	Invalid inclination angle for calibration.
+307	Calibration error.
+308	Failed to calculate calibration parameter values of camera.
+309	The inputted calibration line exceeds the external sample rectangle.
+310	No region entrance is configured.
+311	No lane configured in the traffic event rull(especially for traffic jam or driving against the traffic).
+312	Lane not configured.
+313	Two different directions are contained in event rule.
+314	Lane and data rule conflicted.
+315	This event type is not supported.
+316	The lane has no direction.
+317	Invalid size of filter frame.
+318	No face picture exists in the image inputted when positioning feature point.
+319	The inputted image is too small when positioning feature point.
+320	No face picture exists in the image inputted when detecting single face picture.
+321	Face picture is too small when building model.
+322	The face picture quality is too poor when building model.
+323	The configured advanced parameter is incorrect.
+324	Calibration sample number error, or data value error, or the sample points are beyond the horizontal line.
+325	Canceling calibration is not allowed for configured rules.
+326	The minimum width and height of maximum filter frame are twice or more larger than the maximum width and height of minimum filter frame.
+327	Too large detection region. The maximum region should be 2/3 of the image.
+328	Trial period is ended.
+329	Device type and configuration file conflicted.
+330	Failed to positioning face feature points.
+331	Failed to test face picture quality.
+332	Failed to extract the face feature points.
+333	The face detection validity is too low when positioning face feature points.
+334	The validity of feature points positionong is too low.
+335	Data size mismatches.
+336	Incorrect model version in face model library.
+337	Failed to detect face in the face recognition library.
+338	Failed to normalize face attribute.
+339	Dongle type and camera type mismatched.
+340	Camera version mismatches.
+341	This camera is already added to other channels of devices.
+342	Failed to connect to face retrieval server.
+343	Insufficient storage space.
+344	Failed to connect to database.
+345	Incorrect database user name and password.
+346	Decoding failed.
+347	Invalid picture resolution
+348	Invalid channel working mode.
+711	Sub system is configured as the trunk line.
+712	Mixed joint is not supported.
+713	Switch of display channel is not supported.
+714	Decoded resource is occupied by the big screen.
+715	Using resources of other sub system is not allowed.
+717	The scene is being used.
+718	Insufficient resources for decoding.
+719	Insufficient resources for display.
+720	Insufficient video storage resources.
+721	Insufficient resources for multiple channels.
+722	Windows cover free display output channel and normal output channel.
+723	Window division is not supported for free display windows.
+724	For the windows whose number is not integral multiple of the number of output channels, free display is not supported.
+725	For windows whose transparency configuration is enabled, window division is not supported.
+726	For windows whose window division is enabled, transparency configuration is not supported.
+780	The terminal busy.
+791	Failed to enable this function. The resources is occupied by other functions.
+800	Network traffic is out of the limitation.
+801	Failed to lock. The video file is recording.
+802	Failed to format HDD. The HDD space is too small.
+803	Failed to connect to the remote terminal.
+804	Spare server cannot be added to spare server.
+805	Backup disk exception.
+806	No more spare server can be added.
+807	The added spare server is a working server.
+808	Adding flow error.
+809	Working server cannot be added to working server.
+810	CVR service exception (For N+1 mode, it refers to CVR working server exception).
+811	Spare CVR server exception.
+812	The added working server is spare server.
+813	The performance reaches the upper-limit.
+814	This device already exists.
+815	Inquest resuming.
+816	Inquest video backing up.
+817	Playing.
+818	Inquest started.
+819	Locally operating.
+820	Inquest is not started.
+821	The channel is not bound or binding two-way audio failed.
+822	Ddevice is in N+1 mode. Cloud storage is not supported.
+823	Cloud storage mode is enbaled.
+824	Operation failed. The device is in N+0 taken over status.
+825	The device is in N+0 taken over status. Get re-positioning information and try again.
+830	IR output error.
+831	IR output port command number error
+832	Device is not in inquest status.
+833	Device is not in paused status.
+834	Incorrect verification code.
+835	Verification code is required.
+836	Failed to calibrate.
+837	Calibration first.
+838	Panoramic calibration is empty in Flash.
+839	Calibration failed, please try again.
+840	Rule line configuration error. Please try again and make sure the line is within the red region.
+843	No more face pictures can be added.
+844	Picture recognition failed.
+845	A<-1 alarm number is used for triggering vehicle capture.
+846	Database version in face picture library mismatched.
+847	Face picture library data error.
+848	Invalid face data PID.
+849	Invalid face picture library ID.
+850	No more face picture libraries can be established..
+851	No target recognized in the picture.
+852	Sub picture modeling failed.
+853	No VCA engine supports picture secondary recognition.
+854	No VCA engine.
+855	Overload. The engine CPU reached 100%.
+856	No more false alarm channel can be enabled.
+857	Name error.
+858	The name already exists.
+859	The pictures is importing to face picture library.
+864	Invalid picture format.
+865	Invalid picture resolution.
+866	The picture size is too large.
+867	Too many targets in the picture.
+868	Initializing analysis engine.
+869	Analysis engine exception.
+870	Analysis engine is importing pictures to face picture library.
+871	No data for modeling.
+872	Device is modeling picture. Concurrent processing is not supported.
+873	No more face picture can be added to the device (the data of imported face picture library)
+874	Channel is linked to the analysis engine.
+875	The minimum length of upper layer custom ID is 32 bytes.
+876	The applied custom face picture library ID is duplicated
+877	The applied custom person ID is duplicated.
+878	URL download failed.
+879	URL download has not started.
+880	The security verification key of configuration file is error.
+883	Invalid thermometry region
+894	Too short time for calibration.
+895	Auto calibration failed.
+896	Verification failed.
+897	No temperature sensor.
+898	The pupil distance is too large.
+901	Window channel index error.
+902	Window layer number error(the count of window layers on a single screen exceeds the max number).
+903	Window block number error(the count of screens that single window overlays exceeds the max number).
+904	The output resolution error.
+905	Layout index error.
+906	The input resolution is not supported.
+907	The sub-device is off-line.
+908	There is no free decoding channel.
+909	The upper limit of window number.
+910	Calling order error.
+911	Be playing plan.
+912	Decoder board is being used.
+913	Output board data overflow
+914	Duplicate user name
+915	Invalid user name
+916	Input matrix is in use.
+917	Different channel type (the type of matrix output channel mismatches that of the controller input channel)
+918	Input channel has been bound by other matrix
+919	The matrix output channels in use exceeded the number bound by matrix and controller
+920	Number of input signals reached upper limit
+921	Input channel is in use
+922	Administrator has logged in, operation failed
+923	The user has logged in, operation failed
+924	Scene is initializing, operation failed
+925	Base image size does not match
+926	Window is in other operation, operation failed
+927	Number of signal source window reached upper limit
+943	The window size exceeds the limit.
+951	The number of windows overlap has reached the maximum limit.
+952	stream ID and channel number are both valid.
+953	The device has no zero channel.
+955	Need redirection (for transcoding system)
+956	The stream ID does not exist.
+957	The transcoding has not been started.
+958	The number of stream ID has reached the maximum limit.
+959	The work mode does not match with the requirement.
+960	It Has been working in current mode.
+961	The device is in processing
+962	It is in transcoding.
+975	Wrong window position.
+976	Screen distance exceeds the limit.
+984	Operation failed. Close the window first.
+985	Beyond the cycle decoding capacity.
+986	Invalid cycle decoding time.
+987	No more linked camera can be added.
+990	The resolution is not supported (odd No.).
+991	The resolution is not supported (even No.).
+998	Unit configuration failed.
+1000	Getting capability node is not supported
+1001	Not enough output memory
+1002	Failed to find related local xml
+1003	Loading local xml error
+1004	Device capability data format error
+1005	Capability set type error
+1006	XML capability node format error
+1007	Input capability XML node value error
+1008	XML version does not match
+1101	Transparent channel has been open, operation failed
+1102	Device is upgrading
+1103	Upgrade pack type does not match
+1104	Device is formatting
+1105	Upgrade pack version does not match
+1106	PT is locked.
+1111	Illegal verification code. Change the verification code.
+1112	No verification code. Enter the verification code.
+1113	The IP address cannot be configured.
+1125	Up to one channel's ANR function can be enabled.
+1131	Formatting HDD failed.
+1132	Formatting encrypted HDD failed.
+1133	Verifying password of SD card failed. Incorrect password.
+1201	Searching peripherals.
+1202	Registering external module
+1203	Getting arming region parameter
+1204	Getting trigger
+1205	System is in arming status
+1206	System is in programming mode
+1207	System is in pacing measuring mode
+1208	Bypass status
+1209	Function not enabled
+1210	Operation is not supported by arming region
+1211	Module address cannot be modified
+1212	Module is not registered
+1213	Public sub system associate with its self
+1214	Number of associated public sub system reached upper limit
+1215	Sub system is associated by other public sub system
+1216	Arming region is in failure status
+1217	Same event type exists in enable event trigger alarm output and disable event trigger alarm output
+1218	Arming region is in alarm status
+1219	Extension bus short-circuit
+1220	Password conflict, e.g., lock password is identical with duress password
+1221	Detector has been registered by other arming regions
+1222	Detector has been registered by other hosts
+1223	Detector offline
+1224	Device in call
+1357	File name error, empty or invalid
+1358	Device in broadcast
+1400	Over the number of lanes.
+1401	Recognition area is too large.
+1402	Signal lamp access parameters error.
+1403	Lane configuration error.
+1404	Stop line configuration error.
+1405	Turn left / right boundary configuration error.
+1406	Overlay lane number repetition.
+1407	The polygon does not meet the requirements.
+1408	Video detection of traffic light signal exceeds the maximum number of.
+1409	Video detection of traffic signal lamp lights are not legitimate
+1410	The size of the video detection of traffic light input signal lamp is not valid.
+1411	The color of the video detection of traffic light input signal lamp color is not legitimate.
+1412	The direction property of the video detection of traffic light input light is not valid.
+1413	Lack of IO ablity.
+1414	FTP port error.
+1415	FTP catalogue error.
+1416	FTP upload type error.
+1417	Setting param flash write error.
+1418	Getting param flash read error.
+1419	Pic name delimiter error.
+1420	Pic name item error.
+1421	Plate recognize type error.
+1422	Capture times error.
+1423	Loop distance error.
+1424	Loop input status error.
+1425	Related IO conflict.
+1426	Interval time error.
+1427	Sign speed error.
+1428	Flip is used.
+1429	Related lane number error.
+1430	Trigger mode error.
+1431	Delay time error.
+1432	Exceed RS485 count.
+1433	Radar type error.
+1434	Radar angle error.
+1435	Radar speed valid time error.
+1436	Radar line correct error.
+1437	Radar const correct error.
+1438	Record param error.
+1439	Light number and other param error.
+1440	Light number and detection region error.
+1441	Plate recognize Province param error.
+1442	IO Speed TimeOut Param error.
+1443	NTP TimeZone Param error.
+1444	NTP Interval Time error.
+1445	Network Card Num error.
+1446	Default Route error.
+1447	Banding Work Mode error.
+1448	Slave Card error.
+1449	Primary Card error.
+1450	DHCP and PPOE not Meanwhile start.
+1451	Net Interface invalid.
+1452	Invalid MTU parameters.
+1453	Netmask address invalid.
+1454	IP address invalid.
+1455	Multicast IP address invalid.
+1456	Gateway address invalid.
+1457	DNS Param invalid.
+1458	AlarmHost IP invalid.
+1459	IP address Conflict.
+1460	IP not support Multi Network segment.
+1461	NetPort error.
+1462	PPPoE is not supported.
+1463	Not Support Domain Name.
+1464	Speed Not Enabled.
+1465	IO Status invalid.
+1466	Burst Interval invalid.
+1467	Reserve Mode invalid.
+1468	Lane No error.
+1469	Coil Area Type error.
+1470	Trigger Area Param error.
+1471	Speed Limit Param error.
+1472	Lane Protocol Type error.
+1473	Capture Interval Type error.
+1474	Capture Interval Distance error.
+1475	Rs485 Associate DevType error.
+1476	Rs485 Associate LaneNo error.
+1477	LaneNo Associate MulitRs485 error.
+1478	Light Detection Region error.
+1479	UnSupport Capture Frame 2D Noise Reduction.
+1480	UnSupport scene Mode.
+1481	UnSupport White Balance Mode.
+1482	IO Effectiveness invalid.
+1483	Access Detector Lights Red / Yellow Overrun.
+1484	Access Detector Lights Red / Yellow Conflict.
+1485	Trigger straight line error.
+1486	Subject line area stop line error.
+1487	Red light trigger lines error.
+1488	IO out port error.
+1489	IO out ahead time error.
+1490	IO out inwork time error.
+1491	IO out frequency multiplication error.
+1492	IO out duty rate error.
+1493	IO out work mode error.
+1494	Plate enable in plate compensate mode on.
+1495	Recognize Type error.
+1496	Plate Recognize Area Param error.
+1497	Port Conflict.
+1498	IP cannot be the loopback address.
+1499	Driveline sensitivity error.
+1500	The time period conflict.
+1501	The diagnostic plan of VQD dese not exist.
+1502	The channel dese not exist.
+1503	The total number of VQD plans exceeds the max limit.
+1504	The total number of VQD tasks exceeds the max limit.
+1600	Capture times exceed 2 in flash mode.
+1601	Radar type conflict.
+1602	The license plate is null.
+1603	Failed to write data into the database.
+1604	The effective time of license plate error.
+1605	The pre recorded start time is greater than the number of illegal capture.
+1606	Trigger rule line error.
+1607	Left and right trigger line is not vertical.
+1608	Flash lamp mode error.
+1609	Illegal capture number error.
+1610	Illegal detection type error.
+1611	Positive back to trigger line height error.
+1612	Mixed mode only supports capture type all targets.
+1613	Car sign speed greater than speed limit value.
+1614	Big car sign speed limit greater than speed limit value.
+1615	Big car sign speed limit is greater than the car sign speed limit value.
+1616	Big car speed limit value is greater than the car speed limit value.
+1617	Big car low speed limit value is greater than the car low speed limit value.
+1618	Car speed limit greater than exception high speed value.
+1619	Big car speed limit greater than exception high speed value.
+1620	Stopping more than straight lines trigger lines.
+1900	Time periods overlap
+1901	Holiday plan overlap
+1902	Card number is not sorted
+1903	Card number does not exist
+1904	Card number error
+1905	Arming region is in arming status (parameter cannot be modified)
+1906	Arming region does not support the operation
+1907	Interlock and anti-passback configuration conflict
+1908	Card full (return after card reached 10,000)
+1909	Failed to download holiday group
+1910	Distributed access controller offline
+1911	Distributed access controller is not added
+1912	Distributed access controller is added
+1913	Conflict with added distributed access controller
+1914	Distributed access controller communication failed
+1915	Operation object does not exist (operation to door, alarm output, alarm input, return when the object is not added)
+1916	Distributed access controller exceeded device capability upper limit
+1917	Door exceeded device capability upper limit
+1918	Alarm input and output exceeded device capability upper limit
+1919	Distributed access controller address does not match with type
+1920	not support one person multi-card
+1921	The face picture does not exist.
+1922	Repeated door door duress code, the super password, or the dismiss code.
+1923	Repeated device authentication code
+1924	No more devices can be armed.
+1925	The fingerprint module does not support deleting fingerprint by finger ID.
+1926	Invalid range of the effective period.
+1927	Collection timed out.
+1928	Low quality of collected data.
+1929	The device is collecting data offline and cannot respond.
+1950	Communication exception with outdoor terminal
+1951	Room number is not set
+1952	No call
+1953	Ringing
+1954	Call in progress
+1955	Incorrect smart lock password
+1956	Lock control failure
+1957	Lock control timed out
+1958	Smart lock device busy
+1959	Remote lock control not enabled
+2100	Downloaded file is incomplete
+2101	The camera already exists
+2102	Camera has been added to the channel
+2103	Not enough network bandwidth
+2104	IP address of camera conflicts with that of DVR
+2105	Invalid IP address
+2106	Invalid port number
+2107	Not in the same LAN, cannot set security question or export GUID file
+2108	Mutually exclusive function
+2109	Error in number of security question configurations
+2110	All the face VCA channels are occupied.
+2111	Data is calling back.
+2112	The VCA channel is already linked.
+2113	The VCA channel is already overlayed.
+2114	The face channels cannot be overlayed.
+2116	Insufficient SMD encoding resource
+2117	Insufficient SMD decoding resource
+2118	Face picture library data is in processing
+2119	There is a great time difference between device and server.
+2120	It is not supported. Playback is enabled.
+2121	It is not supported. SMD of channel is enabled.
+2122	It is not supported. Face capture of channel is enabled.
+2123	Invalid telephone number
+2124	Invalid ID No.
+2125	The channel resolution is not supported
+2126	The channel encoding format is not supported
+2127	Deleting is not allowed. The number of devices is not enough
+2128	Deleting is not allowed. The device is cluster host.
+2129	No more devices can be added.
+2130	Device type mismatched.
+2131	Device version mismatched.
+2132	Cluster system IP address conflict: ipv4 address conflict, invalid ipv6.
+2133	Invalid cluster system IP address: invalid ipv4, invalid ipv6.
+2134	Cluster system port conflict
+2135	Invalid cluster system port
+2136	Invalid user name or password
+2137	The device already exists.
+2138	The device does not exist.
+2139	The device working mode is not the cluster mode .
+2140	IP addresses are in different LAN. Building cluster or extending capacity for NVRs in different LAN is not allowed.
+2147	Incorrect interaction password
+2148	Interaction password is missing
+2141	Capturing packets failed.
+2142	Capturing packet.
+2143	No enough hard hat detection resource.
+2144	This function is not supported. Video synopsis is already enabled.
+2146	No more deep learning resources can be added.
+2149	People gathering density is enabled, it is not supported
+2150	The network camera resolution is too large
+2151	The network camera bitrate is too large
+2152	Invalid taskID
+2153	The ATM panel mode is not configured.
+2154	No enough engine resource
+2155	No more task data is allowed
+2156	Collision time is over the limit
+2159	Subscribing alarm/event is not supported.
+2184	The max. number of network camera channels reached.
+2185	The max. number of IoT channels reached
+2186	Device of the IoT channel already exists.
+2187	Device of the IoT channel does not exist.
+2188	Invalid IoT protocol type
+2189	Invalid verification code
+2190	Duplicated IoT device
+2206	Double verification is required
+2207	No double verification user
+2209	Max. number of time buckets reached
+2210	Max. number of channels reached
+2211	Insufficient searchID resources
+2249	Time difference between power on and off should be less than 10 minutes.
+2262	Deleting stranger library is not supported
+2263	Creating stranger library is not supported
+2266	SSD file system error
+2267	Insufficient SSD space for person frequency detection
+2269	SMR disk does not support RAID.
+3001	Device does not support deicing function under current status.(Deicing function is only supported under the power status of POE+, AC24V, and DC12V).
+3002	Temperature measurement function is not enabled. (The enable function in NET_DVR_THERMOMETRY_BASICPARAM is not turned on)
+3004	Panoramic map and limit cannot be operated at same time
+3005	SmartH264 and ROI cannot be enabled at the same time.
+3006	No more rules can be added.
+3007	Laser and deicing function cannot be enabled at the same time.
+3008	Please disable the digital zoom function or set the zoom limit to the minimum value. Otherwise, when enabling smoke and fire detection, behavior analysis, ship detection, defective point correction, temperature measurement, smoke and fire shielding function, this error code will be prompted.
+3010	Field of view synchronization failed.
+3013	The rule region conflicts with the shielded area.
+3501	The hard hat detection area is not configured.
+3502	The hard hat detection is enabled.
+3504	Incorrect ID of human body picture library (incorrect HBDID or customHBDID)
+401	Authentication failed: if server returns 401, it will change to this error code
+402	Failed to allocate the resource
+403	Parameter error
+404	The assigned URL does not exist: when the server returns 404, SDK turns to this error code. E.g. the channel is not available, or the channel does not support sub stream
+406	The user forces to exit midway
+407	RTSP port getting error.
+410	RTSP DECRIBE communicate error
+411	"Sending ""RTSP DECRIBE"" is timeout."
+412	"Failed to send ""RTSP DECRIBE""."
+413	"Receiving ""RTSP DECRIBE"" is timeout."
+414	"Receiving data of ""RTSP DECRIBE"" error."
+415	"Failed to receive ""RTSP DECRIBE""."
+416	"""RTSP DECRIBE, the device returns the error code: 501 (failed to allocate the resource in the device)"
+420	(or 419), RTSP SETUP interaction error. Generally, it is that the address(URL) returned by the device is not accessible, or it is rejected by the server
+421	"Sending ""RTSP SETUP"" is timeout."
+422	"Sending ""RTSP SETUP"" error."
+423	"Receiving ""RTSP SETUP"" is timeout."
+424	"Receiving data of ""RTSP SETUP"" error."
+425	"Failed to receive ""RTSP SETUP""."
+426	"""RTSP SETUP"" device returns the error that values 401 or 501. It exceeds the max connection number."
+430	RTSP PLAY interaction error.
+431	"Sending ""RTSP PLAY"" is timeout."
+432	"Sending ""RTSP PLAY"" error."
+433	"Receiving ""RTSP PLAY"" is timeout."
+434	"Receiving data of ""RTSP PLAY"" error."
+435	"Failed to receive ""RTSP PLAY""."
+436	"""RTSP PLAY"" device returns the error that values 401 or 501."
+440	RTSP TEARDOWN interaction error.
+441	"Sending ""RTSP TEARDOWN"" is timeout."
+442	"Sending ""RTSP TEARDOWN"" error."
+443	"Receiving ""RTSP TEARDOWN"" is timeout."
+444	"Receiving data of ""RTSP TEARDOWN"" error."
+445	"Failed to receive ""RTSP TEARDOWN""."
+446	"""RTSP TEARDOWN"" device returns the error that values 401 or 501."
+500	No error.
+501	Input parameter is invalid.
+502	API calling order error.
+503	Failed to create multimedia clock.
+504	Failed to decode video data.
+505	Failed to decode audio data.
+506	Failed to allocate memory.
+507	Failed to open the file.
+508	Failed to create thread event.
+509	Failed to create DirectDraw object.
+510	Failed to create backstage cache for OFFSCREEN mode.
+511	Buffer overflow, failed to input stream.
+512	Failed to create audio equipment.
+513	Failed to set the volume.
+514	This API can be called only for file playback mode.
+515	This API can be called only when playing stream.
+516	Not support by the system. Decoder can only work on the system above Pentium 3.
+517	There is no file header.
+518	The version mismatch between decoder and encoder.
+519	Failed to initialize the decoder.
+520	The file is too short, or the stream data is unknown.
+521	Failed to initialize multimedia clock.
+522	BLT failure.
+523	Failed to update overlay surface
+524	Failed to open video & audio stream file.
+525	Failed to open video stream file.
+526	JPEG compression error.
+527	Don't support the version of this file.
+528	Extract video data failed.
+581	This container format is not supported.
+600	No error.
+601	Not support.
+602	Memory allocation error.
+603	Parameter error.
+604	API calling order error.
+605	No audio device
+606	Failed to open the audio device
+607	Context error.
+608	WAV file error.
+609	The type of WAV parameter is invalid
+610	Failed to encode data
+611	Failed to decode data
+612	Failed to play audio
+613	Failed to denoise
+619	Unknown
+678	Incorrect predefined minimum interval.
+679	Incorrect predefined score.
+680	Invalid predefined bandwidth.
+687	The packet size is too large.
+688	Invalid packet size.
+689	Incorrect packet versio information.
+690	Unknown packet.
+695	Out of memory.
+696	The library is not initialized.
+697	No session found.
+698	Invalid parameters.
+699	QoS Stream Control Library error.
+700	No error.
+8001	NPQ library: Incorrect parameter.
+8002	NPQ library: Operating system error.
+8003	NPQ library: Internal error.
+8004	NPQ library: Calling sequence error.
+8005	NPQ library: This function is not supported.
+8100	No data is called back.
+8101	Loading NPQ library failed.
+8104	The NPQ function of this stream is not enabled.
+8110	No more streaming channel's NPQ function can be enabled.
+8111	The configured encoding parameters conflicted.

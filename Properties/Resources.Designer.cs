@@ -61,146 +61,22 @@ namespace HikDownloader.Properties {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Comedor.
+        ///   Busca una cadena traducida similar a 0	No error.
+        ///1	Incorrect user name or password.
+        ///2	No permission.
+        ///3	Uninitialized.
+        ///4	Incorrect channel No.
+        ///5	No more device can be connected.
+        ///6	Version mismatches.
+        ///7	Connecting to device failed. The device is offline or network connection timed out.
+        ///8	Sending data to device failed.
+        ///9	Receiving data from device failed.
+        ///10	Receiving data from device timed out.
+        ///11	The data sent to the device is illegal, or the data received from the device error. E.g. The input data is not supported by the device for  [resto de la cadena truncado]&quot;;.
         /// </summary>
-        internal static string Channel1 {
+        internal static string HCNetSDKErrors {
             get {
-                return ResourceManager.GetString("Channel1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a CCM 4 y 8.
-        /// </summary>
-        internal static string Channel10 {
-            get {
-                return ResourceManager.GetString("Channel10", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a Kase 1.
-        /// </summary>
-        internal static string Channel11 {
-            get {
-                return ResourceManager.GetString("Channel11", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a SFM 4 - BTA 1.
-        /// </summary>
-        internal static string Channel12 {
-            get {
-                return ResourceManager.GetString("Channel12", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a Calle fumadero.
-        /// </summary>
-        internal static string Channel13 {
-            get {
-                return ResourceManager.GetString("Channel13", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a Acceso Portería.
-        /// </summary>
-        internal static string Channel14 {
-            get {
-                return ResourceManager.GetString("Channel14", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a Sector lubricantes.
-        /// </summary>
-        internal static string Channel15 {
-            get {
-                return ResourceManager.GetString("Channel15", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a Cámara 16.
-        /// </summary>
-        internal static string Channel16 {
-            get {
-                return ResourceManager.GetString("Channel16", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a Desco.
-        /// </summary>
-        internal static string Channel2 {
-            get {
-                return ResourceManager.GetString("Channel2", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a Playa de carga.
-        /// </summary>
-        internal static string Channel3 {
-            get {
-                return ResourceManager.GetString("Channel3", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a Taller Mantenimiento.
-        /// </summary>
-        internal static string Channel4 {
-            get {
-                return ResourceManager.GetString("Channel4", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a Playa de carga.
-        /// </summary>
-        internal static string Channel5 {
-            get {
-                return ResourceManager.GetString("Channel5", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a Producto en tránsito.
-        /// </summary>
-        internal static string Channel6 {
-            get {
-                return ResourceManager.GetString("Channel6", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a Lugar de estibas.
-        /// </summary>
-        internal static string Channel7 {
-            get {
-                return ResourceManager.GetString("Channel7", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a CCM 1 y CCM 3.
-        /// </summary>
-        internal static string Channel8 {
-            get {
-                return ResourceManager.GetString("Channel8", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a CCM 7, 8 y 9.
-        /// </summary>
-        internal static string Channel9 {
-            get {
-                return ResourceManager.GetString("Channel9", resourceCulture);
+                return ResourceManager.GetString("HCNetSDKErrors", resourceCulture);
             }
         }
     }

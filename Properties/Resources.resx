@@ -117,52 +117,8 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Channel1" xml:space="preserve">
-    <value>Comedor</value>
-  </data>
-  <data name="Channel10" xml:space="preserve">
-    <value>CCM 4 y 8</value>
-  </data>
-  <data name="Channel11" xml:space="preserve">
-    <value>Kase 1</value>
-  </data>
-  <data name="Channel12" xml:space="preserve">
-    <value>SFM 4 - BTA 1</value>
-  </data>
-  <data name="Channel13" xml:space="preserve">
-    <value>Calle fumadero</value>
-  </data>
-  <data name="Channel14" xml:space="preserve">
-    <value>Acceso Portería</value>
-  </data>
-  <data name="Channel15" xml:space="preserve">
-    <value>Sector lubricantes</value>
-  </data>
-  <data name="Channel16" xml:space="preserve">
-    <value>Cámara 16</value>
-  </data>
-  <data name="Channel2" xml:space="preserve">
-    <value>Desco</value>
-  </data>
-  <data name="Channel3" xml:space="preserve">
-    <value>Playa de carga</value>
-  </data>
-  <data name="Channel4" xml:space="preserve">
-    <value>Taller Mantenimiento</value>
-  </data>
-  <data name="Channel5" xml:space="preserve">
-    <value>Playa de carga</value>
-  </data>
-  <data name="Channel6" xml:space="preserve">
-    <value>Producto en tránsito</value>
-  </data>
-  <data name="Channel7" xml:space="preserve">
-    <value>Lugar de estibas</value>
-  </data>
-  <data name="Channel8" xml:space="preserve">
-    <value>CCM 1 y CCM 3</value>
-  </data>
-  <data name="Channel9" xml:space="preserve">
-    <value>CCM 7, 8 y 9</value>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="HCNetSDKErrors" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\HCNetSDKErrors.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
 </root>

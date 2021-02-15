@@ -1,0 +1,26 @@
+﻿{
+    "HCNetSDK": {
+        "log": {
+            "dir": "{appPath}\\logs\\HCNetSDK",
+            "level": 3,
+            "autoDel": true
+        },
+        "session": {
+            "address": "",
+            "port": 8000,
+            "userName": "",
+            "password": ""
+        }
+    },
+    "HikDownloader": {
+        "downloads": {
+            "dir": "{appPath}\\downloads",
+            "simultaneousTasks": 3
+        }
+    },
+    "FFmpeg": {
+        "bin": "{appPath}\\tools\\ffmpeg\bin\ffmpeg.exe",
+        "dir": "{appPath}\\videos",
+        "simultaneousTasks": 3
+    }
+}

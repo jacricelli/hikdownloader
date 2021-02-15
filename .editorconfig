@@ -1,0 +1,7 @@
+﻿[*.{cs,vb}]
+
+# IDE0044: Agregar modificador de solo lectura
+dotnet_diagnostic.IDE0044.severity = none
+
+# IDE0063: Use la instrucción "using" simple
+dotnet_diagnostic.IDE0063.severity = none

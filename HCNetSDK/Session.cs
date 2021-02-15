@@ -8,43 +8,23 @@
     public static class Session
     {
         /// <summary>
-        /// Dirección IP.
+        /// Identificador del usuario.
         /// </summary>
-        public static string Address { get; set; }
-
-        /// <summary>
-        /// Puerto.
-        /// </summary>
-        public static int Port { get; set; }
-
-        /// <summary>
-        /// Usuario.
-        /// </summary>
-        public static User User { get; private set; } = null;
-
-        /// <summary>
-        /// Obtiene un valor que indica si se ha iniciado una sesión.
-        /// </summary>
-        public static bool IsLoggedIn => User?.Identifier > -1;
+        public static int UserId { get; private set; } = -1;
 
         /// <summary>
         /// Inicia una sesión.
         /// </summary>
-        /// <param name="userName">Nombre de usuario.</param>
-        /// <param name="password">Contraseña.</param>
+        /// <param name="config">Configuración.</param>
         /// <returns>Devuelve TRUE si la operación se ha completado exitosamente, FALSE de lo contrario.</returns>
-        public static bool Login(string userName, string password)
+        public static bool Login(Config.HCNetSDKSessionConfig config)
         {
-            if (!IsLoggedIn)
+            if (UserId < 0)
             {
-                var deviceInfo = default(NET_DVR_DEVICEINFO_V30);
-                var id = NET_DVR_Login_V30(Address, Port, userName, password, ref deviceInfo);
-                if (id > -1)
-                {
-                    User = new User(id, userName);
+                var deviceInfo = default(NET_DVR_DEVICEINFO);
+                UserId = NET_DVR_Login_V30(config.Address, config.Port, config.UserName, config.Password, ref deviceInfo);
 
-                    return true;
-                }
+                return UserId > -1;
             }
 
             return false;
@@ -56,9 +36,9 @@
         /// <returns>Devuelve TRUE si la operación se ha completado exitosamente, FALSE de lo contrario.</returns>
         public static bool Logout()
         {
-            if (IsLoggedIn && NET_DVR_Logout(User.Identifier))
+            if (UserId > -1 && NET_DVR_Logout(UserId))
             {
-                User = null;
+                UserId = -1;
 
                 return true;
             }
@@ -70,7 +50,7 @@
         /// Información del dispositivo.
         /// </summary>
         [StructLayoutAttribute(LayoutKind.Sequential)]
-        private struct NET_DVR_DEVICEINFO_V30
+        private struct NET_DVR_DEVICEINFO
         {
             /// <summary>
             /// Número de serie.
@@ -204,15 +184,15 @@
         /// <param name="sPassword">Contraseña.</param>
         /// <param name="lpDeviceInfo">Información del dispositivo.</param>
         /// <returns>Devuelve -1 en caso que el usuario y/o contraseña sean incorrectos, un valor mayor a cero como identificador del usuario</returns>
-        [DllImport(@"tools\HCNetSDK\HCNetSDK.dll")]
-        private static extern int NET_DVR_Login_V30(string sDVRIP, int wDVRPort, string sUserName, string sPassword, ref NET_DVR_DEVICEINFO_V30 lpDeviceInfo);
+        [DllImport(@"lib\HCNetSDK.dll")]
+        private static extern int NET_DVR_Login_V30(string sDVRIP, int wDVRPort, string sUserName, string sPassword, ref NET_DVR_DEVICEINFO lpDeviceInfo);
 
         /// <summary>
         /// Cierra una sesión.
         /// </summary>
         /// <param name="iUserID">Identificador del usuario.</param>
         /// <returns>Devuelve TRUE si la operación se ha completado exitosamente, FALSE de lo contrario.</returns>
-        [DllImport(@"tools\HCNetSDK\HCNetSDK.dll")]
+        [DllImport(@"lib\HCNetSDK.dll")]
         private static extern bool NET_DVR_Logout(int iUserID);
     }
 }
