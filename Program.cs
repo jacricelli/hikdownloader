@@ -10,6 +10,8 @@
     using System.Reflection;
     using System.Runtime.InteropServices;
     using Pastel;
+    using System.Threading;
+    using System.Threading.Tasks;
 
     /// <summary>
     /// Programa.
@@ -62,7 +64,7 @@
         {
             if (ctrlType == CtrlTypes.CTRL_C_EVENT || ctrlType == CtrlTypes.CTRL_BREAK_EVENT)
             {
-                Console.Write("¿Confirma la cancelación de la tarea y cierre de la aplicación? (s/n) ");
+                Console.Write("\n¿Confirma la cancelación de la tarea y cierre de la aplicación? (s/n) ");
                 var key = Console.ReadKey();
                 if (key.KeyChar.ToString().Equals("s", StringComparison.OrdinalIgnoreCase))
                 {
@@ -172,7 +174,46 @@
                         var channels = opts.Canal.Distinct().ToArray();
                         Array.Sort(channels);
 
-                        Search(channels, opts.Desde, opts.Hasta);
+                        var results = Search(channels, opts.Desde, opts.Hasta);
+                        var total = results.Count;
+                        var error = false;
+                        if (total >  0)
+                        {
+                            Console.WriteLine("Descargando...");
+                            Console.WriteLine("  > Configuración:");
+                            Console.WriteLine($"    Ruta:     {Config.HikDownloader.Downloads.Dir}");
+                            Console.WriteLine($"    Paralelo: {Config.HikDownloader.Downloads.Parallel}\n");
+
+                            var count = 0;
+                            Console.Write($"    Se han descargando 0 de {total} grabaciones.".Pastel("00FFFF"));
+
+                            Parallel.ForEach(
+                                results,
+                                new ParallelOptions
+                                {
+                                    MaxDegreeOfParallelism = Config.HikDownloader.Downloads.Parallel
+                                },
+                                recording =>
+                                {
+                                    if (!Download(recording))
+                                    {
+                                        error = true;
+                                    }
+
+                                    count++;
+                                    if (!error)
+                                    {
+                                        Console.Write($"\r    Se han descargando {count:N0} de {total:N0} grabaciones.".Pastel("00FFFF"));
+                                    }
+                                    else
+                                    {
+                                        Console.Write($"\r    Se han descargando {count:N0} de {total:N0} grabaciones (con errores).".Pastel("00FFFF"));
+                                    }
+                                }
+                            );
+
+                            Console.WriteLine($"\r    Se han descargado todas las grabaciones.".Pastel("00FFFF"));
+                        }
 
                         return;
                     }
@@ -192,15 +233,19 @@
         /// <returns>Resultados de la búsqueda.</returns>
         private static List<HCNetSDK.NET_DVR_FINDDATA> Search(int[] channels, DateTime start, DateTime end)
         {
-            Console.WriteLine("Configuración de búsqueda:");
-            Console.WriteLine($"  > Canales:   {string.Join(", ", channels)}");
-            Console.WriteLine($"  > Intervalo: {start:dd/MM/yyyy} a {end:dd/MM/yyyy}\n");
+            Console.WriteLine("Buscando...");
+            Console.WriteLine("  > Configuración:");
+            Console.WriteLine($"    Canales:   {string.Join(", ", channels)}");
+            Console.WriteLine($"    Intervalo: {start:dd/MM/yyyy} a {end:dd/MM/yyyy}\n");
+            Console.WriteLine("  > Resultados:");
 
             var total = 0;
+            var totalPending = 0;
             var results = new List<HCNetSDK.NET_DVR_FINDDATA>();
             foreach (var channel in channels)
             {
                 var count = 0;
+                var countPending = 0;
                 foreach (var from in EachDay(start, end))
                 {
                     var thru = from.AddHours(23).AddMinutes(59).AddSeconds(59);
@@ -231,19 +276,24 @@
                     var handle = HCNetSDK.FindFile(HCNetSDK.UserId, ref conditions);
                     if (handle > -1)
                     {
-                        var record = default(HCNetSDK.NET_DVR_FINDDATA);
+                        var recording = default(HCNetSDK.NET_DVR_FINDDATA);
                         while (true)
                         {
-                            var result = HCNetSDK.FindNextFile(handle, ref record);
+                            var result = HCNetSDK.FindNextFile(handle, ref recording);
                             if (result == HCNetSDK.NET_DVR_ISFINDING)
                             {
                                 continue;
                             }
                             else if (result == HCNetSDK.NET_DVR_FILE_SUCCESS)
                             {
-                                if (!results.Contains(record))
+                                if (!results.Contains(recording))
                                 {
-                                    results.Add(record);
+                                    if (!File.Exists(GetRecordingPath(recording)))
+                                    {
+                                        results.Add(recording);
+
+                                        countPending++;
+                                    }
 
                                     count++;
                                 }
@@ -254,13 +304,13 @@
                             }
                             else if (result == HCNetSDK.NET_DVR_FIND_TIMEOUT)
                             {
-                                Console.WriteLine($"  > Canal N° {channel:00}: Tiempo de espera agotado.".Pastel("FFA500"));
+                                Console.WriteLine($"    Canal N° {channel:00}: Tiempo de espera agotado.".Pastel("FFA500"));
 
                                 break;
                             }
                             else if (result == HCNetSDK.NET_DVR_FILE_EXCEPTION)
                             {
-                                Console.WriteLine($"  > Canal N° {channel:00}: Error en la búsqueda.".Pastel("FF0000"));
+                                Console.WriteLine($"    Canal N° {channel:00}: Error en la búsqueda.".Pastel("FF0000"));
 
                                 break;
                             }
@@ -270,29 +320,44 @@
                     }
                     else
                     {
-                        Console.WriteLine($"  > Canal N° {channel:00}: {HCNetSDK.GetLastError()}".Pastel("FF0000"));
+                        Console.WriteLine($"    Canal N° {channel:00}: {HCNetSDK.GetLastError()}".Pastel("FF0000"));
                     }
                 }
 
                 if (count > 0)
                 {
-                    Console.WriteLine($"  > Canal N° {channel:00}: {count:N0} grabaciones.");
+                    if (count == countPending)
+                    {
+                        Console.WriteLine($"    Canal N° {channel:00}: {countPending:N0} grabaciones.");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"    Canal N° {channel:00}: {countPending:N0} de {count:N0} grabaciones.");
+                    }
                 }
                 else
                 {
-                    Console.WriteLine($"  > Canal N° {channel:00}: No se han encontrado grabaciones.");
+                    Console.WriteLine($"    Canal N° {channel:00}: 0 grabaciones.");
                 }
 
                 total += count;
+                totalPending += countPending;
             }
 
             if (total > 0)
             {
-                Console.WriteLine("\n" + $"  Se han encontrado {total:N0} grabaciones.".Pastel("00FFFF") + "\n");
+                if (total == totalPending)
+                {
+                    Console.WriteLine("\n" + $"    Restan por descargar {total:N0} grabaciones.".Pastel("00FFFF") + "\n");
+                }
+                else
+                {
+                    Console.WriteLine("\n" + $"    Restan por descargar {totalPending:N0} de {total:N0} grabaciones.".Pastel("00FFFF") + "\n");
+                }
             }
             else
             {
-                Console.WriteLine("\n" + $"  No se han encontrado grabaciones.".Pastel("00FFFF") + "\n");
+                Console.WriteLine("\n" + $"    No quedan grabaciones por descargar.".Pastel("00FFFF") + "\n");
             }
 
             return results;
@@ -310,6 +375,110 @@
             {
                 yield return day;
             }
+        }
+        #endregion
+
+        #region Descarga
+        /// <summary>
+        /// Descarga una grabación.
+        /// </summary>
+        /// <param name="recording">Grabación.</param>
+        private static bool Download(HCNetSDK.NET_DVR_FINDDATA recording)
+        {
+            var file = GetRecordingPath(recording, false);
+            var directory = Path.GetDirectoryName(file);
+            if (!Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+
+            var error = false;
+            var handle = HCNetSDK.GetFileByName(HCNetSDK.UserId, recording.sFileName, file);
+            if (handle > -1)
+            {
+                uint iOutValue = 0;
+                if (HCNetSDK.PlayBackControl(handle, 1, IntPtr.Zero, 0, IntPtr.Zero, ref iOutValue))
+                {
+                    while (true)
+                    {
+                        Thread.Sleep(750);
+
+                        var progress = HCNetSDK.GetDownloadPos(handle);
+                        if (progress < 0)
+                        {
+                            error = true;
+
+                            HCNetSDK.StopGetFile(handle);
+
+                            break;
+                        }
+                        else if (progress >= 0 && progress < 100)
+                        {
+                            // NOP
+                        }
+                        else if (progress == 100)
+                        {
+                            HCNetSDK.StopGetFile(handle);
+
+                            File.Move(file, GetRecordingPath(recording));
+
+                            break;
+                        }
+                        else if (progress == 200)
+                        {
+                            error = true;
+
+                            HCNetSDK.StopGetFile(handle);
+
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    error = true;
+                }
+            }
+            else
+            {
+                error = true;
+            }
+
+            return error == false;
+        }
+
+        /// <summary>
+        /// Obtiene el nombre de archivo de una grabación.
+        /// </summary>
+        /// <param name="recording">Grabación.</param>
+        /// <param name="extension">Anexar extensión al archivo.</param>
+        /// <returns>Nombre del archivo.</returns>
+        private static string GetRecordingFileName(HCNetSDK.NET_DVR_FINDDATA recording, bool extension = true)
+        {
+            return string.Format(
+                "{0}-{1:00}\\Channel {2:00}\\{0}-{1:00}-{3:00}_{4:00}{5:00}{6:00}_{7:00}{8:00}{9:00}{10}",
+                recording.struStartTime.dwYear,
+                recording.struStartTime.dwMonth,
+                recording.sFileName.Split('_')[0].TrimStart(new char[] { 'c', 'h' }),
+                recording.struStartTime.dwDay,
+                recording.struStartTime.dwHour,
+                recording.struStartTime.dwMinute,
+                recording.struStartTime.dwSecond,
+                recording.struStopTime.dwHour,
+                recording.struStopTime.dwMinute,
+                recording.struStopTime.dwSecond,
+                extension ? ".avi" : string.Empty);
+        }
+
+        /// <summary>
+        /// Obtiene la ruta absoluta del archivo de una grabación.
+        /// </summary>
+        /// <param name="recording">Grabación.</param>
+        /// <param name="extension">Anexar extensión al archivo.</param>
+        /// <returns>Ruta al archivo.</returns>
+        private static string GetRecordingPath(HCNetSDK.NET_DVR_FINDDATA recording, bool extension = true)
+        {
+            return $"{Config.HikDownloader.Downloads.Dir}\\{GetRecordingFileName(recording, extension)}";
         }
         #endregion
     }
