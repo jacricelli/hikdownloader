@@ -180,7 +180,7 @@
         /// <returns>Grabación.</returns>
         private static Recording GetRecording(HCNetSDK.Search.NET_DVR_FINDDATA searchResult)
         {
-            var path = string.Format("{0}\\{1}-{2:00}\\Channel {3:00}",
+            var path = string.Format("{0}\\{1}-{2:00}\\Canal {3:00}",
                 Program.Config.HikDownloader.Downloads.Dir,
                 searchResult.struStartTime.dwYear,
                 searchResult.struStartTime.dwMonth,
