@@ -26,6 +26,7 @@
             Console.WriteLine("  > Progreso:");
 
             var files = GenerateFileLists();
+            var error = false;
 
             if (files.Count > 0)
             {
@@ -37,21 +38,27 @@
                     },
                     file =>
                     {
-                        CombineRecordings(file);
+                        if (!CombineRecordings(file))
+                        {
+                            error = true;
+                        }
                     }
                 );
 
                 Cleanup();
 
-                Console.WriteLine();
-                Console.WriteLine($"    Se han combinado los archivos.");
-                Console.WriteLine();
+                if (!error)
+                {
+                    Console.WriteLine($"\r    Se han combinado los archivos.                    \n");
+                }
+                else
+                {
+                    Console.WriteLine($"\r    Se han combinado los archivos (con errores).                    \n");
+                }
             }
             else
             {
-                Console.WriteLine();
-                Console.WriteLine($"    No se han encontrado archivos.");
-                Console.WriteLine();
+                Console.WriteLine($"\n    No se han encontrado archivos.\n");
             }
         }
 
@@ -138,7 +145,7 @@
 
                 File.Delete(file);
 
-                Console.WriteLine($"    Se ha combinado {fileName}.");
+                Console.Write($"\r    {fileName}");
             }
             else
             {
@@ -148,8 +155,6 @@
                 var logFile = $"ffmpeg-{fileName}.log";
 
                 File.WriteAllText(logPath + "\\" + logFile, results);
-
-                Console.WriteLine($"    Error al combinar {fileName}.");
             }
 
             return ok;
