@@ -111,6 +111,20 @@
                 Directory.CreateDirectory(workingDirectory);
             }
 
+            if (File.Exists(outFile))
+            {
+                var i = 1;
+                while (true)
+                {
+                    outFile = string.Format("{0}\\{1}\\{2}\\{3}_{4}.avi", path, parts[1].Substring(0, parts[1].Length - 3), parts[0], parts[1], i);
+                    if (!File.Exists(outFile))
+                    {
+                        break;
+                    }
+                    i++;
+                }
+            }
+
             var log = new StringBuilder();
 
             using (var ffmpeg = new Process())
