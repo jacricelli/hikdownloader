@@ -14,6 +14,11 @@
     public static class Combine
     {
         /// <summary>
+        /// Número de archivo que se está procesndo.
+        /// </summary>
+        private static int fileCounter = 0;
+
+        /// <summary>
         /// Combina todas las grabaciones de cada día en un único archivo.
         /// </summary>
         public static void Execute()
@@ -30,6 +35,8 @@
 
             if (files.Count > 0)
             {
+                Console.WriteLine($"    Total: {files.Count}\n");
+
                 Parallel.ForEach(
                     files,
                     new ParallelOptions
@@ -38,6 +45,8 @@
                     },
                     file =>
                     {
+                        fileCounter++;
+
                         if (!CombineRecordings(file))
                         {
                             error = true;
@@ -159,7 +168,7 @@
 
                 File.Delete(file);
 
-                Console.Write($"\r    {fileName}");
+                Console.Write($"\r    {fileCounter} {fileName}");
             }
             else
             {
