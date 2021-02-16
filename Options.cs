@@ -161,14 +161,14 @@
         /// <summary>
         /// Combinar.
         /// </summary>
-        [Option('m', "combinar", Default = true, HelpText = "Combina todas las grabaciones de cada día en un único archivo.")]
+        [Option('m', "combinar", Default = false, HelpText = "Combina todas las grabaciones de cada día en un único archivo.")]
         public bool Combinar { get; set; }
 
         /// <summary>
-        /// Solo buscar.
+        /// Descargar.
         /// </summary>
-        [Option('b', "buscar", Default = false, HelpText = "Ejecuta solo una búsqueda sin descargar ni combinar grabaciones.")]
-        public bool Buscar { get; set; }
+        [Option('b', "descargar", Default = false, HelpText = "Descarga las grabaciones encontradas por la búsqueda.")]
+        public bool Descargar { get; set; }
 
         /// <summary>
         /// Ejemplos.

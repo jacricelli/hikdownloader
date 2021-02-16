@@ -96,17 +96,14 @@
             Array.Sort(channels);
 
             var recordings = Search.Execute(channels, opts.Desde, opts.Hasta);
-            if (recordings.Count > 0)
+            if (recordings.Count > 0 && opts.Descargar)
             {
-                if (!opts.Buscar)
-                {
-                    Download.Execute(recordings);
+                Download.Execute(recordings);
+            }
 
-                    if (opts.Combinar)
-                    {
-                        Combine.Execute();
-                    }
-                }
+            if (opts.Combinar)
+            {
+                Combine.Execute();
             }
 
             HCNetSDK.Session.Logout();
