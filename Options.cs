@@ -29,7 +29,7 @@
         /// <summary>
         /// Canal.
         /// </summary>
-        [Option('c', "canal", Separator = ',', Required = true, HelpText = "El número de canal donde buscar grabaciones.\nPuede especificarse más de un canal separando cada número con una coma.")]
+        [Option('c', "canal", Separator = ',', Default = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }, HelpText = "El número de canal donde buscar grabaciones.\nPuede especificarse más de un canal separando cada número con una coma.")]
         public IEnumerable<int> Canal { get; set; }
 
         /// <summary>
